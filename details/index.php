@@ -22,8 +22,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <img src="../showslow_icon.png" style="float: right"/>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
 <?
-
-require_once('../global.php');
+require_once('../config.php');
 db_connect();
 
 $query = sprintf("SELECT * FROM `showslow`.`yslow` WHERE `u` = '%s' ORDER BY `timestamp` DESC",

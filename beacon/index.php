@@ -29,7 +29,7 @@ if (!array_key_exists('w', $_GET) || filter_var($_GET['w'], FILTER_VALIDATE_INT)
 	return;
 }
 
-require_once('../global.php');
+require_once('../config.php');
 db_connect();
 
 $query = sprintf("INSERT INTO `showslow`.`yslow` (

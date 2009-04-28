@@ -1,5 +1,5 @@
 <?
-require_once('global.php');
+require_once('config.php');
 db_connect();
 
 $query = sprintf("SELECT u, UNIX_TIMESTAMP(timestamp) as t, w, o, r, numcomps, cdn, expires, gzip, cssattop, jsatbottom, expression, domains, obfuscate, redirects, jstwice, etags FROM `showslow`.`yslow` ORDER BY `u`, timestamp ASC");
