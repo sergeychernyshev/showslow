@@ -3,6 +3,7 @@
 <title>Show Slow</title>
 </head>
 <body>
+<img src="showslow_icon.png" style="float: right"/>
 <h1>Show Slow</h1>
 <div style="float: right; width: 40%">
 <h2>Configuring your YSlow</h2>
