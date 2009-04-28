@@ -21,7 +21,7 @@ function db_connect()
 {
 	$db = 'showslow';
 	$user = 'showslow';
-	$pass = 'yDrteUvab6WLw6Wj';
+	$pass = '... database-password ...';
 
 	$host = 'localhost';
 
