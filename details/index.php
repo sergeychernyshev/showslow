@@ -19,7 +19,8 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <script src="details.js" type="text/javascript"></script>
 </head>
 <body onload="onLoad('<?=md5($_GET['url'])?>', dataversion);" onresize="onResize();">
-<img src="../showslow_icon.png" style="float: right"/>
+<a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
 <?
 require_once('../config.php');

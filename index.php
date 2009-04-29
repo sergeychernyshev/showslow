@@ -6,7 +6,8 @@ db_connect();
 <title>Show Slow</title>
 </head>
 <body>
-<img src="showslow_icon.png" style="float: right"/>
+<a href="http://code.google.com/p/showslow/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1>Show Slow</h1>
 <div style="float: right; margin-left: 10px; width: 40%">
 <h2>Configuring your YSlow</h2>
