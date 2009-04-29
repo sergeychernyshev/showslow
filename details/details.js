@@ -1,6 +1,6 @@
 var timeplot;
 
-function onLoad(dataset, version) {
+function onLoad(url, version) {
 	var eventSource = new Timeplot.DefaultEventSource();
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
 		gridColor: "#000000",
@@ -42,7 +42,7 @@ function onLoad(dataset, version) {
 	];
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-	timeplot.loadText('data/' + dataset + '.csv?' + version, ",", eventSource);
+	timeplot.loadText('data.php?url=' + url + '&' + version, ",", eventSource);
 }
 
 var resizeTimerID = null;

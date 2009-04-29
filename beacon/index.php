@@ -78,33 +78,33 @@ if (!mysql_query($query))
 	error_log(mysql_error());
 }
 
-$addcomment = false;
-if (!file_exists($showslow_root.'/details/data/'.md5($_GET['u']).'.csv'))
-{
-	$addcomment = true;
-}
 
-$data = fopen($showslow_root.'/details/data/'.md5($_GET['u']).'.csv', 'a');
 
-if ($addcomment)
-{
-	fwrite($data, '# Measurements gathered for '.$_GET['u']."\n");
-}
 
-fwrite($data, date('c').','.
-	$_GET['w'].','.
-	$_GET['o'].','.
-	$_GET['r'].','.
-	$_GET['numcomps'].','.
-	$_GET['cdn'].','.
-	$_GET['expires'].','.
-	$_GET['gzip'].','.
-	$_GET['cssattop'].','.
-	$_GET['jsatbottom'].','.
-	$_GET['expression'].','.
-	$_GET['domains'].','.
-	$_GET['obfuscate'].','.
-	$_GET['redirects'].','.
-	$_GET['jstwice'].','.
-	$_GET['etags']."\n");
-fclose($data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

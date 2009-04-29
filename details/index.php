@@ -18,7 +18,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <script src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js" type="text/javascript"></script>
 <script src="details.js" type="text/javascript"></script>
 </head>
-<body onload="onLoad('<?=md5($_GET['url'])?>', dataversion);" onresize="onResize();">
+<body onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion);" onresize="onResize();">
 <a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
@@ -52,7 +52,7 @@ if (!$row) {
 	<span style="color: #0000ff">YSlow Grade</span> (0-100) and <span style="color: #D0A825">Page Size</span> (KB)
 	</div>
 
-	<h2>Measurements history (<a href="data/<?=md5($_GET['url'])?>.csv">csv</a>)</h2>
+	<h2>Measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h2>
 	<table border="1" cellpadding="5" cellspacing="0">
 	<tr><th>Time</th><th>Page Size</th><th>YSlow grade</th></tr>
 <?
