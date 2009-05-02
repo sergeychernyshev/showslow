@@ -21,9 +21,9 @@ DROP TABLE IF EXISTS `urls`;
 CREATE TABLE `urls` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'id to reference',
   `url` blob NOT NULL COMMENT 'url',
-  `w` smallint(6) NOT NULL default '0' COMMENT 'latest size of the page in bytes',
-  `o` smallint(6) NOT NULL default '0' COMMENT 'latest overall YSlow grade calculated for this profile',
-  `r` smallint(6) NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
+  `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'latest size of the page in bytes',
+  `o` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest overall YSlow grade calculated for this profile',
+  `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
