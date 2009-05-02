@@ -14,6 +14,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `urls`
+--
+
+DROP TABLE IF EXISTS `urls`;
+CREATE TABLE `urls` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'id to reference',
+  `url` blob NOT NULL COMMENT 'url',
+  `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'latest size of the page in bytes',
+  `o` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest overall YSlow grade calculated for this profile',
+  `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
 -- Table structure for table `yslow`
 --
 
@@ -21,6 +35,7 @@ DROP TABLE IF EXISTS `yslow`;
 CREATE TABLE `yslow` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Entry id',
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement timestamp',
+  `url_id` bigint(20) unsigned NOT NULL default '0',
   `ip` int(4) unsigned NOT NULL default '0' COMMENT 'IP address of the agent',
   `user_agent` text NOT NULL COMMENT 'User agent string',
   `w` smallint(6) NOT NULL default '0' COMMENT 'PAGE WEIGHT: Empty Cache (KB)',
@@ -40,7 +55,47 @@ CREATE TABLE `yslow` (
   `jstwice` smallint(6) NOT NULL default '0' COMMENT 'Duplicate JS',
   `etags` smallint(6) NOT NULL default '0' COMMENT 'ETAGS',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='DEPRECATED: Measurements gathered from yslow beacon';
+
+--
+-- Table structure for table `yslow2`
+--
+
+DROP TABLE IF EXISTS `yslow2`;
+CREATE TABLE `yslow2` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Entry id',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT 'Measurement timestamp',
+  `ip` int(4) unsigned NOT NULL default '0' COMMENT 'IP address of the agent',
+  `user_agent` text NOT NULL COMMENT 'User agent string',
+  `url_id` bigint(20) unsigned NOT NULL default '0',
+  `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'size of the page in bytes',
+  `o` smallint(5) unsigned NOT NULL default '0' COMMENT 'overall YSlow grade calculated for this profile',
+  `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'total amount of requests with empty cache',
+  `i` text NOT NULL COMMENT 'testing profile used',
+  `ynumreq` smallint(6) default NULL COMMENT 'Make fewer HTTP requests',
+  `ycdn` smallint(6) default NULL COMMENT 'Using CDN',
+  `yexpires` smallint(6) default NULL COMMENT 'Expires Headers',
+  `ycompress` smallint(6) default NULL COMMENT 'Gzip components',
+  `ycsstop` smallint(6) default NULL COMMENT 'CSS at the top',
+  `yjsbottom` smallint(6) default NULL COMMENT 'JS at the bottom',
+  `yexpressions` smallint(6) default NULL COMMENT 'CSS expressions',
+  `yexternal` smallint(6) default NULL COMMENT 'Make JavaScript and CSS external',
+  `ydns` smallint(6) default NULL COMMENT 'Reduce DNS lookups',
+  `yminify` smallint(6) default NULL COMMENT 'Minify JavaScript and CSS',
+  `yredirects` smallint(6) default NULL COMMENT 'Avoid URL redirects',
+  `ydupes` smallint(6) default NULL COMMENT 'Remove duplicate JavaScript and CSS',
+  `yetags` smallint(6) default NULL COMMENT 'Configure entity tags (ETags)',
+  `yxhr` smallint(6) default NULL COMMENT 'Make AJAX cacheable',
+  `yxhrmethod` smallint(6) default NULL COMMENT 'Use GET for AJAX requests',
+  `ymindom` smallint(6) default NULL COMMENT 'Reduce the number of DOM elements',
+  `yno404` smallint(6) default NULL COMMENT 'Avoid HTTP 404 (Not Found) error',
+  `ymincookie` smallint(6) default NULL COMMENT 'Reduce cookie size',
+  `ycookiefree` smallint(6) default NULL COMMENT 'Use cookie-free domains',
+  `ynofilter` smallint(6) default NULL COMMENT 'Avoid AlphaImageLoader filter',
+  `yimgnoscale` smallint(6) default NULL COMMENT 'Do not scale images in HTML',
+  `yfavicon` smallint(6) default NULL COMMENT 'Make favicon small and cacheable',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
