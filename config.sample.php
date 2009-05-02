@@ -3,6 +3,9 @@
 $showslow_root = '/path/to/showslow/root/';
 $showslow_base = 'http://www.example.com/showslow/'; # don't forget the trailing slash
 
+# change it if you want to allow other profiles including your custom profiles
+$YSlow2AllowedProfiles = array('ydefault', 'yslow1');
+
 function yslowPrettyScore($num) {
 	$letter = 'F';
 
