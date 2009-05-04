@@ -1,4 +1,4 @@
-#!/bin/baSh
+#!/bin/bash
 
 # simple YSlow automation script
 # put all your URLs into urls.txt
