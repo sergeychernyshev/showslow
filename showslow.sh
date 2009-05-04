@@ -7,10 +7,10 @@ URLS=`cat urls.txt |xargs echo`
 
 for LINK in $URLS;
 do
-        echo "Fetching $LINK"
-        firefox -no-remote $LINK &
-        sleep 30
-        killall -9 firefox
-        sleep 10
+	echo "Fetching $LINK"
+	firefox -no-remote $LINK &
+	sleep 30
+	killall -9 firefox
+	sleep 10
 done
 
