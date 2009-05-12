@@ -2,6 +2,24 @@
 require_once('../../config.php');
 db_connect();
 
+function updateUrlAggregates($url_id, $w, $o, $r)
+{
+	# updating latest values for the URL
+	$query = sprintf("UPDATE `showslow`.`urls` set w = '%d', o = '%d', r = '%d' WHERE id = '%d'",
+		mysql_real_escape_string($w),
+		mysql_real_escape_string($o),
+		mysql_real_escape_string($r),
+		mysql_real_escape_string($url_id)
+	);
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+		exit;
+	}
+
+}
+
 function getUrlId($url)
 {
 	# get URL id
@@ -97,19 +115,8 @@ if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 		exit;
 	}
 
-	# updating latest values for the URL
-	$query = sprintf("UPDATE `showslow`.`urls` set w = '%d', o = '%d', r = '%d' WHERE id = '%d'",
-		mysql_real_escape_string($_GET['w']),
-		mysql_real_escape_string($_GET['o']),
-		mysql_real_escape_string($_GET['r']),
-		mysql_real_escape_string($url_id)
-	);
-	$result = mysql_query($query);
+	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['r']);
 
-	if (!$result) {
-		error_log(mysql_error());
-		exit;
-	}
 } else if (array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
@@ -169,6 +176,8 @@ if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 		error_log(mysql_error());
 		exit;
 	}
+
+	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['r']);
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
