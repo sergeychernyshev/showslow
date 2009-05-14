@@ -5,7 +5,7 @@ db_connect();
 function updateUrlAggregates($url_id, $w, $o, $r)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE `showslow`.`urls` set w = '%d', o = '%d', r = '%d' WHERE id = '%d'",
+	$query = sprintf("UPDATE `showslow`.`urls` set w = '%d', o = '%d', r = '%d', last_update = now() WHERE id = '%d'",
 		mysql_real_escape_string($w),
 		mysql_real_escape_string($o),
 		mysql_real_escape_string($r),
