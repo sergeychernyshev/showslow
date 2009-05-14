@@ -49,12 +49,31 @@ $row = mysql_fetch_assoc($result);
 if (!$row) {
 	?>No data is available yet<?
 } else {
-	?><h2>Current <a href="http://developer.yahoo.com/yslow/">YSlow</a> grade: <?=yslowPrettyScore($row['o'])?> (<i><?=htmlentities($row['o'])?></i>)</h2>
+?>
+	<table cellpadding="15" cellspacing="0"><tr><td valign="top" align="center" style="background: #ddd; border: 1px solid black">
+	<h2>Current <a href="http://developer.yahoo.com/yslow/">YSlow</a> grade: <?=yslowPrettyScore($row['o'])?> (<i><?=htmlentities($row['o'])?></i>)</h2>
+
 	<script>dataversion = '<?=urlencode($row['timestamp'])?>'; </script>
 
-	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($row['o'])?>&chl=<?=urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)"/>
+	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($row['o'])?>&chl=<?=urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+	</td>
+	<td valign="top">
+	<h2>Test using <a href="http://www.webpagetest.org/">WebPageTest.org</a></h2>
+	Get waterfall diagram, connections diagram with two runs (empty/primed cache). It uses <a href="http://pagetest.wiki.sourceforge.net/">AOL Page Test</a> (IE).
+	<form action="http://webpagetest.org/runtest.php" method="POST">
+	<input type="hidden" name="url" value="<?=htmlentities($_GET['url'])?>"/>
+	<fieldset><legend>Options</legend>
+		<input type="radio" value="0" checked="checked" name="fvonly" id="viewBoth"/>First View and Repeat View<br/>
+		<input type="radio" value="1" name="fvonly" id="viewFirst"/>First View Only<br/>
+		<br/>
+		<input type="checkbox" name="private" id="private"/>Keep test results private (don't log them in the test history and use a non-guessable test ID)<br/>
+	</fieldset>
 
-	<h2>YSlow grade over time</h2>
+	<input type="submit" value="Run Test &gt;&gt;"/>
+	</form>
+	</td></tr></table>
+
+	<h2 style="clear: both">YSlow grade over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
 
 	<div style="fint-size: 0.2em">
