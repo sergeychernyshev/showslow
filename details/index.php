@@ -88,9 +88,10 @@ if (!$row) {
 	<div id="my-timeplot" style="height: 250px;"></div>
 
 	<div style="fint-size: 0.2em">
+	<span style="color: #D0A825">Page Size</span> (in bytes);
+	<span style="color: #75CF74">Total Requests</span>;
 	<span class="yslow1">YSlow1 Grade</span> (0-100);
-	<span class="yslow2">YSlow2 Grade</span> (0-100); 
-	<span style="color: #D0A825">Page Size</span> (in bytes)
+	<span class="yslow2">YSlow2 Grade</span> (0-100) 
 	</div>
 
 	<h2>Measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>

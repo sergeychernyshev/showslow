@@ -24,6 +24,13 @@ function onLoad(url, version) {
 		axisLabelsPlacement: "right"
 	});
 
+	var valueGeometryRequests = new Timeplot.DefaultValueGeometry({
+		min: 0,
+		max: 100,
+		gridColor: "#000000",
+		axisLabelsPlacement: "left"
+	});
+
 	var plotInfo = [
 		Timeplot.createPlotInfo({
 			id: "yslowgrade1",
@@ -56,6 +63,22 @@ function onLoad(url, version) {
 			valueGeometry: valueGeometryWeight,
 			lineColor: "#D0A825",
 			showValues: true
+		}),
+		Timeplot.createPlotInfo({
+			id: "requests1",
+			dataSource: new Timeplot.ColumnSource(eventSource1,3),
+			timeGeometry: timeGeometry,
+			valueGeometry: valueGeometryRequests,
+			lineColor: "#75CF74",
+			showValues: true
+		}),
+		Timeplot.createPlotInfo({
+			id: "requests2",
+			dataSource: new Timeplot.ColumnSource(eventSource2,3),
+			timeGeometry: timeGeometry,
+			valueGeometry: valueGeometryRequests,
+			lineColor: "#75CF74",
+			showValues: true
 		})
 	];
 
@@ -66,21 +89,29 @@ function onLoad(url, version) {
 	    (function() {
 		var myColumnDefs = [
 			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
-			{key:"w", label:"Page Size", sortable:true},
-			{key:"o", label:"YSlow grade", sortable:true},
+			{key:"w", label:"Page Size (bytes)", sortable:true},
+			{key:"r", label:"Total Requests", sortable:true},
+			{key:"o", label:"YSlow Grade (0-100)", sortable:true},
 			{key:"profile", label:"Profile used", sortable:true}
 		];
 
-		var myDataSource = new YAHOO.util.DataSource("data_json.php?");
-		myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		var myDataSource = new YAHOO.util.DataSource("data.php?");
+		myDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		myDataSource.responseSchema = {
-		    resultsList: "records",
-		    fields: ["timestamp", "w", "o", "profile"]
+			recordDelim : "\n", 
+			fieldDelim : "," ,
+			resultsList: "records",
+			fields: ["timestamp", "w", "o", "r", 
+			'ynumreq','ycdn','yexpires','ycompress','ycsstop',
+			'yjsbottom','yjsbottom','yexternal','ydns','yminify',
+			'yredirects','ydupes','yetags','yxhr','yxhrmethod',
+			'ymindom','yno404','ymincookie','ycookiefree','ynofilter',
+	                'yimgnoscale','yfavicon', "profile"]
 		};
 
 		var oConfigs = {
 			paginator: new YAHOO.widget.Paginator({
-			    rowsPerPage: 30
+			    rowsPerPage: 15 
 			}),
 			initialRequest: "url=" + url + "&" + dataversion
 		};
