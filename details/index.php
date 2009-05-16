@@ -15,6 +15,17 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 ?><html>
 <head>
 <title>Show Slow: Details for <?=htmlentities($_GET['url'])?></title>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/fonts/fonts-min.css" />
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/paginator/assets/skins/sam/paginator.css" />
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/datatable/assets/skins/sam/datatable.css" />
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/connection/connection-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/json/json-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/paginator/paginator-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/datasource/datasource-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/datatable/datatable-min.js"></script>
 <script src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js" type="text/javascript"></script>
 <script src="details.js" type="text/javascript"></script>
 <style>
@@ -27,7 +38,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 }
 </style>
 </head>
-<body onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion);" onresize="onResize();">
+<body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion);" onresize="onResize();">
 <a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
@@ -83,22 +94,8 @@ if (!$row) {
 	</div>
 
 	<h2>Measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>
-	<table border="1" cellpadding="5" cellspacing="0">
-	<tr><th>Time</th><th>Page Size</th><th>YSlow grade</th><th>profile</th></tr>
-<?
-	do {
-		?><tr>
-		<td><?=$row['timestamp']?></td>
-		<td align="right"><?=($row['i'] == 'yslow1' ? $row['w'] * 1024 : $row['w'])?> bytes</td>
-		<td align="right"><?=yslowPrettyScore($row['o'])?> (<i><?=htmlentities($row['o'])?></i>)</td>
-		<td align="right"<? if ($row['i'] == 'ydefault') { echo ' class="yslow2"'; } else if ($row['i'] == 'yslow1') { echo ' class="yslow1"'; } ?>"><?=$row['i']?></td>
-		</tr>
-<?
-	} while ($row = mysql_fetch_assoc($result));
 
-	mysql_free_result($result);
-?>
-	</table>
+	<div id="measurementstable"></div>
 <?
 }
 ?>
