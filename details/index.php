@@ -15,7 +15,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 ?><html>
 <head>
 <title>Show Slow: Details for <?=htmlentities($_GET['url'])?></title>
-<script type="text/javascript" src="../timeplot/timeplot-api.js"></script>
+<script type="text/javascript" src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
 <script src="details.js" type="text/javascript"></script>
 <style>
