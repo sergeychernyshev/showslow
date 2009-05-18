@@ -1,11 +1,7 @@
 #!/bin/bash
-
 # simple YSlow automation script
-# put all your URLs into urls.txt
 
-URLS=`cat urls.txt |xargs echo`
-
-for LINK in $URLS;
+for LINK in $@;
 do
 	echo "Fetching $LINK"
 	firefox -no-remote $LINK &
