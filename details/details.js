@@ -34,6 +34,7 @@ function onLoad(url, version) {
 	var plotInfo = [
 		Timeplot.createPlotInfo({
 			id: "yslowgrade1",
+			label: "YSlow1 Grade",
 			dataSource: new Timeplot.ColumnSource(eventSource1,2),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
@@ -42,6 +43,7 @@ function onLoad(url, version) {
 		}),
 		Timeplot.createPlotInfo({
 			id: "yslowgrade2",
+			label: "YSlow2 Grade",
 			dataSource: new Timeplot.ColumnSource(eventSource2,2),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
@@ -50,6 +52,7 @@ function onLoad(url, version) {
 		}),
 		Timeplot.createPlotInfo({
 			id: "pageweight1",
+			label: "Page Size (bytes)",
 			dataSource: new Timeplot.ColumnSource(eventSource1,1),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryWeight,
@@ -58,6 +61,7 @@ function onLoad(url, version) {
 		}),
 		Timeplot.createPlotInfo({
 			id: "pageweight2",
+			label: "Page Size (bytes)",
 			dataSource: new Timeplot.ColumnSource(eventSource2,1),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryWeight,
@@ -66,6 +70,7 @@ function onLoad(url, version) {
 		}),
 		Timeplot.createPlotInfo({
 			id: "requests1",
+			label: "Total Requests",
 			dataSource: new Timeplot.ColumnSource(eventSource1,3),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryRequests,
@@ -74,6 +79,7 @@ function onLoad(url, version) {
 		}),
 		Timeplot.createPlotInfo({
 			id: "requests2",
+			label: "Total Requests",
 			dataSource: new Timeplot.ColumnSource(eventSource2,3),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryRequests,
@@ -86,7 +92,10 @@ function onLoad(url, version) {
 	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&' + version, ",", eventSource1);
 	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&' + version, ",", eventSource2);
 
-	    (function() {
+	var loader = new YAHOO.util.YUILoader({
+	    require: ["paginator", "datatable", "datasource"],
+	    loadOptional: true,
+	    onSuccess: function() {
 		var myColumnDefs = [
 			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
 			{key:"w", label:"Page Size (bytes)", sortable:true},
@@ -122,7 +131,11 @@ function onLoad(url, version) {
 		    oDS: myDataSource,
 		    oDT: myDataTable
 		};
-	    })();
+	    },
+	    timeout: 10000,
+	    combine: true
+	});
+	loader.insert();
 }
 
 var resizeTimerID = null;
