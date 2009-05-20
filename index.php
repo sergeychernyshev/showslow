@@ -51,6 +51,7 @@ UserVoice.Tab.show({
     <div class="yui-content">
         <div id="urls">
 		<table>
+		<tr><th>URL</th><th colspan="2">Ylow grade</th></tr>
 		<?
 		$query = sprintf("SELECT DISTINCT url, o FROM `showslow`.`urls`");
 		$result = mysql_query($query);
@@ -61,9 +62,10 @@ UserVoice.Tab.show({
 
 		while ($row = mysql_fetch_assoc($result)) {
 		    ?><tr>
-<td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
-<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-</tr><?
+			<td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
+			<td style="width: 100px; text-align: right; padding-right:10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
+			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
+			</tr><?
 		}
 
 		mysql_free_result($result);
