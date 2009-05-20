@@ -35,7 +35,15 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <?
 require_once('../global.php');
 
-$query = sprintf("SELECT y.timestamp, y.w, y.o, y.i FROM yslow2 y, urls WHERE urls.url = '%s' AND y.url_id = urls.id AND y.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH) ORDER BY `timestamp` DESC",
+$query = sprintf("SELECT y.timestamp, y.w, y.o, y.i,
+		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
+		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
+		y.yredirects,	y.ydupes,		y.yetags,	y.yxhr,		y.yxhrmethod,
+		y.ymindom,	y.yno404,		y.ymincookie,	y.ycookiefree,	y.ynofilter,
+		y.yimgnoscale,	y.yfavicon
+		FROM yslow2 y, urls
+		WHERE urls.url = '%s' AND y.url_id = urls.id AND y.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
+		ORDER BY `timestamp` DESC",
 	mysql_real_escape_string($_GET['url'])
 );
 $result = mysql_query($query);
@@ -72,6 +80,82 @@ if (!$row) {
 	<input type="submit" value="Run Test &gt;&gt;"/>
 	</form>
 	</td></tr></table>
+<?
+
+function printGradeBreakdown($name, $anchor, $value) {
+	$gradeColor = array(
+		'A' => '#00EE00',
+		'B' => '#4FEE00',
+		'C' => '#9FEE00',
+		'D' => '#C6EE00',
+		'E' => '#EEEE00',
+		'F' => '#EE0000'
+	);
+?>
+		<td><a href="http://developer.yahoo.com/performance/rules.html#<?=$anchor?>"><?=$name?></a></td>
+		<? if ($value >= 0) {?>
+		<td><?=yslowPrettyScore($value)?> (<i><?=htmlentities($value)?></i>)</td>
+		<td><div style="background-color: silver; width: 100px"><div style="width: <?=$value?>px; height: 0.7em; background-color: <?=$gradeColor[yslowPrettyScore($value)]?>" title="Current YSlow grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"/></div></td>
+		<? } else { ?>
+		<td><i>N/A</i></td>
+		<td></td>
+		<? } ?>
+		<td>&nbsp;&nbsp;</td>
+<?
+}
+
+	if ($row['i'] <> 'yslow1') {
+?>
+	<h2 style="clear: both">YSlow breakdown</h2>
+	<table>
+		<tr>
+		<?=printGradeBreakdown('Make fewer HTTP requests', 'num_http', $row['ynumreq'])?>
+		<?=printGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', $row['ycdn'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Add Expires headers', 'expires', $row['yexpires'])?>
+		<?=printGradeBreakdown('Compress components with gzip', 'gzip', $row['ycompress'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Put CSS at top', 'css_top', $row['ycsstop'])?>
+		<?=printGradeBreakdown('Put JavaScript at bottom', 'js_bottom', $row['yjsbottom'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Avoid CSS expressions', 'css_expressions', $row['yexpressions'])?>
+		<?=printGradeBreakdown('Make JavaScript and CSS external', 'external', $row['yexternal'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Reduce DNS lookups', 'dns_lookups', $row['ydns'])?>
+		<?=printGradeBreakdown('Minify JavaScript and CSS', 'minify', $row['yminify'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Avoid URL redirects', 'redirects', $row['yredirects'])?>
+		<?=printGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', $row['ydupes'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Configure entity tags (ETags)', 'etags', $row['yetags'])?>
+		<?=printGradeBreakdown('Make AJAX cacheable', 'cacheajax', $row['yxhr'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Use GET for AJAX requests', 'ajax_get', $row['yxhrmethod'])?>
+		<?=printGradeBreakdown('Reduce the number of DOM elements', 'min_dom', $row['ymindom'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', $row['yno404'])?>
+		<?=printGradeBreakdown('Reduce cookie size', 'cookie_size', $row['ymincookie'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Use cookie-free domains', 'cookie_free', $row['ycookiefree'])?>
+		<?=printGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', $row['ynofilter'])?>
+		</tr>
+		<tr>
+		<?=printGradeBreakdown('Do not scale images in HTML', 'no_scale', $row['yimgnoscale'])?>
+		<?=printGradeBreakdown('Make favicon small and cacheable', 'favicon', $row['yfavicon'])?>
+		</tr>
+	</table>	
+<?
+	}
+?>
 
 	<h2 style="clear: both">YSlow grade over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
