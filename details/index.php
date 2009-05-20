@@ -15,7 +15,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 ?><html>
 <head>
 <title>Show Slow: Details for <?=htmlentities($_GET['url'])?></title>
-<script type="text/javascript" src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js"></script>
+<script type="text/javascript" src="../timeplot/timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
 <script src="details.js" type="text/javascript"></script>
 <style>
@@ -33,8 +33,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
 <?
-require_once('../config.php');
-db_connect();
+require_once('../global.php');
 
 $query = sprintf("SELECT y.timestamp, y.w, y.o, y.i FROM yslow2 y, urls WHERE urls.url = '%s' AND y.url_id = urls.id AND y.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH) ORDER BY `timestamp` DESC",
 	mysql_real_escape_string($_GET['url'])

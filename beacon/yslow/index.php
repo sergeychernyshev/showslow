@@ -1,6 +1,5 @@
 <?
-require_once('../../config.php');
-db_connect();
+require_once('../../global.php');
 
 function updateUrlAggregates($url_id, $w, $o, $r)
 {

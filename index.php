@@ -1,6 +1,5 @@
 <?
-require_once('config.php');
-db_connect();
+require_once('global.php');
 ?><html>
 <head>
 <title>Show Slow</title>

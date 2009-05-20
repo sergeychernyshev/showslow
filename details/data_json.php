@@ -1,6 +1,5 @@
 <?
-require_once('../config.php');
-db_connect();
+require_once('../global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
 	header('HTTP/1.0 400 Bad Request');
