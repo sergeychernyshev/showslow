@@ -18,6 +18,22 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <script type="text/javascript" src="../timeplot/timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
 <script src="details.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
+  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
+</script>
+<script type="text/javascript">
+UserVoice.Tab.show({ 
+  key: 'showslow',
+  host: 'showslow.uservoice.com', 
+  forum: 'general', 
+  alignment: 'right',
+  background_color:'#f00', 
+  text_color: 'white',
+  hover_color: '#06C',
+  lang: 'en'
+})
+</script>
 <style>
 .yslow1 {
 	color: #55009D;
@@ -83,19 +99,11 @@ if (!$row) {
 <?
 
 function printGradeBreakdown($name, $anchor, $value) {
-	$gradeColor = array(
-		'A' => '#00EE00',
-		'B' => '#4FEE00',
-		'C' => '#9FEE00',
-		'D' => '#C6EE00',
-		'E' => '#EEEE00',
-		'F' => '#EE0000'
-	);
 ?>
 		<td><a href="http://developer.yahoo.com/performance/rules.html#<?=$anchor?>"><?=$name?></a></td>
 		<? if ($value >= 0) {?>
 		<td><?=yslowPrettyScore($value)?> (<i><?=htmlentities($value)?></i>)</td>
-		<td><div style="background-color: silver; width: 100px" title="Current YSlow grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"><div style="width: <?=$value?>px; height: 0.7em; background-color: <?=$gradeColor[yslowPrettyScore($value)]?>"/></div></td>
+		<td><div style="background-color: silver; width: 103px" title="Current YSlow grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"><div style="width: <?=$value+3?>px; height: 0.7em; background-color: <?=scoreColor($value)?>"/></div></td>
 		<? } else { ?>
 		<td><i>N/A</i></td>
 		<td></td>

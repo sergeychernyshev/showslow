@@ -21,7 +21,22 @@ body {
 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/tabview/tabview-min.js"></script>
-
+<script type="text/javascript">
+  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
+  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
+</script>
+<script type="text/javascript">
+UserVoice.Tab.show({ 
+  key: 'showslow',
+  host: 'showslow.uservoice.com', 
+  forum: 'general', 
+  alignment: 'right',
+  background_color:'#f00', 
+  text_color: 'white',
+  hover_color: '#06C',
+  lang: 'en'
+})
+</script>
 </head>
 <body class="yui-skin-sam">
 <a href="http://code.google.com/p/showslow/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
@@ -45,7 +60,10 @@ body {
 		}
 
 		while ($row = mysql_fetch_assoc($result)) {
-		    ?><tr><td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td><td style="width: 100px; text-align: right; padding-right:10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td><td><div style="background-color: silver; width: 100px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']?>px; height: 0.7em; background-color: blue"/></div></td></tr><?
+		    ?><tr>
+<td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
+<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
+</tr><?
 		}
 
 		mysql_free_result($result);
@@ -68,7 +86,7 @@ body {
 			<td><?=htmlentities($row['timestamp'])?></td>
 			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
 			<td style="width: 100px; text-align: right; padding-right:10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
-			<td><div style="background-color: silver; width: 100px"><div style="width: <?=$row['o']?>px; height: 0.7em; background-color: blue" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"/></div></td>
+			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
 		</tr><?
 		}
 
