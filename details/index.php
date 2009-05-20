@@ -95,7 +95,7 @@ function printGradeBreakdown($name, $anchor, $value) {
 		<td><a href="http://developer.yahoo.com/performance/rules.html#<?=$anchor?>"><?=$name?></a></td>
 		<? if ($value >= 0) {?>
 		<td><?=yslowPrettyScore($value)?> (<i><?=htmlentities($value)?></i>)</td>
-		<td><div style="background-color: silver; width: 100px"><div style="width: <?=$value?>px; height: 0.7em; background-color: <?=$gradeColor[yslowPrettyScore($value)]?>" title="Current YSlow grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"/></div></td>
+		<td><div style="background-color: silver; width: 100px" title="Current YSlow grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"><div style="width: <?=$value?>px; height: 0.7em; background-color: <?=$gradeColor[yslowPrettyScore($value)]?>"/></div></td>
 		<? } else { ?>
 		<td><i>N/A</i></td>
 		<td></td>

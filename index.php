@@ -45,7 +45,7 @@ body {
 		}
 
 		while ($row = mysql_fetch_assoc($result)) {
-		    ?><tr><td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td><td style="width: 100px; text-align: right; padding-right:10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td><td><div style="background-color: silver; width: 100px"><div style="width: <?=$row['o']?>px; height: 0.7em; background-color: blue" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"/></div></td></tr><?
+		    ?><tr><td><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td><td style="width: 100px; text-align: right; padding-right:10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td><td><div style="background-color: silver; width: 100px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']?>px; height: 0.7em; background-color: blue"/></div></td></tr><?
 		}
 
 		mysql_free_result($result);
