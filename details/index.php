@@ -44,22 +44,23 @@ UserVoice.Tab.show({
 }
 </style>
 </head>
-<body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion);" onresize="onResize();">
+<body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion, eventversion);" onresize="onResize();">
 <a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
 <?
 require_once('../global.php');
 
-$query = sprintf("SELECT y.timestamp, y.w, y.o, y.i,
+$query = sprintf("SELECT urls.last_update, urls.last_event_update, y.w, y.o, y.i,
 		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
 		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
 		y.yredirects,	y.ydupes,		y.yetags,	y.yxhr,		y.yxhrmethod,
 		y.ymindom,	y.yno404,		y.ymincookie,	y.ycookiefree,	y.ynofilter,
 		y.yimgnoscale,	y.yfavicon
 		FROM yslow2 y, urls
-		WHERE urls.url = '%s' AND y.url_id = urls.id AND y.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
-		ORDER BY `timestamp` DESC",
+		WHERE urls.url = '%s' AND y.url_id = urls.id
+		ORDER BY y.timestamp DESC
+		LIMIT 1",
 	mysql_real_escape_string($_GET['url'])
 );
 $result = mysql_query($query);
@@ -77,7 +78,10 @@ if (!$row) {
 	<table cellpadding="15" cellspacing="0"><tr><td valign="top" align="center" style="background: #ddd; border: 1px solid black">
 	<h2>Current <a href="http://developer.yahoo.com/yslow/">YSlow</a> grade: <?=yslowPrettyScore($row['o'])?> (<i><?=htmlentities($row['o'])?></i>)</h2>
 
-	<script>dataversion = '<?=urlencode($row['timestamp'])?>'; </script>
+	<script>
+	dataversion = '<?=urlencode($row['last_update'])?>';
+	eventversion = '<?=urlencode($row['last_event_update'])?>';
+	</script>
 
 	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($row['o'])?>&chl=<?=urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
 	</td>

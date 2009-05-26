@@ -2,9 +2,11 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-function onLoad(url, version) {
+function onLoad(url, dataversion, eventversion) {
 	var eventSource1 = new Timeplot.DefaultEventSource(); // YSlow1 measurements
 	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
+	var showslowevents = new Timeplot.DefaultEventSource(); // ShowSlow Events
+
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
 		gridColor: "#000000",
 		axisLabelsPlacement: "bottom"
@@ -85,12 +87,19 @@ function onLoad(url, version) {
 			valueGeometry: valueGeometryRequests,
 			lineColor: "#75CF74",
 			showValues: true
+		}), 
+		Timeplot.createPlotInfo({
+			id: "showslowevents",
+			timeGeometry: timeGeometry,
+			eventSource: showslowevents,
+			lineColor: "#3638AF"
 		})
 	];
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&' + version, ",", eventSource1);
-	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&' + version, ",", eventSource2);
+	timeplot.loadXML('events.php?url=' + url + '&' + eventversion, showslowevents);
+	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&' + dataversion, ",", eventSource1);
+	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&' + dataversion, ",", eventSource2);
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["paginator", "datatable", "datasource"],

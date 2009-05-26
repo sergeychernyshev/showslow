@@ -1,0 +1,53 @@
+<?
+require_once('../global.php');
+
+if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
+	header('HTTP/1.0 400 Bad Request');
+
+	?><html>
+<head>
+<title>Bad Request: no valid url specified</title>
+</head>
+<body>
+<h1>Bad Request: no valid url specified</h1>
+<p>You must pass valid URL as 'url' parameter</p>
+</body></html>
+<?
+	exit;
+}
+
+$all = true;
+
+$query = sprintf("SELECT type, title, UNIX_TIMESTAMP(start) as s, UNIX_TIMESTAMP(end) as e, resource_url as link FROM event
+	WHERE INSTR('%s', url_prefix) = 1
+	ORDER BY start DESC",
+	mysql_real_escape_string($_GET['url'])
+);
+
+$result = mysql_query($query);
+
+if (!$result) {
+        error_log(mysql_error());
+}
+
+$data = array();
+
+header('Content-type: text/xml');
+$xml = new SimpleXMLElement('<data/>');
+
+while ($row = mysql_fetch_assoc($result)) {
+	$event = $xml->addChild('event');
+	$event->addAttribute('start', date('r', $row['s']));
+	$event->addAttribute('title', ($row['type'] ? $row['type'].': ' : '').$row['title']);
+	if ($row['e'])
+	{
+		$event->addAttribute('end', date('r',$row['e']));
+	}
+	if ($row['link'])
+	{
+		$event->addAttribute('link', $row['link']);
+	}
+}
+mysql_free_result($result);
+
+echo $xml->asXML();
