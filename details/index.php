@@ -1,4 +1,6 @@
 <?
+require_once('../global.php');
+
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
 	?><html>
 <head>
@@ -15,7 +17,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 ?><html>
 <head>
 <title>Show Slow: Details for <?=htmlentities($_GET['url'])?></title>
-<script type="text/javascript" src="../timeplot/timeplot-api.js"></script>
+<script type="text/javascript" src="<?=$TimePlotBase?>timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
 <script src="details.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -49,8 +51,6 @@ UserVoice.Tab.show({
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
 <?
-require_once('../global.php');
-
 $query = sprintf("SELECT urls.last_update, urls.last_event_update, y.w, y.o, y.i,
 		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
 		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
