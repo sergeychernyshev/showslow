@@ -68,12 +68,17 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 	?><html>
 <head>
 <title>Bad Request: Event beacon</title>
+<style>
+i {
+	color: red;
+}
+</style>
 </head>
 <body>
 <h1>Bad Request: Event beacon</h1>
 <p>This is an event beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to this URL:</p>
-<b><pre>/beacon/events/?type=<i>sometype</i>&amp;url_prefix=<i>url_prefix</i>&amp;title=<i>some+title</i>&amp;start=<i><?=urlencode(date("Y-m-d"))?></i>&amp;end=<i><?=urlencode(date("Y-m-d"))?></i>&amp;resource_url=<i>link+to+page</i></pre></b>
+<b><pre><?=$showslow_base?>beacon/events/?type=<i>sometype</i>&amp;url_prefix=<i>url_prefix</i>&amp;title=<i>some+title</i>&amp;start=<i><?=urlencode(date("Y-m-d"))?></i>&amp;end=<i><?=urlencode(date("Y-m-d"))?></i>&amp;resource_url=<i>link+to+page</i></pre></b>
 or use form below to manually enter events.
 
 <h2>Add an event</h2>

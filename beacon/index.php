@@ -1,1 +1,14 @@
-<h1>YSlow beacon moved to <a href="yslow/">beacon/yslow/</a> please update your configurations</h1>
+<html>
+<head>
+<title>ShowSlow Beacons</title>
+</head>
+<body>
+<h1>ShowSlow Beacons</h1>
+This instance of ShowSlow supports following beacons:
+<ul>
+<li><a href="yslow/">YSlow beacon</a></li>
+<li><a href="events/">Custom events beacon</a></li>
+</ul>
+
+</body></html>
+

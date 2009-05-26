@@ -187,6 +187,22 @@ if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 <body>
 <h1>Bad Request: YSlow beacon</h1>
 <p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
+
+<h1>Configure your YSlow</h1>
+<p><b style="color: red">If you're OK with all your YSlow measurements to be recorded by showslow.com and displayed publicly</b>, just set these two Firefox parameters on <b>about:config</b> page:</p>
+
+<h2>Yslow 1.x</h2>
+<ul>
+<li>extensions.firebug.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
+<li>extensions.firebug.yslow.optinBeacon = <b style="color: blue">true</b></li>
+
+</ul>
+<h2>Yslow 2.x</h2>
+<ul>
+<li>extensions.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
+<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
+</ul>
+
 </body></html>
 <?
 }
