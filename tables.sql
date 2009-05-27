@@ -14,6 +14,23 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `event`
+--
+
+DROP TABLE IF EXISTS `event`;
+CREATE TABLE `event` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `type` varchar(25) default NULL COMMENT 'string representing type of the event',
+  `url_prefix` blob NOT NULL COMMENT 'URL prefix to match the urls - usually protocol and host name',
+  `title` text NOT NULL COMMENT 'event message',
+  `start` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'start date of event',
+  `end` timestamp NULL default NULL COMMENT 'end date of event (if null, start is the same as end)',
+  `resource_url` blob COMMENT 'additional URL to resource related to the event.',
+  PRIMARY KEY  (`id`),
+  KEY `start` (`start`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
 -- Table structure for table `urls`
 --
 
@@ -22,6 +39,7 @@ CREATE TABLE `urls` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'id to reference',
   `url` blob NOT NULL COMMENT 'url',
   `last_update` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `last_event_update` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Last time events were updated for this URL',
   `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'latest size of the page in bytes',
   `o` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest overall YSlow grade calculated for this profile',
   `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
