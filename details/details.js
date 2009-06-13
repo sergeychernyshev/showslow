@@ -97,9 +97,9 @@ function onLoad(url, dataversion, eventversion) {
 	];
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-	timeplot.loadXML('events.php?url=' + url + '&' + eventversion, showslowevents);
-	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&' + dataversion, ",", eventSource1);
-	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&' + dataversion, ",", eventSource2);
+	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
+	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&ver=' + dataversion, ",", eventSource1);
+	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + dataversion, ",", eventSource2);
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["paginator", "datatable", "datasource"],
@@ -131,7 +131,7 @@ function onLoad(url, dataversion, eventversion) {
 			paginator: new YAHOO.widget.Paginator({
 			    rowsPerPage: 15 
 			}),
-			initialRequest: "url=" + url + "&" + dataversion
+			initialRequest: "url=" + url + "&ver=" + dataversion
 		};
 		var myDataTable = new YAHOO.widget.DataTable("measurementstable", myColumnDefs,
 			myDataSource, oConfigs);

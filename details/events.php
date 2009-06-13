@@ -33,6 +33,10 @@ if (!$result) {
 $data = array();
 
 header('Content-type: text/xml');
+if (array_key_exists('ver', $_GET)) {
+	header('Expires: '.date('r', time() + 315569260));
+	header('Cace-control: max-age=315569260');
+}
 $xml = new SimpleXMLElement('<data/>');
 
 while ($row = mysql_fetch_assoc($result)) {
