@@ -100,7 +100,7 @@ UserVoice.Tab.show({
 	</div>
 	<div id="configure">
 		<p>
-		<b style="color: red">If you're OK with all your YSlow measurements to be recorded by showslow.com and displayed publicly</b>, just set these two Firefox parameters on <b>about:config</b> page:
+		<b style="color: red">If you're OK with all your YSlow measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:
 		</p>
 		<h2>Yslow 1.x</h2>
 		<ul>
