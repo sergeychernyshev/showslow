@@ -20,6 +20,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <script type="text/javascript" src="<?=$TimePlotBase?>timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
 <script src="details.js" type="text/javascript"></script>
+<? if ($showFeedbackButton) {?>
 <script type="text/javascript">
   var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
   document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
@@ -36,6 +37,7 @@ UserVoice.Tab.show({
   lang: 'en'
 })
 </script>
+<? } ?>
 <style>
 .yslow1 {
 	color: #55009D;

@@ -2,6 +2,12 @@
 $showslow_root = '/path/to/showslow/root/';
 $showslow_base = 'http://www.example.com/showslow/'; # don't forget the trailing slash
 
+# Database connection information
+$db = 'showslow';
+$user = 'showslow';
+$pass = '... database-password ...';
+$host = 'localhost';
+
 # change it if you want to allow other profiles including your custom profiles
 $YSlow2AllowedProfiles = array('ydefault', 'yslow1');
 
@@ -12,8 +18,6 @@ $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
 # (for publicly hosted instances)
 #$googleAnalyticsProfile = '';
 
-$db = 'showslow';
-$user = 'showslow';
-$pass = '... database-password ...';
+# show Feedback button
+$showFeedbackButton = true;
 
-$host = 'localhost';
