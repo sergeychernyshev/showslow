@@ -21,3 +21,7 @@ $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
 # show Feedback button
 $showFeedbackButton = true;
 
+# how old should data be for deletion (in days)
+# anything >0 will delete old data
+# don't forget to add a cron job to run deleteolddata.php
+$oldDataInterval = 0;

@@ -51,7 +51,7 @@ UserVoice.Tab.show({
 <body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion, eventversion);" onresize="onResize();">
 <a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
-<h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities($_GET['url'])?></a></h1>
+<h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities(substr($_GET['url'], 0, 30))?><? if (strlen($_GET['url']) > 30) { ?>...<? } ?></a></h1>
 <?
 $query = sprintf("SELECT urls.last_update, urls.last_event_update, y.w, y.o, y.i,
 		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,

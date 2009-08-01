@@ -66,7 +66,7 @@ UserVoice.Tab.show({
 		    ?><tr>
 			<td style="text-align: right; padding: 0 10px 0 10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
 			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
+			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></td>
 			</tr><?
 		}
 
@@ -90,7 +90,7 @@ UserVoice.Tab.show({
 			<td><?=htmlentities($row['timestamp'])?></td>
 			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
 			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities($row['url'])?></td>
+			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></td>
 		</tr><?
 		}
 
