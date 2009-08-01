@@ -24,4 +24,17 @@ if ($oldDataInterval > 0)
 		error_log(mysql_error());
 		exit;
 	}
+
+	# deleting old events
+	$query = sprintf("DELETE FROM event WHERE (end IS NOT NULL AND end < DATE_SUB(now(), INTERVAL '%s' DAY)) OR (start < DATE_SUB(now(), INTERVAL '%s' DAY))",
+		mysql_real_escape_string($oldDataInterval),
+		mysql_real_escape_string($oldDataInterval)
+	);
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+		exit;
+	}
 }
