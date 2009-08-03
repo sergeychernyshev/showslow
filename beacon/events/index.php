@@ -12,23 +12,23 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 
 	$query = sprintf('INSERT INTO event (
 			url_prefix,
-			title'
+			title,
+			start'
 			.($type !== FALSE ? ', type' : '')
-			.($start !== FALSE ? ', start' : '')
 			.($end !== FALSE ? ', end' : '')
 			.($resource_url !== FALSE ? ', resource_url' : '')
 		.") VALUES (
 			'%s',
+			'%s',
 			'%s'"
 			.($type !== FALSE ? ", '%s'" : '')
-			.($start !== FALSE ? ", '%s'" : '')
 			.($end !== FALSE ? ", '%s'" : '')
 			.($resource_url !== FALSE ? ", '%s'" : '')
 		.')',
 		mysql_real_escape_string($_GET['url_prefix']),
 		mysql_real_escape_string($_GET['title']),
-		mysql_real_escape_string($type),
 		mysql_real_escape_string($start),
+		mysql_real_escape_string($type),
 		mysql_real_escape_string($end),
 		mysql_real_escape_string($resource_url)
 	);
