@@ -5,6 +5,7 @@ var timeplot;
 function onLoad(url, dataversion, eventversion) {
 	var eventSource1 = new Timeplot.DefaultEventSource(); // YSlow1 measurements
 	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
+	var pagespeed = new Timeplot.DefaultEventSource(); // YSlow2 measurements
 	var showslowevents = new Timeplot.DefaultEventSource(); // ShowSlow Events
 
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
@@ -50,6 +51,24 @@ function onLoad(url, dataversion, eventversion) {
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#2175D9",
+			showValues: true
+		}),
+		Timeplot.createPlotInfo({
+			id: "pagespeed",
+			label: "Page Speed Grade",
+			dataSource: new Timeplot.ColumnSource(pagespeed,2),
+			timeGeometry: timeGeometry,
+			valueGeometry: valueGeometryGrades,
+			lineColor: "#6F4428",
+			showValues: true
+		}),
+		Timeplot.createPlotInfo({
+			id: "pageload",
+			label: "Page Load Time (Page Speed)",
+			dataSource: new Timeplot.ColumnSource(pagespeed,3),
+			timeGeometry: timeGeometry,
+			valueGeometry: valueGeometryWeight,
+			lineColor: "#EE4F00",
 			showValues: true
 		}),
 		Timeplot.createPlotInfo({
@@ -100,6 +119,7 @@ function onLoad(url, dataversion, eventversion) {
 	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
 	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&ver=' + dataversion, ",", eventSource1);
 	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + dataversion, ",", eventSource2);
+	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + dataversion, ",", pagespeed);
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["paginator", "datatable", "datasource"],

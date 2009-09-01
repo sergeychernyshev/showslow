@@ -110,7 +110,9 @@ if (!$row) {
 	<span style="color: #D0A825">Page Size</span> (in bytes);
 	<span style="color: #75CF74">Total Requests</span>;
 	<span class="yslow1">YSlow1 Grade</span> (0-100);
-	<span class="yslow2">YSlow2 Grade</span> (0-100) 
+	<span class="yslow2">YSlow2 Grade</span> (0-100);
+	<span style="color: #6F4428">PageSpeed Grade</span> (0-100);
+	<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms)
 	</div>
 
 <?
