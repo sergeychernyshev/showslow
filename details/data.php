@@ -57,7 +57,7 @@ $data = array();
 header('Content-type: text/plain');
 if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
-	header('Cace-control: max-age=315569260');
+	header('Cache-control: max-age=315569260');
 }
 echo '# Measurements gathered'.($all ? '' : ' using "'.$_GET['profile'].'" profile').' for '.$_GET['url']."\n";
 

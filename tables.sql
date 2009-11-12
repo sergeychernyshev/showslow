@@ -31,6 +31,46 @@ CREATE TABLE `event` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `pagespeed`
+--
+
+DROP TABLE IF EXISTS `pagespeed`;
+CREATE TABLE `pagespeed` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `ip` int(4) unsigned NOT NULL default '0',
+  `user_agent` text NOT NULL,
+  `url_id` bigint(20) unsigned NOT NULL default '0',
+  `w` bigint(20) unsigned NOT NULL default '0',
+  `o` float unsigned NOT NULL default '0',
+  `l` bigint(20) unsigned NOT NULL default '0',
+  `r` smallint(6) unsigned NOT NULL default '0',
+  `t` bigint(20) unsigned NOT NULL default '0',
+  `v` text NOT NULL,
+  `pMinifyJS` float unsigned NOT NULL default '0',
+  `pOptImgs` float unsigned NOT NULL default '0',
+  `pImgDims` float unsigned NOT NULL default '0',
+  `pCombineJS` float unsigned NOT NULL default '0',
+  `pCombineCSS` float unsigned NOT NULL default '0',
+  `pCssInHead` float unsigned NOT NULL default '0',
+  `pBrowserCache` float unsigned NOT NULL default '0',
+  `pProxyCache` float unsigned NOT NULL default '0',
+  `pNoCookie` float unsigned NOT NULL default '0',
+  `pCookieSize` float unsigned NOT NULL default '0',
+  `pParallelDl` float unsigned NOT NULL default '0',
+  `pCssSelect` float unsigned NOT NULL default '0',
+  `pCssJsOrder` float unsigned NOT NULL default '0',
+  `pDeferJS` float unsigned NOT NULL default '0',
+  `pGzip` float unsigned NOT NULL default '0',
+  `pMinRedirect` float unsigned NOT NULL default '0',
+  `pCssExpr` float unsigned NOT NULL default '0',
+  `pUnusedCSS` float unsigned NOT NULL default '0',
+  `pMinDns` float unsigned NOT NULL default '0',
+  `pDupeRsrc` float unsigned NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
 -- Table structure for table `urls`
 --
 
@@ -43,6 +83,11 @@ CREATE TABLE `urls` (
   `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'latest size of the page in bytes',
   `o` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest overall YSlow grade calculated for this profile',
   `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
+  `ps_w` bigint(20) unsigned NOT NULL default '0',
+  `ps_o` float unsigned NOT NULL default '0',
+  `ps_l` bigint(20) unsigned NOT NULL default '0',
+  `ps_r` smallint(6) unsigned NOT NULL default '0',
+  `ps_t` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
