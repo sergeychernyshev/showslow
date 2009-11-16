@@ -22,3 +22,6 @@ else
 	zip -r showslow_${v}.zip showslow_${subst .,_,${v}}
 	rm -rf showslow_${subst .,_,${v}}
 endif
+
+timeplot-patch:
+	patch -p0 <timeplot.patch

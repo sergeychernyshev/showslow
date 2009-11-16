@@ -1,0 +1,55 @@
+Index: timeplot/timeplot-api.js
+===================================================================
+--- timeplot/timeplot-api.js	(revision 2024)
++++ timeplot/timeplot-api.js	(working copy)
+@@ -8,7 +8,8 @@
+ 
+ (function() {
+ 
+-    var local = false;
++    var local = true;
++    var enableFirebug = false;
+ 
+     // obtain local mode from the document URL    
+     if (document.location.search.length > 0) {
+@@ -107,7 +108,7 @@
+ 
+         var timeplotURLPrefix = Timeplot.urlPrefix;
+ 
+-        if (local && !("console" in window)) {
++        if (enableFirebug && !("console" in window)) {
+             var firebug = [ timeplotURLPrefix + "lib/firebug/firebug.js" ];
+             SimileAjax.includeJavascriptFiles(document, "", firebug);
+         }
+Index: timeplot/scripts/timeplot.js
+===================================================================
+--- timeplot/scripts/timeplot.js	(revision 2024)
++++ timeplot/scripts/timeplot.js	(working copy)
+@@ -34,6 +34,7 @@
+ Timeplot.createPlotInfo = function(params) {
+     return {   
+         id:                ("id" in params) ? params.id : "p" + Math.round(Math.random() * 1000000),
++        label:             ("label" in params) ? params.label : '',
+         dataSource:        ("dataSource" in params) ? params.dataSource : null,
+         eventSource:       ("eventSource" in params) ? params.eventSource : null,
+         timeGeometry:      ("timeGeometry" in params) ? params.timeGeometry : new Timeplot.DefaultTimeGeometry(),
+Index: timeplot/scripts/plot.js
+===================================================================
+--- timeplot/scripts/plot.js	(revision 2024)
++++ timeplot/scripts/plot.js	(working copy)
+@@ -81,7 +81,7 @@
+                     x = plot._timeGeometry.toScreen(validTime);
+                     var v = plot._dataSource.getValue(validTime);
+                     if (plot._plotInfo.roundValues) v = Math.round(v);
+-                    plot._valueFlag.innerHTML = new String(v);
++                    plot._valueFlag.innerHTML = (plot._plotInfo.label ? plot._plotInfo.label + ': ' : '') + new String(v);
+                     var d = new Date(validTime);
+                     var p = plot._timeGeometry.getPeriod(); 
+                     if (p < day) {
+@@ -397,4 +397,4 @@
+         }
+     }
+ 
+-}
+\ No newline at end of file
++}
