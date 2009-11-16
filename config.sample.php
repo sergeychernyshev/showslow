@@ -13,6 +13,7 @@ $YSlow2AllowedProfiles = array('ydefault', 'yslow1');
 
 # URL of timeplot installation
 $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
+#$TimePlotBase = '/timeplot/';
 
 # to see if your users are visiting the tool, enable Google Analytics
 # (for publicly hosted instances)
