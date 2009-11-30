@@ -44,6 +44,7 @@ UserVoice.Tab.show({
 <a href="http://code.google.com/p/showslow/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1>Show Slow</h1>
+<?=$ShowSlowIntro?>
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li><a href="#last100"><em>Last 100 measurements</em></a></li>
