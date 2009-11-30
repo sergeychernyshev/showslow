@@ -53,7 +53,7 @@ UserVoice.Tab.show({
     <div class="yui-content">
         <div id="last100">
 		<table>
-		<tr><th>Timestamp</th><th colspan="2">Ylow grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
+		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?
 		$query = sprintf("SELECT y.timestamp, urls.url, y.o FROM yslow2 y, urls WHERE urls.id = y.url_id ORDER BY timestamp DESC LIMIT 100");
 		$result = mysql_query($query);
@@ -77,7 +77,7 @@ UserVoice.Tab.show({
 	</div>
         <div id="urls">
 		<table>
-		<tr><th colspan="2">Ylow grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
+		<tr><th colspan="2">YSlow grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?
 		$query = sprintf("SELECT DISTINCT url, o FROM `showslow`.`urls`");
 		$result = mysql_query($query);
