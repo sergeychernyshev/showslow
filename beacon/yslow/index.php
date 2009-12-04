@@ -50,7 +50,105 @@ function getUrlId($url)
 
 }
 
-if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
+$post_data = file_get_contents("php://input");
+$post = json_decode($post_data, true);
+
+error_log($post_data);
+error_log(var_export($post, true));
+
+if (!is_null($post) && array_key_exists('g', $post)
+	&& array_key_exists('i', $post) && in_array($post['i'], $YSlow2AllowedProfiles)
+	&& array_key_exists('w', $post) && filter_var($post['w'], FILTER_VALIDATE_INT) !== false
+	&& array_key_exists('o', $post) && filter_var($post['o'], FILTER_VALIDATE_INT) !== false
+	&& array_key_exists('u', $post) && filter_var(urldecode($post['u']), FILTER_VALIDATE_URL) !== false
+	&& array_key_exists('r', $post) && filter_var($post['r'], FILTER_VALIDATE_INT) !== false
+	)
+{
+	$url_id = getUrlId(urldecode($post['u']));
+
+	$grades = $post['g'];
+
+	$ynumreq	= $grades['ynumreq']['score'];
+	$ycdn		= $grades['ycdn']['score'];
+	$yexpires	= $grades['yexpires']['score'];
+	$ycompress	= $grades['ycompress']['score'];
+	$ycsstop	= $grades['ycsstop']['score'];
+	$yjsbottom	= $grades['yjsbottom']['score'];
+	$yexpressions	= $grades['yexpressions']['score'];
+	$yexternal	= $grades['yexternal']['score'];
+	$ydns		= $grades['ydns']['score'];
+	$yminify	= $grades['yminify']['score'];
+	$yredirects	= $grades['yredirects']['score'];
+	$ydupes		= $grades['ydupes']['score'];
+	$yetags		= $grades['yetags']['score'];
+	$yxhr		= $grades['yxhr']['score'];
+	$yxhrmethod	= $grades['yxhrmethod']['score'];
+	$ymindom	= $grades['ymindom']['score'];
+	$yno404		= $grades['yno404']['score'];
+	$ymincookie	= $grades['ymincookie']['score'];
+	$ycookiefree	= $grades['ycookiefree']['score'];
+	$ynofilter	= $grades['ynofilter']['score'];
+	$yimgnoscale	= $grades['yimgnoscale']['score'];
+	$yfavicon	= $grades['yfavicon']['score'];
+
+	# adding new entry
+	$query = sprintf("INSERT INTO `showslow`.`yslow2` (
+		`ip` , `user_agent` , `url_id` ,
+		`w` , `o` , `r` , `i` ,
+		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
+		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
+		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
+		`ymindom`,	`yno404`,	`ymincookie`,	`ycookiefree`,	`ynofilter`,
+		`yimgnoscale`,	`yfavicon`
+	)
+	VALUES (inet_aton('%s'), '%s', '%d',
+		'%d', '%d', '%d', '%s',
+		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d'
+	)",
+		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
+		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
+		mysql_real_escape_string($url_id),
+		mysql_real_escape_string($post['w']),
+		mysql_real_escape_string($post['o']),
+		mysql_real_escape_string($post['r']),
+		mysql_real_escape_string($post['i']),
+		mysql_real_escape_string($ynumreq),
+		mysql_real_escape_string($ycdn),
+		mysql_real_escape_string($yexpires),
+		mysql_real_escape_string($ycompress),
+		mysql_real_escape_string($ycsstop),
+		mysql_real_escape_string($yjsbottom),
+		mysql_real_escape_string($yexpressions),
+		mysql_real_escape_string($yexternal),
+		mysql_real_escape_string($ydns),
+		mysql_real_escape_string($yminify),
+		mysql_real_escape_string($yredirects),
+		mysql_real_escape_string($ydupes),
+		mysql_real_escape_string($yetags),
+		mysql_real_escape_string($yxhr),
+		mysql_real_escape_string($yxhrmethod),
+		mysql_real_escape_string($ymindom),
+		mysql_real_escape_string($yno404),
+		mysql_real_escape_string($ymincookie),	
+		mysql_real_escape_string($ycookiefree),	
+		mysql_real_escape_string($ynofilter),
+		mysql_real_escape_string($yimgnoscale),	
+		mysql_real_escape_string($yfavicon)
+	);
+
+	if (!mysql_query($query))
+	{
+		error_log(mysql_error());
+		exit;
+	}
+
+	updateUrlAggregates($url_id, $post['w'], $post['o'], $post['r']);
+
+} else if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
