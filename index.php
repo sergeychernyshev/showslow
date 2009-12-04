@@ -91,6 +91,7 @@ UserVoice.Tab.show({
 		<h2>Yslow 2.x</h2>
 		<ul>
 		<li>extensions.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
+		<li>extensions.yslow.beaconInfo= <b style="color: blue">grade</b></li>
 		<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 		</ul>
 	</div>
