@@ -4,11 +4,6 @@ require_once('global.php');
 <head>
 <title>Show Slow</title>
 <style type="text/css">
-/*margin and padding on body element
-  can introduce errors in determining
-  element position and are not recommended;
-  we turn them off as a foundation for YUI
-  CSS treatments. */
 body {
 	margin:0;
 	padding:0;

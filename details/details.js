@@ -2,7 +2,7 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-function onLoad(url, dataversion, eventversion) {
+function onLoad(url, ydataversion, psdataversion, eventversion) {
 	var eventSource1 = new Timeplot.DefaultEventSource(); // YSlow1 measurements
 	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
 	var pagespeed = new Timeplot.DefaultEventSource(); // YSlow2 measurements
@@ -36,15 +36,6 @@ function onLoad(url, dataversion, eventversion) {
 
 	var plotInfo = [
 		Timeplot.createPlotInfo({
-			id: "yslowgrade1",
-			label: "YSlow1 Grade",
-			dataSource: new Timeplot.ColumnSource(eventSource1,2),
-			timeGeometry: timeGeometry,
-			valueGeometry: valueGeometryGrades,
-			lineColor: "#55009D",
-			showValues: true
-		}),
-		Timeplot.createPlotInfo({
 			id: "yslowgrade2",
 			label: "YSlow2 Grade",
 			dataSource: new Timeplot.ColumnSource(eventSource2,2),
@@ -72,30 +63,12 @@ function onLoad(url, dataversion, eventversion) {
 			showValues: true
 		}),
 		Timeplot.createPlotInfo({
-			id: "pageweight1",
-			label: "Page Size (bytes)",
-			dataSource: new Timeplot.ColumnSource(eventSource1,1),
-			timeGeometry: timeGeometry,
-			valueGeometry: valueGeometryWeight,
-			lineColor: "#D0A825",
-			showValues: true
-		}),
-		Timeplot.createPlotInfo({
 			id: "pageweight2",
 			label: "Page Size (bytes)",
 			dataSource: new Timeplot.ColumnSource(eventSource2,1),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryWeight,
 			lineColor: "#D0A825",
-			showValues: true
-		}),
-		Timeplot.createPlotInfo({
-			id: "requests1",
-			label: "Total Requests",
-			dataSource: new Timeplot.ColumnSource(eventSource1,3),
-			timeGeometry: timeGeometry,
-			valueGeometry: valueGeometryRequests,
-			lineColor: "#75CF74",
 			showValues: true
 		}),
 		Timeplot.createPlotInfo({
@@ -117,25 +90,32 @@ function onLoad(url, dataversion, eventversion) {
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
 	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
-	timeplot.loadText('data.php?profile=yslow1&url=' + url + '&ver=' + dataversion, ",", eventSource1);
-	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + dataversion, ",", eventSource2);
-	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + dataversion, ",", pagespeed);
+	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
+	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + psdataversion, ",", pagespeed);
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["paginator", "datatable", "datasource"],
 	    loadOptional: true,
 	    onSuccess: function() {
-		var myColumnDefs = [
+		var yColumnDefs = [
 			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
 			{key:"w", label:"Page Size (bytes)", sortable:true},
 			{key:"r", label:"Total Requests", sortable:true},
-			{key:"o", label:"YSlow Grade (0-100)", sortable:true},
+			{key:"o", label:"Grade (0-100)", sortable:true},
 			{key:"profile", label:"Profile used", sortable:true}
 		];
 
-		var myDataSource = new YAHOO.util.DataSource("data.php?");
-		myDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
-		myDataSource.responseSchema = {
+		var psColumnDefs = [
+			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
+			{key:"w", label:"Page Size (bytes)", sortable:true},
+			{key:"r", label:"Total Requests", sortable:true},
+			{key:"o", label:"Grade (0-100)", sortable:true},
+			{key:"l", label:"Load Time (ms)", sortable:true}
+		];
+
+		var yDataSource = new YAHOO.util.DataSource("data.php?");
+		yDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
+		yDataSource.responseSchema = {
 			recordDelim : "\n", 
 			fieldDelim : "," ,
 			resultsList: "records",
@@ -147,19 +127,34 @@ function onLoad(url, dataversion, eventversion) {
 	                'yimgnoscale','yfavicon', "profile"]
 		};
 
-		var oConfigs = {
+		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?");
+		psDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
+		psDataSource.responseSchema = {
+			recordDelim : "\n", 
+			fieldDelim : "," ,
+			resultsList: "records",
+			fields: ["timestamp", "w", "o", "l", "r", "t", "v",
+			"pMinifyCSS", "pMinifyJS", "pOptImgs", "pImgDims", "pCombineJS", "pCombineCSS",
+			"pCssInHead", "pBrowserCache", "pProxyCache", "pNoCookie", "pCookieSize",
+			"pParallelDl", "pCssSelect", "pCssJsOrder", "pDeferJS", "pGzip",
+			"pMinRedirect", "pCssExpr", "pUnusedCSS", "pMinDns", "p.pDupeRsrc"]
+		};
+
+		var yDataTable = new YAHOO.widget.DataTable("measurementstable", yColumnDefs, yDataSource,
+		{
 			paginator: new YAHOO.widget.Paginator({
-			    rowsPerPage: 15 
+			    rowsPerPage: 10 
 			}),
-			initialRequest: "url=" + url + "&ver=" + dataversion
-		};
-		var myDataTable = new YAHOO.widget.DataTable("measurementstable", myColumnDefs,
-			myDataSource, oConfigs);
-			
-		return {
-		    oDS: myDataSource,
-		    oDT: myDataTable
-		};
+			initialRequest: "url=" + url + "&ver=" + ydataversion
+		});
+
+		var psDataTable = new YAHOO.widget.DataTable("ps_measurementstable", psColumnDefs, psDataSource,
+		{
+			paginator: new YAHOO.widget.Paginator({
+			    rowsPerPage: 10
+			}),
+			initialRequest: "url=" + url + "&ver=" + psdataversion
+		});
 	    },
 	    timeout: 10000,
 	    combine: true

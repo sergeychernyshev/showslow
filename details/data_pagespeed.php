@@ -17,7 +17,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 }
 $query = sprintf("SELECT UNIX_TIMESTAMP(p.timestamp) as time,
 		p.w, p.o, p.l, p.r, p.t, p.v,
-		p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,
+		p.pMinifyCSS, p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,
 		p.pCssInHead, p.pBrowserCache, p.pProxyCache, p.pNoCookie, p.pCookieSize,
 		p.pParallelDl, p.pCssSelect, p.pCssJsOrder, p.pDeferJS, p.pGzip,
 		p.pMinRedirect, p.pCssExpr, p.pUnusedCSS, p.pMinDns, p.pDupeRsrc	
@@ -44,7 +44,7 @@ echo '# Measurements gathered for '.$_GET['url']."\n";
 while ($row = mysql_fetch_assoc($result)) {
         echo date('c', $row['time']).','.
 		$row['w'].','.$row['o'].','.$row['l'].','.$row['r'].','.$row['t'].','.$row['v'].','.
-		$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
+		$row['pMinifyCSS'].','.$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
 		$row['pCssInHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pCookieSize'].','.
 		$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pCssJsOrder'].','.$row['pDeferJS'].','.$row['pGzip'].','.
 		$row['pMinRedirect'].','.$row['pCssExpr'].','.$row['pUnusedCSS'].','.$row['pMinDns'].','.$row['pDupeRsrc'].

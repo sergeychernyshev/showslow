@@ -17,9 +17,17 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 ?><html>
 <head>
 <title>Show Slow: Details for <?=htmlentities($_GET['url'])?></title>
+<style type="text/css">
+body {
+	margin:0;
+	padding:0;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/fonts/fonts-min.css" />
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/tabview/assets/skins/sam/tabview.css" />
 <script type="text/javascript" src="<?=$TimePlotBase?>timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js" type="text/javascript"></script>
+<script src="details.js?v=2" type="text/javascript"></script>
 <? if ($showFeedbackButton) {?>
 <script type="text/javascript">
   var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
@@ -48,13 +56,25 @@ UserVoice.Tab.show({
 }
 </style>
 </head>
-<body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', dataversion, eventversion);" onresize="onResize();">
+<body class="yui-skin-sam" onload="onLoad('<?=urlencode($_GET['url'])?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
 <a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities(substr($_GET['url'], 0, 30))?><? if (strlen($_GET['url']) > 30) { ?>...<? } ?></a></h1>
 <?
+// last event timestamp
+$query = sprintf("SELECT last_event_update WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$row = mysql_fetch_assoc($result);
+$eventupdate = $row['last_event_update'];
+mysql_free_result($result);
+
 // latest YSlow result
-$query = sprintf("SELECT urls.last_update, urls.last_event_update, y.w, y.o, y.i,
+$query = sprintf("SELECT y.timestamp, urls.last_event_update, y.w, y.o, y.i,
 		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
 		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
 		y.yredirects,	y.ydupes,		y.yetags,	y.yxhr,		y.yxhrmethod,
@@ -125,29 +145,29 @@ if ($ps_row) {
 }
 ?>
 </tr></table>
-<?
 
-// Graph and YSlow breakdown
-if ($row) {
+<?
+// Graph
 ?>
-	<script>
-	dataversion = '<?=urlencode($row['last_update'])?>';
-	eventversion = '<?=urlencode($row['last_event_update'])?>';
-	</script>
+<script>
+ydataversion = '<?=urlencode($row['timestamp'])?>';
+psdataversion = '<?=urlencode($ps_row['timestamp'])?>';
+eventversion = '<?=urlencode($eventupdate)?>';
+</script>
 
-	<h2 style="clear: both">YSlow grade over time</h2>
-	<div id="my-timeplot" style="height: 250px;"></div>
-
-	<div style="fint-size: 0.2em">
-	<span style="color: #D0A825">Page Size</span> (in bytes);
-	<span style="color: #75CF74">Total Requests</span>;
-	<span class="yslow1">YSlow1 Grade</span> (0-100);
-	<span class="yslow2">YSlow2 Grade</span> (0-100);
-	<span style="color: #6F4428">PageSpeed Grade</span> (0-100);
-	<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms)
-	</div>
+<h2 style="clear: both">Measurements over time</h2>
+<div id="my-timeplot" style="height: 250px;"></div>
+<div style="fint-size: 0.2em">
+<span style="color: #D0A825">Page Size</span> (in bytes);
+<span style="color: #75CF74">Total Requests</span>;
+<span class="yslow2">YSlow Grade</span> (0-100);
+<span style="color: #6F4428">PageSpeed Grade</span> (0-100);
+<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms)
+</div>
 
 <?
+// YSlow breakdown
+if ($row) {
 
 function printYSlowGradeBreakdown($name, $anchor, $value) {
 ?>
@@ -291,6 +311,13 @@ if ($row) {
 ?>
 	<h2>YSlow measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
+<?
+}
+
+if ($ps_row) {
+?>
+	<h2>PageSpeed measurements history (<a href="data_pagespeed.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>
+	<div id="ps_measurementstable"></div>
 <?
 }
 ?>
