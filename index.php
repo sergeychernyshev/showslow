@@ -49,14 +49,14 @@ UserVoice.Tab.show({
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
         <li><a href="all.php"><em>URLs measured</em></a></li>
-        <li><a href="#configure"><em>Configuring your YSlow</em></a></li>
+        <li><a href="#configure"><em>Configuring YSlow / PageSpeed</em></a></li>
     </ul> 
     <div class="yui-content">
         <div id="last100">
 		<table>
-		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
+		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?
-		$query = sprintf("SELECT y.timestamp, urls.url, y.o FROM yslow2 y, urls WHERE urls.id = y.url_id ORDER BY timestamp DESC LIMIT 100");
+		$query = sprintf("SELECT url, o, ps_o, last_update FROM urls ORDER BY last_update DESC LIMIT 100");
 		$result = mysql_query($query);
 
 		if (!$result) {
@@ -65,10 +65,22 @@ UserVoice.Tab.show({
 
 		while ($row = mysql_fetch_assoc($result)) {
 		?><tr>
-			<td><?=htmlentities($row['timestamp'])?></td>
+			<td><?=htmlentities($row['last_update'])?></td>
+
+		<? if (is_null($row['o'])) {?>
+			<td></td><td></td>
+		<?}else{?>
 			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
 			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></td>
+		<?}?>
+
+		<? if (is_null($row['ps_o'])) {?>
+			<td></td><td></td>
+		<?}else{?>
+			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)</td>
+			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)"><div style="width: <?=$row['ps_o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['ps_o'])?>"/></div></td>
+		<?}?>
+			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></a></td>
 		</tr><?
 		}
 
@@ -81,18 +93,24 @@ UserVoice.Tab.show({
 	</div>
 	<div id="configure">
 		<p>
-		<b style="color: red">If you're OK with all your YSlow measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:
+		<b style="color: red">If you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:
 		</p>
-		<h2>Yslow 1.x</h2>
-		<ul>
-		<li>extensions.firebug.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
-		<li>extensions.firebug.yslow.optinBeacon = <b style="color: blue">true</b></li>
-		</ul>
 		<h2>Yslow 2.x</h2>
 		<ul>
 		<li>extensions.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
 		<li>extensions.yslow.beaconInfo= <b style="color: blue">grade</b></li>
 		<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
+		</ul>
+		<h2>Yslow 1.x</h2>
+		<ul>
+		<li>extensions.firebug.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
+		<li>extensions.firebug.yslow.optinBeacon = <b style="color: blue">true</b></li>
+		</ul>
+		<h2>PageSpeed</h2>
+		<ul>
+		<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?=$showslow_base?>beacon/pagespeed/</b></li>
+		<li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
+		<li>extensions.PageSpeed.beacon.minimal.autorun = <b style="color: blue">true</b></li>
 		</ul>
 	</div>
     </div>
