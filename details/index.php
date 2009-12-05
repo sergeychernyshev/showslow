@@ -53,6 +53,7 @@ UserVoice.Tab.show({
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?=htmlentities($_GET['url'])?>"><?=htmlentities(substr($_GET['url'], 0, 30))?><? if (strlen($_GET['url']) > 30) { ?>...<? } ?></a></h1>
 <?
+// latest YSlow result
 $query = sprintf("SELECT urls.last_update, urls.last_event_update, y.w, y.o, y.i,
 		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
 		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
@@ -72,36 +73,67 @@ if (!$result) {
 }
 
 $row = mysql_fetch_assoc($result);
+mysql_free_result($result);
 
-if (!$row) {
+// Latest PageSpeed result
+$query = sprintf("SELECT p.timestamp, p.w, p.o, p.l, p.r, p.t, p.v,
+			pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
+			pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
+			pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
+			pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc
+		FROM pagespeed p, urls
+		WHERE urls.url = '%s' AND p.url_id = urls.id
+		ORDER BY p.timestamp DESC
+		LIMIT 1",
+	mysql_real_escape_string($_GET['url'])
+);
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$ps_row = mysql_fetch_assoc($result);
+mysql_free_result($result);
+
+if (!$row && !$ps_row) {
 	?>No data is available yet<?
 } else {
 ?>
-	<table cellpadding="15" cellspacing="0"><tr><td valign="top" align="center" style="background: #ddd; border: 1px solid black">
+<table cellpadding="15" cellspacing="5"><tr>
+<?
+// YSlow grade indicator
+if ($row) {
+?>
+	<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
 	<h2>Current <a href="http://developer.yahoo.com/yslow/">YSlow</a> grade: <?=yslowPrettyScore($row['o'])?> (<i><?=htmlentities($row['o'])?></i>)</h2>
 
+	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($row['o'])?>&chl=<?=urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+	</td>
+<?
+}
+
+// YSlow grade indicator
+if ($ps_row) {
+?>
+	<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
+	<h2>Current <a href="http://code.google.com/speed/page-speed/">PageSpeed</a> grade: <?=yslowPrettyScore($ps_row['o'])?> (<i><?=htmlentities($ps_row['o'])?></i>)</h2>
+
+	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($ps_row['o'])?>&chl=<?=urlencode(yslowPrettyScore($ps_row['o']).' ('.$ps_row['o'].')')?>" alt="<?=yslowPrettyScore($ps_row['o'])?> (<?=htmlentities($ps_row['o'])?>)" title="Current PageSpeed grade: <?=yslowPrettyScore($ps_row['o'])?> (<?=htmlentities($ps_row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+	</td>
+<?
+}
+?>
+</tr></table>
+<?
+
+// Graph and YSlow breakdown
+if ($row) {
+?>
 	<script>
 	dataversion = '<?=urlencode($row['last_update'])?>';
 	eventversion = '<?=urlencode($row['last_event_update'])?>';
 	</script>
-
-	<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?=urlencode($row['o'])?>&chl=<?=urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=htmlentities($row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
-	</td>
-	<td valign="top">
-	<h2>Test using <a href="http://www.webpagetest.org/">WebPageTest.org</a></h2>
-	Get waterfall diagram, connections diagram with two runs (empty/primed cache). It uses <a href="http://pagetest.wiki.sourceforge.net/">AOL Page Test</a> (IE).
-	<form action="http://webpagetest.org/runtest.php" method="POST">
-	<input type="hidden" name="url" value="<?=htmlentities($_GET['url'])?>"/>
-	<fieldset><legend>Options</legend>
-		<input type="radio" value="0" checked="checked" name="fvonly" id="viewBoth"/>First View and Repeat View<br/>
-		<input type="radio" value="1" name="fvonly" id="viewFirst"/>First View Only<br/>
-		<br/>
-		<input type="checkbox" name="private" id="private"/>Keep test results private (don't log them in the test history and use a non-guessable test ID)<br/>
-	</fieldset>
-
-	<input type="submit" value="Run Test &gt;&gt;"/>
-	</form>
-	</td></tr></table>
 
 	<h2 style="clear: both">YSlow grade over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
@@ -117,7 +149,7 @@ if (!$row) {
 
 <?
 
-function printGradeBreakdown($name, $anchor, $value) {
+function printYSlowGradeBreakdown($name, $anchor, $value) {
 ?>
 		<td><a href="http://developer.yahoo.com/performance/rules.html#<?=$anchor?>"><?=$name?></a></td>
 		<? if ($value >= 0) {?>
@@ -136,57 +168,128 @@ function printGradeBreakdown($name, $anchor, $value) {
 	<h2 style="clear: both">YSlow breakdown</h2>
 	<table>
 		<tr>
-		<?=printGradeBreakdown('Make fewer HTTP requests', 'num_http', $row['ynumreq'])?>
-		<?=printGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', $row['ycdn'])?>
+		<?=printYSlowGradeBreakdown('Make fewer HTTP requests', 'num_http', $row['ynumreq'])?>
+		<?=printYSlowGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', $row['ycdn'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Add Expires headers', 'expires', $row['yexpires'])?>
-		<?=printGradeBreakdown('Compress components with gzip', 'gzip', $row['ycompress'])?>
+		<?=printYSlowGradeBreakdown('Add Expires headers', 'expires', $row['yexpires'])?>
+		<?=printYSlowGradeBreakdown('Compress components with gzip', 'gzip', $row['ycompress'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Put CSS at top', 'css_top', $row['ycsstop'])?>
-		<?=printGradeBreakdown('Put JavaScript at bottom', 'js_bottom', $row['yjsbottom'])?>
+		<?=printYSlowGradeBreakdown('Put CSS at top', 'css_top', $row['ycsstop'])?>
+		<?=printYSlowGradeBreakdown('Put JavaScript at bottom', 'js_bottom', $row['yjsbottom'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Avoid CSS expressions', 'css_expressions', $row['yexpressions'])?>
-		<?=printGradeBreakdown('Make JavaScript and CSS external', 'external', $row['yexternal'])?>
+		<?=printYSlowGradeBreakdown('Avoid CSS expressions', 'css_expressions', $row['yexpressions'])?>
+		<?=printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', $row['yexternal'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Reduce DNS lookups', 'dns_lookups', $row['ydns'])?>
-		<?=printGradeBreakdown('Minify JavaScript and CSS', 'minify', $row['yminify'])?>
+		<?=printYSlowGradeBreakdown('Reduce DNS lookups', 'dns_lookups', $row['ydns'])?>
+		<?=printYSlowGradeBreakdown('Minify JavaScript and CSS', 'minify', $row['yminify'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Avoid URL redirects', 'redirects', $row['yredirects'])?>
-		<?=printGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', $row['ydupes'])?>
+		<?=printYSlowGradeBreakdown('Avoid URL redirects', 'redirects', $row['yredirects'])?>
+		<?=printYSlowGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', $row['ydupes'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Configure entity tags (ETags)', 'etags', $row['yetags'])?>
-		<?=printGradeBreakdown('Make AJAX cacheable', 'cacheajax', $row['yxhr'])?>
+		<?=printYSlowGradeBreakdown('Configure entity tags (ETags)', 'etags', $row['yetags'])?>
+		<?=printYSlowGradeBreakdown('Make AJAX cacheable', 'cacheajax', $row['yxhr'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Use GET for AJAX requests', 'ajax_get', $row['yxhrmethod'])?>
-		<?=printGradeBreakdown('Reduce the number of DOM elements', 'min_dom', $row['ymindom'])?>
+		<?=printYSlowGradeBreakdown('Use GET for AJAX requests', 'ajax_get', $row['yxhrmethod'])?>
+		<?=printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', $row['ymindom'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', $row['yno404'])?>
-		<?=printGradeBreakdown('Reduce cookie size', 'cookie_size', $row['ymincookie'])?>
+		<?=printYSlowGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', $row['yno404'])?>
+		<?=printYSlowGradeBreakdown('Reduce cookie size', 'cookie_size', $row['ymincookie'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Use cookie-free domains', 'cookie_free', $row['ycookiefree'])?>
-		<?=printGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', $row['ynofilter'])?>
+		<?=printYSlowGradeBreakdown('Use cookie-free domains', 'cookie_free', $row['ycookiefree'])?>
+		<?=printYSlowGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', $row['ynofilter'])?>
 		</tr>
 		<tr>
-		<?=printGradeBreakdown('Do not scale images in HTML', 'no_scale', $row['yimgnoscale'])?>
-		<?=printGradeBreakdown('Make favicon small and cacheable', 'favicon', $row['yfavicon'])?>
+		<?=printYSlowGradeBreakdown('Do not scale images in HTML', 'no_scale', $row['yimgnoscale'])?>
+		<?=printYSlowGradeBreakdown('Make favicon small and cacheable', 'favicon', $row['yfavicon'])?>
 		</tr>
 	</table>	
 <?
 	}
+}
+
+// PageSpeed breakdown
+if ($ps_row) {
+function printPageSpeedGradeBreakdown($name, $doc, $value) {
 ?>
+		<td><a href="http://code.google.com/speed/page-speed/docs/<?=$doc?>"><?=$name?></a></td>
+		<? if ($value >= 0) {?>
+		<td><?=yslowPrettyScore($value)?> (<i><?=htmlentities($value)?></i>)</td>
+		<td><div style="background-color: silver; width: 103px" title="Current PageSpeed grade: <?=yslowPrettyScore($value)?> (<?=$value?>)"><div style="width: <?=$value+3?>px; height: 0.7em; background-color: <?=scoreColor($value)?>"/></div></td>
+		<? } else { ?>
+		<td><i>N/A</i></td>
+		<td></td>
+		<? } ?>
+		<td>&nbsp;&nbsp;</td>
+<?
+}
+?>
+	<h2 style="clear: both">PageSpeed breakdown</h2>
+	<table>
+	<tr><td colspan="6"><b>Optimize caching</b></td></tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Leverage browser caching', 'caching.html#LeverageBrowserCaching', $ps_row['pBrowserCache'])?>
+		<?=printPageSpeedGradeBreakdown('Leverage proxy caching', 'caching.html#LeverageProxyCaching', $ps_row['pProxyCache'])?>
+		</tr>
+	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize round-trip times</b></td></tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Minimize DNS lookups', 'rtt.html#MinimizeDNSLookups', $ps_row['pMinDns'])?>
+		<?=printPageSpeedGradeBreakdown('Minimize redirects', 'rtt.html#AvoidRedirects', $ps_row['pMinRedirect'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Combine external JavaScript', 'rtt.html#CombineExternalJS', $ps_row['pCombineJS'])?>
+		<?=printPageSpeedGradeBreakdown('Combine external CSS', 'rtt.html#CombineExternalCSS', $ps_row['pCombineCSS'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Optimize the order of styles and scripts', 'rtt.html#PutStylesBeforeScripts', $ps_row['pCssJsOrder'])?>
+		<?=printPageSpeedGradeBreakdown('Parallelize downloads across hostnames', 'rtt.html#ParallelizeDownloads', $ps_row['pParallelDl'])?>
+		</tr>
+	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize request size</b></td></tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Minimize cookie size', 'request.html#MinimizeCookieSize', $ps_row['pCookieSize'])?>
+		<?=printPageSpeedGradeBreakdown('Serve static content from a cookieless domain', 'request.html#ServeFromCookielessDomain', $ps_row['pNoCookie'])?>
+		</tr>
+	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize payload size</b></td></tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Enable gzip compression', 'payload.html#GzipCompression', $ps_row['pGzip'])?>
+		<?=printPageSpeedGradeBreakdown('Remove unused CSS', 'payload.html#RemoveUnusedCSS', $ps_row['pUnusedCSS'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Minify JavaScript', 'payload.html#MinifyJS', $ps_row['pMinifyJS'])?>
+		<?=printPageSpeedGradeBreakdown('Minify CSS', 'payload.html#MinifyCSS', $ps_row['pMinifyCSS'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Defer loading of JavaScript', 'payload.html#DeferLoadingJS', $ps_row['pDeferJS'])?>
+		<?=printPageSpeedGradeBreakdown('Optimize images', 'payload.html#CompressImages', $ps_row['pOptImgs'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Serve resources from a consistent URL', 'payload.html#duplicate_resources', $ps_row['pDupeRsrc'])?>
+		</tr>
+	<tr><td colspan="6" style="padding-top: 1em"><b>Optimize browser rendering</b></td></tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Use efficient CSS selectors', 'rendering.html#UseEfficientCSSSelectors', $ps_row['pCssSelect'])?>
+		<?=printPageSpeedGradeBreakdown('Avoid CSS expressions', 'rendering.html#AvoidCSSExpressions', $ps_row['pCssExpr'])?>
+		</tr>
+		<tr>
+		<?=printPageSpeedGradeBreakdown('Put CSS in the document head', 'rendering.html#PutCSSInHead', $ps_row['pCssInHead'])?>
+		<?=printPageSpeedGradeBreakdown('Specify image dimensions', 'rendering.html#SpecifyImageDimensions', $ps_row['pImgDims'])?>
+		</tr>
+	</table>	
+<?
+	}
+}
 
-
-	<h2>Measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>
-
+if ($row) {
+?>
+	<h2>YSlow measurements history (<a href="data.php?url=<?=urlencode($_GET['url'])?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
 <?
 }

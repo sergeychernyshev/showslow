@@ -87,6 +87,7 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['r']),
 		mysql_real_escape_string($_GET['t']),
 		mysql_real_escape_string($_GET['v']),
+		mysql_real_escape_string($_GET['pMinifyCSS'] > 0 ? $_GET['pMinifyCSS'] : 0),
 		mysql_real_escape_string($_GET['pMinifyJS'] > 0 ? $_GET['pMinifyJS'] : 0),
 		mysql_real_escape_string($_GET['pOptImgs'] > 0 ? $_GET['pOptImgs'] : 0),
 		mysql_real_escape_string($_GET['pImgDims'] > 0 ? $_GET['pImgDims'] : 0),
