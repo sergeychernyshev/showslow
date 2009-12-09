@@ -66,14 +66,14 @@ if (array_key_exists('v', $_GET)
 	$query = sprintf("INSERT INTO pagespeed (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `l`, `r` , `t`, `v` ,
-		pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
+		pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
 		pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
 		pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
 		pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc	
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%f', '%d', '%d', '%d', '%s',
-		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
+		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
 		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
 		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
 		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f'
