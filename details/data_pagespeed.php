@@ -15,6 +15,9 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <?
 	exit;
 }
+
+ob_start("ob_gzhandler");
+
 $query = sprintf("SELECT UNIX_TIMESTAMP(p.timestamp) as time,
 		p.w, p.o, p.l, p.r, p.t, p.v,
 		p.pMinifyCSS, p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,

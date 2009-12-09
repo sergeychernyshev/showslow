@@ -16,6 +16,8 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 	exit;
 }
 
+ob_start("ob_gzhandler");
+
 $all = true;
 
 if (array_key_exists('profile', $_GET) && $_GET['profile'] != '' ) {
