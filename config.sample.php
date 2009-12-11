@@ -1,4 +1,4 @@
-<?
+<?php 
 $showslow_root = '/path/to/showslow/root/';
 $showslow_base = 'http://www.example.com/showslow/'; # don't forget the trailing slash
 

@@ -1,4 +1,4 @@
-<?
+<?php 
 require_once('../../global.php');
 
 if (array_key_exists('title', $_GET) && $_GET['title'] != ''
@@ -60,7 +60,7 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 <p>Event successfully added.</p>
 <p>Add <a href="./">one more</a>.</p>
 </body></html>
-<?
+<?php 
 
 } else {
 	header('HTTP/1.0 400 Bad Request');
@@ -78,7 +78,7 @@ i {
 <h1>Bad Request: Event beacon</h1>
 <p>This is an event beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to this URL:</p>
-<b><pre><?=$showslow_base?>beacon/events/?type=<i>sometype</i>&amp;url_prefix=<i>url_prefix</i>&amp;title=<i>some+title</i>&amp;start=<i><?=urlencode(date("Y-m-d"))?></i>&amp;end=<i><?=urlencode(date("Y-m-d"))?></i>&amp;resource_url=<i>link+to+page</i></pre></b>
+<b><pre><?php echo $showslow_base?>beacon/events/?type=<i>sometype</i>&amp;url_prefix=<i>url_prefix</i>&amp;title=<i>some+title</i>&amp;start=<i><?php echo urlencode(date("Y-m-d"))?></i>&amp;end=<i><?php echo urlencode(date("Y-m-d"))?></i>&amp;resource_url=<i>link+to+page</i></pre></b>
 or use form below to manually enter events.
 
 <h2>Add an event</h2>
@@ -87,7 +87,7 @@ or use form below to manually enter events.
 <tr><td>Type:</td><td><input type="text" name="type" size="25"/> (25 characters max)</td></tr>
 <tr><td>URL prefix:</td><td><input type="text" name="url_prefix" value="http://www.example.com/" size="80"/></td></tr>
 <tr><td>Event title:</td><td><input type="text" name="title" size="80"/></td></tr>
-<tr valign="top"><td>Start time:</td><td><input type="text" name="start" value="<?=date("Y-m-d H:i:s");?>"/> (leave blank for current time)<br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
+<tr valign="top"><td>Start time:</td><td><input type="text" name="start" value="<?php echo date("Y-m-d H:i:s");?>"/> (leave blank for current time)<br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr valign="top"><td>End time:</td><td><input type="text" name="end"/> (or blank for momentary event)<br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr><td>Resource URL:</td><td><input type="text" name="resource_url" size="80"/></td></tr>
 <tr><td></td><td><input type="submit" value="add"/></td></tr>
@@ -95,5 +95,5 @@ or use form below to manually enter events.
 </table>
 </form>
 </body></html>
-<?
+<?php 
 }

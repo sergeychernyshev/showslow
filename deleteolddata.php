@@ -1,4 +1,4 @@
-<?
+<?php 
 require_once('global.php');
 
 if ($oldDataInterval > 0)

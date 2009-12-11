@@ -1,4 +1,4 @@
-<?
+<?php 
 require_once('global.php');
 ?><html>
 <head>
@@ -16,7 +16,7 @@ body {
 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/element/element-min.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/tabview/tabview-min.js"></script>
-<? if ($showFeedbackButton) {?>
+<?php if ($showFeedbackButton) {?>
 <script type="text/javascript">
   var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
   document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
@@ -33,13 +33,13 @@ UserVoice.Tab.show({
   lang: 'en'
 })
 </script>
-<? } ?>
+<?php } ?>
 </head>
 <body class="yui-skin-sam">
 <a href="http://code.google.com/p/showslow/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
 <h1>Show Slow</h1>
-<?=$ShowSlowIntro?>
+<?php echo $ShowSlowIntro?>
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
@@ -51,7 +51,7 @@ UserVoice.Tab.show({
         <div id="last100">
 		<table>
 		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
-		<?
+		<?php 
 		$query = sprintf("SELECT url, o, ps_o, last_update FROM urls ORDER BY last_update DESC LIMIT 100");
 		$result = mysql_query($query);
 
@@ -61,23 +61,23 @@ UserVoice.Tab.show({
 
 		while ($row = mysql_fetch_assoc($result)) {
 		?><tr>
-			<td><?=htmlentities($row['last_update'])?></td>
+			<td><?php echo htmlentities($row['last_update'])?></td>
 
-		<? if (is_null($row['o'])) {?>
+		<?php if (is_null($row['o'])) {?>
 			<td></td><td></td>
-		<?}else{?>
-			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-		<?}?>
+		<?php }else{?>
+			<td style="text-align: right; padding:0 10px 0 10px"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
+			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
+		<?php }?>
 
-		<? if (is_null($row['ps_o'])) {?>
+		<?php if (is_null($row['ps_o'])) {?>
 			<td></td><td></td>
-		<?}else{?>
-			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)"><div style="width: <?=$row['ps_o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['ps_o'])?>"/></div></td>
-		<?}?>
-			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></a></td>
-		</tr><?
+		<?php }else{?>
+			<td style="text-align: right; padding:0 10px 0 10px"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
+			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+		<?php }?>
+			<td style="padding-left:10px"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+		</tr><?php 
 		}
 
 		mysql_free_result($result);
@@ -97,15 +97,15 @@ UserVoice.Tab.show({
     tabView.getTab(2).addListener("click", function() { window.location.href='/configure.php'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
-<? if ($googleAnalyticsProfile) {?>
+<?php if ($googleAnalyticsProfile) {?>
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
 try {
-var pageTracker = _gat._getTracker('<?=$googleAnalyticsProfile?>');
+var pageTracker = _gat._getTracker('<?php echo $googleAnalyticsProfile?>');
 pageTracker._trackPageview();
 } catch(err) {}</script>
-<?}?>
+<?php }?>
 </body></html>

@@ -1,4 +1,4 @@
-<?
+<?php 
 require_once('../../global.php');
 
 function updateUrlAggregates($url_id, $w, $o, $l, $r, $t)
@@ -132,13 +132,13 @@ if (array_key_exists('v', $_GET)
 <p>This is <a href="http://code.google.com/speed/page-speed/">PageSpeed</a> beacon entry point.</p>
 
 <h1>Configure your PageSpeed</h1>
-<p><b style="color: red">If you're OK with all your PageSpeed measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:</p>
+<p><b style="color: red">If you're OK with all your PageSpeed measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:</p>
 
 <ul>
-<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?=$showslow_base?>beacon/pagespeed/</b></li>
+<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
 </ul>
 
 </body></html>
-<?
+<?php 
 }

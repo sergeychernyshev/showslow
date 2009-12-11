@@ -1,4 +1,4 @@
-<?
+<?php 
 require_once('../global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
@@ -12,7 +12,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <h1>Bad Request: no valid url specified</h1>
 <p>You must pass valid URL as 'url' parameter</p>
 </body></html>
-<?
+<?php 
 	exit;
 }
 
