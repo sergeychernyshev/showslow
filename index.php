@@ -43,8 +43,8 @@ UserVoice.Tab.show({
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
-        <li><a href="/all.php"><em>URLs measured</em></a></li>
-        <li><a href="/configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="all.php"><em>URLs measured</em></a></li>
+        <li><a href="configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
@@ -93,8 +93,8 @@ UserVoice.Tab.show({
 
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
-    tabView.getTab(1).addListener("click", function() { window.location.href='/all.php'; });
-    tabView.getTab(2).addListener("click", function() { window.location.href='/configure.php'; });
+    tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
+    tabView.getTab(2).addListener("click", function() { window.location.href='configure.php'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
 <?php if ($googleAnalyticsProfile) {?>
