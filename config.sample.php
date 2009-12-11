@@ -28,13 +28,11 @@ $showFeedbackButton = true;
 $oldDataInterval = 0;
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
-$ShowSlowIntro = '<p>ShowSlow is open source tool to help monitor various performance metrics over time.</p>
+$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">Page Speed</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
 
-<p>It captures results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">PageSpeed</a> ranking and graphs them which helps to understand how various changes on the site affect it\'s performance.</p>
+<p><a href="http://www.showslow.com/">www.ShowSlow.com</a> is a demonstration site that continuously measures the performance of a few reference web pages. It also allows for public metrics reporting.</p>
 
-<p><a href="http://www.showslow.com/">ShowSlow.com</a> is a demonstration site that measures a few resources and allows public metric reporting.</p>
-
-<p>You can <b><a href="http://code.google.com/p/showslow/source/checkout">download ShowSlow</a></b> from SVN repository and install on your own server.</p>
+<p>If you want to make your measurements publicly available on this page, see the instructions in <a href="http://www.showslow.com/configure.php">Configuring YSlow / Page Speed</a>. If you want to keep your measurements private, <b><a href="http://code.google.com/p/showslow/source/checkout">download Show Slow</a></b> from the SVN repository and install it on your own server.</p>
 
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
 ';

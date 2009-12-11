@@ -48,49 +48,31 @@ UserVoice.Tab.show({
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li><a href="/"><em>Last 100 measurements</em></a></li>
-        <li class="selected"><a href="#urls"><em>URLs measured</em></a></li>
-        <li><a href="/configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="/all.php"><em>URLs measured</em></a></li>
+        <li class="selected"><a href="/configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
         <div id="last100">
 	</div>
         <div id="urls">
-		<table>
-		<tr><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
-		<?
-		$query = sprintf("SELECT DISTINCT url, o, ps_o FROM urls");
-		$result = mysql_query($query);
-
-		if (!$result) {
-			error_log(mysql_error());
-		}
-
-		while ($row = mysql_fetch_assoc($result)) {
-		?><tr>
-
-		<? if (is_null($row['o'])) {?>
-			<td></td><td></td>
-		<?}else{?>
-			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['o'])?> (<?=$row['o']?>)"><div style="width: <?=$row['o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['o'])?>"/></div></td>
-		<?}?>
-
-		<? if (is_null($row['ps_o'])) {?>
-			<td></td><td></td>
-		<?}else{?>
-			<td style="text-align: right; padding:0 10px 0 10px"><?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?=yslowPrettyScore($row['ps_o'])?> (<?=$row['ps_o']?>)"><div style="width: <?=$row['ps_o']+1?>px; height: 0.7em; background-color: <?=scoreColor($row['ps_o'])?>"/></div></td>
-		<?}?>
-			<td style="padding-left:10px"><a href="details/?url=<?=urlencode($row['url'])?>"><?=htmlentities(substr($row['url'], 0, 100))?><? if (strlen($row['url']) > 100) { ?>...<? } ?></a></td>
-		</tr><?
-		}
-
-		mysql_free_result($result);
-		?>
-		</table>
 	</div>
 	<div id="configure">
+		<p>
+		<b style="color: red">If you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:
+		</p>
+		<h2>Yslow 2.x</h2>
+		<ul>
+		<li>extensions.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
+		<li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
+		<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
+		</ul>
+		<h2>PageSpeed</h2>
+		<ul>
+		<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?=$showslow_base?>beacon/pagespeed/</b></li>
+		<li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
+		<li>extensions.PageSpeed.beacon.minimal.autorun = <b style="color: blue">true</b></li>
+		</ul>
 	</div>
     </div>
 </div>
@@ -98,7 +80,7 @@ UserVoice.Tab.show({
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
     tabView.getTab(0).addListener("click", function() { window.location.href='/'; });
-    tabView.getTab(2).addListener("click", function() { window.location.href='/configure.php'; });
+    tabView.getTab(1).addListener("click", function() { window.location.href='/all.php'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
 </script>

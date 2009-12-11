@@ -43,8 +43,9 @@ UserVoice.Tab.show({
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
-        <li><a href="all.php"><em>URLs measured</em></a></li>
-        <li><a href="#configure"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="/all.php"><em>URLs measured</em></a></li>
+        <li><a href="/configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
         <div id="last100">
@@ -84,31 +85,17 @@ UserVoice.Tab.show({
 		</table>
 	</div>
         <div id="urls">
-	Loading ...
 	</div>
 	<div id="configure">
-		<p>
-		<b style="color: red">If you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?=$showslow_base?>"><?=$showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:
-		</p>
-		<h2>Yslow 2.x</h2>
-		<ul>
-		<li>extensions.yslow.beaconUrl = <b style="color: blue"><?=$showslow_base?>beacon/yslow/</b></li>
-		<li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
-		<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
-		</ul>
-		<h2>PageSpeed</h2>
-		<ul>
-		<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?=$showslow_base?>beacon/pagespeed/</b></li>
-		<li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
-		<li>extensions.PageSpeed.beacon.minimal.autorun = <b style="color: blue">true</b></li>
-		</ul>
 	</div>
     </div>
 </div>
 
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
-    tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
+    tabView.getTab(1).addListener("click", function() { window.location.href='/all.php'; });
+    tabView.getTab(2).addListener("click", function() { window.location.href='/configure.php'; });
+    tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
 <? if ($googleAnalyticsProfile) {?>
 <script type="text/javascript">
