@@ -4,7 +4,7 @@ require_once('../../global.php');
 function updateUrlAggregates($url_id, $w, $o, $r)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE `showslow`.`urls` set w = '%d', o = '%d', r = '%d', last_update = now() WHERE id = '%d'",
+	$query = sprintf("UPDATE urls set w = '%d', o = '%d', r = '%d', last_update = now() WHERE id = '%d'",
 		mysql_real_escape_string($w),
 		mysql_real_escape_string($o),
 		mysql_real_escape_string($r),
@@ -22,7 +22,7 @@ function updateUrlAggregates($url_id, $w, $o, $r)
 function getUrlId($url)
 {
 	# get URL id
-	$query = sprintf("SELECT id FROM `showslow`.`urls` WHERE url = '%s'", mysql_real_escape_string($url));
+	$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
 	$result = mysql_query($query);
 
 	if (!$result) {
@@ -34,7 +34,7 @@ function getUrlId($url)
 		$row = mysql_fetch_assoc($result);
 		return $row['id'];
 	} else if (mysql_num_rows($result) == 0) {
-		$query = sprintf("INSERT INTO `showslow`.`urls` (url) VALUES ('%s')", mysql_real_escape_string($url));
+		$query = sprintf("INSERT INTO urls (url) VALUES ('%s')", mysql_real_escape_string($url));
 		$result = mysql_query($query);
 
 		if (!$result) {
@@ -89,7 +89,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$yfavicon	= $grades['yfavicon']['score'];
 
 	# adding new entry
-	$query = sprintf("INSERT INTO `showslow`.`yslow2` (
+	$query = sprintf("INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i` ,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
@@ -155,7 +155,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$url_id = getUrlId($_GET['u']);
 
 	# adding new entry
-	$query = sprintf("INSERT INTO `showslow`.`yslow2` (
+	$query = sprintf("INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i` ,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
