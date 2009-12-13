@@ -62,7 +62,7 @@ UserVoice.Tab.show({
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($_GET['url'])?>"><?php echo htmlentities(substr($_GET['url'], 0, 30))?><?php if (strlen($_GET['url']) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp
-$query = sprintf("SELECT last_event_update WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$query = sprintf("SELECT id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
 $result = mysql_query($query);
 
 if (!$result) {
@@ -71,20 +71,22 @@ if (!$result) {
 
 $row = mysql_fetch_assoc($result);
 $eventupdate = $row['last_event_update'];
+$urlid = $row['id'];
 mysql_free_result($result);
 
 // latest YSlow result
-$query = sprintf("SELECT y.timestamp, urls.last_event_update, y.w, y.o, y.i,
-		y.ynumreq,	y.ycdn,			y.yexpires,	y.ycompress,	y.ycsstop,
-		y.yjsbottom,	y.yexpressions,		y.yexternal,	y.ydns,		y.yminify,
-		y.yredirects,	y.ydupes,		y.yetags,	y.yxhr,		y.yxhrmethod,
-		y.ymindom,	y.yno404,		y.ymincookie,	y.ycookiefree,	y.ynofilter,
-		y.yimgnoscale,	y.yfavicon
-		FROM yslow2 y, urls
-		WHERE urls.url = '%s' AND y.url_id = urls.id
-		ORDER BY y.timestamp DESC
+$query = sprintf("SELECT timestamp, w, o, i,
+		ynumreq,	ycdn,		yexpires,	ycompress,	ycsstop,
+		yjsbottom,	yexpressions,	yexternal,	ydns,		yminify,
+		yredirects,	ydupes,		yetags,		yxhr,		yxhrmethod,
+		ymindom,	yno404,		ymincookie,	ycookiefree,	ynofilter,
+		yimgnoscale,	yfavicon
+		FROM yslow2 y
+		WHERE url_id = %d
+		ORDER BY timestamp DESC
 		LIMIT 1",
-	mysql_real_escape_string($_GET['url'])
+	mysql_real_escape_string($urlid)
+
 );
 $result = mysql_query($query);
 
@@ -96,16 +98,16 @@ $row = mysql_fetch_assoc($result);
 mysql_free_result($result);
 
 // Latest PageSpeed result
-$query = sprintf("SELECT p.timestamp, p.w, p.o, p.l, p.r, p.t, p.v,
+$query = sprintf("SELECT timestamp, w, o, l, r, t, v,
 			pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
 			pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
 			pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
 			pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc
-		FROM pagespeed p, urls
-		WHERE urls.url = '%s' AND p.url_id = urls.id
-		ORDER BY p.timestamp DESC
+		FROM pagespeed p
+		WHERE url_id = %d
+		ORDER BY timestamp DESC
 		LIMIT 1",
-	mysql_real_escape_string($_GET['url'])
+	mysql_real_escape_string($urlid)
 );
 $result = mysql_query($query);
 
