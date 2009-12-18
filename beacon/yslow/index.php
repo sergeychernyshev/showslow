@@ -89,9 +89,9 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$yfavicon	= $grades['yfavicon']['score'];
 
 	# adding new entry
-	$query = sprintf("INSERT INTO yslow2 (
+	$query = sprintf("/* POST */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
-		`w` , `o` , `r` , `i` ,
+		`w` , `o` , `r` , `i` , lt,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
@@ -99,7 +99,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		`yimgnoscale`,	`yfavicon`
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
-		'%d', '%d', '%d', '%s',
+		'%d', '%d', '%d', '%s', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
@@ -113,6 +113,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		mysql_real_escape_string($post['o']),
 		mysql_real_escape_string($post['r']),
 		mysql_real_escape_string($post['i']),
+		mysql_real_escape_string($post['lt']),
 		mysql_real_escape_string($ynumreq),
 		mysql_real_escape_string($ycdn),
 		mysql_real_escape_string($yexpires),
@@ -155,9 +156,9 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$url_id = getUrlId($_GET['u']);
 
 	# adding new entry
-	$query = sprintf("INSERT INTO yslow2 (
+	$query = sprintf("/* GET1 */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
-		`w` , `o` , `r` , `i` ,
+		`w` , `o` , `r` , `i`, lt,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
@@ -165,7 +166,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		`yimgnoscale`,	`yfavicon`
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
-		'%d', '%d', '%d', '%s',
+		'%d', '%d', '%d', '%s', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
@@ -179,6 +180,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		mysql_real_escape_string($_GET['o']),
 		mysql_real_escape_string($_GET['r']),
 		mysql_real_escape_string($_GET['i']),
+		mysql_real_escape_string($_GET['lt']),
 		mysql_real_escape_string($_GET['ynumreq']),
 		mysql_real_escape_string($_GET['ycdn']),
 		mysql_real_escape_string($_GET['yexpires']),
@@ -201,68 +203,6 @@ if (!is_null($post) && array_key_exists('g', $post)
 		mysql_real_escape_string($_GET['ynofilter']),
 		mysql_real_escape_string($_GET['yimgnoscale']),
 		mysql_real_escape_string($_GET['yfavicon'])
-	);
-
-	if (!mysql_query($query))
-	{
-		error_log(mysql_error());
-		exit;
-	}
-
-	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['r']);
-
-} else if (array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
-	&& array_key_exists('r', $_GET) && filter_var($_GET['r'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('numcomps', $_GET) && filter_var($_GET['numcomps'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('cdn', $_GET) && filter_var($_GET['cdn'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('expires', $_GET) && filter_var($_GET['expires'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('gzip', $_GET) && filter_var($_GET['gzip'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('cssattop', $_GET) && filter_var($_GET['cssattop'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('jsatbottom', $_GET) && filter_var($_GET['jsatbottom'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('expression', $_GET) && filter_var($_GET['expression'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('domains', $_GET) && filter_var($_GET['domains'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('obfuscate', $_GET) && filter_var($_GET['obfuscate'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('redirects', $_GET) && filter_var($_GET['redirects'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('jstwice', $_GET) && filter_var($_GET['jstwice'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('etags', $_GET) && filter_var($_GET['etags'], FILTER_VALIDATE_INT) !== false
-	)
-{
-	$url_id = getUrlId($_GET['u']);
-
-	$query = sprintf("INSERT INTO `yslow2` (
-		`ip` , `user_agent` , `url_id` ,
-		`w` , `o` , `r` , `i` ,
-		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
-		`yjsbottom`,	`yexpressions`,	`ydns`,		`yminify`,	`yredirects`,
-		`ydupes`,	`yetags`
-	)
-	VALUES (inet_aton('%s'), '%s', '%d',
-		'%d', '%d', '%d', '%s',
-		'%d', '%d', '%d', '%d', '%d',
-		'%d', '%d', '%d', '%d', '%d',
-		'%d', '%d'
-	)",
-		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($_GET['w']),
-		mysql_real_escape_string($_GET['o']),
-		mysql_real_escape_string($_GET['r']),
-		'yslow1',
-		mysql_real_escape_string($_GET['numcomps']),
-		mysql_real_escape_string($_GET['cdn']),
-		mysql_real_escape_string($_GET['expires']),
-		mysql_real_escape_string($_GET['gzip']),
-		mysql_real_escape_string($_GET['cssattop']),
-		mysql_real_escape_string($_GET['jsatbottom']),
-		mysql_real_escape_string($_GET['expression']),
-		mysql_real_escape_string($_GET['domains']),
-		mysql_real_escape_string($_GET['obfuscate']),
-		mysql_real_escape_string($_GET['redirects']),
-		mysql_real_escape_string($_GET['jstwice']),
-		mysql_real_escape_string($_GET['etags'])
 	);
 
 	if (!mysql_query($query))

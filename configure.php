@@ -79,7 +79,6 @@ window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function
 		<ul>
 		<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
 		<li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
-		<li>extensions.PageSpeed.beacon.minimal.autorun = <b style="color: blue">true</b></li>
 		</ul>
 	</div>
     </div>

@@ -139,6 +139,7 @@ CREATE TABLE `yslow2` (
   `o` smallint(5) unsigned NOT NULL default '0' COMMENT 'overall YSlow grade calculated for this profile',
   `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'total amount of requests with empty cache',
   `i` text NOT NULL COMMENT 'testing profile used',
+  `lt` bigint(20) unsigned NOT NULL default '0' COMMENT 'page load time',
   `ynumreq` smallint(6) default NULL COMMENT 'Make fewer HTTP requests',
   `ycdn` smallint(6) default NULL COMMENT 'Using CDN',
   `yexpires` smallint(6) default NULL COMMENT 'Expires Headers',
