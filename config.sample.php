@@ -9,7 +9,7 @@ $pass = '... database-password ...';
 $host = 'localhost';
 
 # change it if you want to allow other profiles including your custom profiles
-$YSlow2AllowedProfiles = array('ydefault', 'yslow1');
+$YSlow2AllowedProfiles = array('ydefault');
 
 # URL of timeplot installation
 $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
@@ -17,7 +17,7 @@ $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
 
 # to see if your users are visiting the tool, enable Google Analytics
 # (for publicly hosted instances)
-#$googleAnalyticsProfile = '';
+$googleAnalyticsProfile = '';
 
 # show Feedback button
 $showFeedbackButton = true;
@@ -25,7 +25,7 @@ $showFeedbackButton = true;
 # how old should data be for deletion (in days)
 # anything >0 will delete old data
 # don't forget to add a cron job to run deleteolddata.php
-$oldDataInterval = 0;
+$oldDataInterval = 60;
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
 $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">Page Speed</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
