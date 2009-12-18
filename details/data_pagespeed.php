@@ -18,15 +18,26 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 
 ob_start("ob_gzhandler");
 
+$query = sprintf("SELECT id FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$row = mysql_fetch_assoc($result);
+$urlid = $row['id'];
+mysql_free_result($result);
+
 $query = sprintf("SELECT UNIX_TIMESTAMP(p.timestamp) as time,
 		p.w, p.o, p.l, p.r, p.t, p.v,
 		p.pMinifyCSS, p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,
 		p.pCssInHead, p.pBrowserCache, p.pProxyCache, p.pNoCookie, p.pCookieSize,
 		p.pParallelDl, p.pCssSelect, p.pCssJsOrder, p.pDeferJS, p.pGzip,
 		p.pMinRedirect, p.pCssExpr, p.pUnusedCSS, p.pMinDns, p.pDupeRsrc	
-	FROM pagespeed p, urls WHERE urls.url = '%s' AND p.url_id = urls.id AND p.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
+	FROM pagespeed p WHERE p.url_id = %d AND p.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 ORDER BY p.timestamp DESC",
-mysql_real_escape_string($_GET['url'])
+mysql_real_escape_string($urlid)
 );
 
 $result = mysql_query($query);

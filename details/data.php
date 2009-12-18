@@ -24,6 +24,17 @@ if (array_key_exists('profile', $_GET) && $_GET['profile'] != '' ) {
 	$all = false;
 }
 
+$query = sprintf("SELECT id FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$row = mysql_fetch_assoc($result);
+$urlid = $row['id'];
+mysql_free_result($result);
+
 if ($all) {
 	$query = sprintf("SELECT UNIX_TIMESTAMP(timestamp) as t, y.w , y.o , y.r , y.i ,
 			y.ynumreq,	y.ycdn,		y.yexpires,	y.ycompress,	y.ycsstop,
@@ -31,9 +42,9 @@ if ($all) {
 			y.yredirects,	y.ydupes,	y.yetags,	y.yxhr,		y.yxhrmethod,
 			y.ymindom,	y.yno404,	y.ymincookie,	y.ycookiefree,	y.ynofilter,
 			y.yimgnoscale,	y.yfavicon
-		FROM yslow2 y, urls WHERE urls.url = '%s' AND y.url_id = urls.id AND timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
+		FROM yslow2 y WHERE y.url_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
 	ORDER BY timestamp DESC",
-	mysql_real_escape_string($_GET['url'])
+	mysql_real_escape_string($urlid)
 	);
 } else {
 	$query = sprintf("SELECT UNIX_TIMESTAMP(timestamp) as t, y.w , y.o , y.r , y.i ,
@@ -42,9 +53,9 @@ if ($all) {
 			y.yredirects,	y.ydupes,	y.yetags,	y.yxhr,		y.yxhrmethod,
 			y.ymindom,	y.yno404,	y.ymincookie,	y.ycookiefree,	y.ynofilter,
 			y.yimgnoscale,	y.yfavicon
-		FROM yslow2 y, urls WHERE urls.url = '%s' AND y.url_id = urls.id AND y.i = '%s' AND timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
+		FROM yslow2 y WHERE y.url_id = %d AND y.i = '%s' AND timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 	ORDER BY timestamp DESC",
-	mysql_real_escape_string($_GET['url']), mysql_real_escape_string($_GET['profile'])
+	mysql_real_escape_string($urlid), mysql_real_escape_string($_GET['profile'])
 	);
 }
 

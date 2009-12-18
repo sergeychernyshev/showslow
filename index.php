@@ -18,20 +18,28 @@ body {
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/tabview/tabview-min.js"></script>
 <?php if ($showFeedbackButton) {?>
 <script type="text/javascript">
-  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
-  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
-</script>
-<script type="text/javascript">
-UserVoice.Tab.show({ 
+var uservoiceOptions = {
+  /* required */
   key: 'showslow',
   host: 'showslow.uservoice.com', 
-  forum: 'general', 
+  forum: '18807',
+  showTab: true,  
+  /* optional */
   alignment: 'right',
   background_color:'#f00', 
   text_color: 'white',
   hover_color: '#06C',
   lang: 'en'
-})
+};
+
+function _loadUserVoice() {
+  var s = document.createElement('script');
+  s.setAttribute('type', 'text/javascript');
+  s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
+  document.getElementsByTagName('head')[0].appendChild(s);
+}
+_loadSuper = window.onload;
+window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
 </script>
 <?php } ?>
 </head>
@@ -43,8 +51,8 @@ UserVoice.Tab.show({
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
-        <li><a href="/all.php"><em>URLs measured</em></a></li>
-        <li><a href="/configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="all.php"><em>URLs measured</em></a></li>
+        <li><a href="configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
@@ -93,8 +101,8 @@ UserVoice.Tab.show({
 
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
-    tabView.getTab(1).addListener("click", function() { window.location.href='/all.php'; });
-    tabView.getTab(2).addListener("click", function() { window.location.href='/configure.php'; });
+    tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
+    tabView.getTab(2).addListener("click", function() { window.location.href='configure.php'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
 <?php if ($googleAnalyticsProfile) {?>

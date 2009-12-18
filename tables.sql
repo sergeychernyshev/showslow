@@ -68,7 +68,8 @@ CREATE TABLE `pagespeed` (
   `pUnusedCSS` float unsigned NOT NULL default '0',
   `pMinDns` float unsigned NOT NULL default '0',
   `pDupeRsrc` float unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `url_id` (`url_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -160,7 +161,8 @@ CREATE TABLE `yslow2` (
   `ynofilter` smallint(6) default NULL COMMENT 'Avoid AlphaImageLoader filter',
   `yimgnoscale` smallint(6) default NULL COMMENT 'Do not scale images in HTML',
   `yfavicon` smallint(6) default NULL COMMENT 'Make favicon small and cacheable',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `url_id` (`url_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
