@@ -53,10 +53,6 @@ function getUrlId($url)
 $post_data = file_get_contents("php://input");
 $post = json_decode($post_data, true);
 
-$postlog = fopen('/tmp/yslow_post', 'a');
-fwrite($postlog, $post_data);
-fclose($postlog);
-
 if (!is_null($post) && array_key_exists('g', $post)
 	&& array_key_exists('i', $post) && in_array($post['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $post) && filter_var($post['w'], FILTER_VALIDATE_INT) !== false
