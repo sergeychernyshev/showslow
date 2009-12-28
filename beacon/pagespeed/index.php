@@ -51,6 +51,13 @@ function getUrlId($url)
 
 }
 
+error_log($_GET['w'].' => '.filter_var($_GET['w'], FILTER_VALIDATE_INT));
+error_log($_GET['o'].' => '.filter_var($_GET['o'], FILTER_VALIDATE_FLOAT));
+error_log($_GET['l'].' => '.filter_var($_GET['l'], FILTER_VALIDATE_INT));
+error_log($_GET['r'].' => '.filter_var($_GET['r'], FILTER_VALIDATE_INT));
+error_log($_GET['t'].' => '.filter_var($_GET['t'], FILTER_VALIDATE_INT));
+error_log($_GET['u'].' => '.filter_var($_GET['u'], FILTER_VALIDATE_URL));
+
 if (array_key_exists('v', $_GET)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_FLOAT) !== false
