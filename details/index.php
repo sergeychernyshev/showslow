@@ -250,7 +250,7 @@ function printYSlowGradeBreakdown($name, $anchor, $slug) {
 		</tr>
 		<tr>
 		<?php echo printYSlowGradeBreakdown('Use GET for AJAX requests', 'ajax_get', 'yxhrmethod')?>
-		<?php echo printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', 'yminidom')?>
+		<?php echo printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', 'ymindom')?>
 		</tr>
 		<tr>
 		<?php echo printYSlowGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', 'yno404')?>
