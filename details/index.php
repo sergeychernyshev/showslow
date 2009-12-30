@@ -26,7 +26,7 @@ body {
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
 <script type="text/javascript" src="<?php echo $TimePlotBase?>timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js?v=2" type="text/javascript"></script>
+<script src="details.js?v=3" type="text/javascript"></script>
 <?php if ($showFeedbackButton) {?>
 <script type="text/javascript">
 var uservoiceOptions = {
@@ -87,7 +87,7 @@ $query = sprintf("SELECT timestamp, w, o, i,
 		yjsbottom,	yexpressions,	yexternal,	ydns,		yminify,
 		yredirects,	ydupes,		yetags,		yxhr,		yxhrmethod,
 		ymindom,	yno404,		ymincookie,	ycookiefree,	ynofilter,
-		yimgnoscale,	yfavicon
+		yimgnoscale,	yfavicon,	details
 		FROM yslow2 y
 		WHERE url_id = %d
 		ORDER BY timestamp DESC
@@ -178,11 +178,16 @@ eventversion = '<?php echo urlencode($eventupdate)?>';
 // YSlow breakdown
 if ($row) {
 
-function printYSlowGradeBreakdown($name, $anchor, $value) {
+function printYSlowGradeBreakdown($name, $anchor, $slug) {
+	global $row;
+
+	$value = $row[$slug];
+
 ?>
 		<td><a href="http://developer.yahoo.com/performance/rules.html#<?php echo $anchor?>"><?php echo $name?></a></td>
 		<?php if ($value >= 0) {?>
 		<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
+		<td><span id="details_<?php echo $slug ?>" class="details"></span></td>
 		<td><div style="background-color: silver; width: 103px" title="Current YSlow grade: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
 		<?php } else { ?>
 		<td><i>N/A</i></td>
@@ -193,52 +198,67 @@ function printYSlowGradeBreakdown($name, $anchor, $value) {
 }
 
 	if ($row['i'] <> 'yslow1') {
+
+	$details = json_decode($row['details'], true);
 ?>
+	<script>
+<?php
+	$comps = array();
+
+	foreach ($details['g'] as $n => $y) {
+		if (is_array($y) && array_key_exists('components', $y)) {
+			$comps[$n] = $y['components'];
+		}
+	}
+?>
+	var details = <?php echo json_encode($comps)?>;
+	</script>
+
 	<h2 style="clear: both">YSlow breakdown</h2>
 	<table>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Make fewer HTTP requests', 'num_http', $row['ynumreq'])?>
-		<?php echo printYSlowGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', $row['ycdn'])?>
+		<?php echo printYSlowGradeBreakdown('Make fewer HTTP requests', 'num_http', 'ynumreq')?>
+		<?php echo printYSlowGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', 'ycdn')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Add Expires headers', 'expires', $row['yexpires'])?>
-		<?php echo printYSlowGradeBreakdown('Compress components with gzip', 'gzip', $row['ycompress'])?>
+		<?php echo printYSlowGradeBreakdown('Add Expires headers', 'expires', 'yexpires')?>
+		<?php echo printYSlowGradeBreakdown('Compress components with gzip', 'gzip', 'ycompress')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Put CSS at top', 'css_top', $row['ycsstop'])?>
-		<?php echo printYSlowGradeBreakdown('Put JavaScript at bottom', 'js_bottom', $row['yjsbottom'])?>
+		<?php echo printYSlowGradeBreakdown('Put CSS at top', 'css_top', 'ycsstop')?>
+		<?php echo printYSlowGradeBreakdown('Put JavaScript at bottom', 'js_bottom', 'yjsbottom')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Avoid CSS expressions', 'css_expressions', $row['yexpressions'])?>
-		<?php echo printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', $row['yexternal'])?>
+		<?php echo printYSlowGradeBreakdown('Avoid CSS expressions', 'css_expressions', 'yexpressions')?>
+		<?php echo printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', 'yyexternal')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Reduce DNS lookups', 'dns_lookups', $row['ydns'])?>
-		<?php echo printYSlowGradeBreakdown('Minify JavaScript and CSS', 'minify', $row['yminify'])?>
+		<?php echo printYSlowGradeBreakdown('Reduce DNS lookups', 'dns_lookups', 'ydns')?>
+		<?php echo printYSlowGradeBreakdown('Minify JavaScript and CSS', 'minify', 'yminify')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Avoid URL redirects', 'redirects', $row['yredirects'])?>
-		<?php echo printYSlowGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', $row['ydupes'])?>
+		<?php echo printYSlowGradeBreakdown('Avoid URL redirects', 'redirects', 'yredirects')?>
+		<?php echo printYSlowGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', 'ydupes')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Configure entity tags (ETags)', 'etags', $row['yetags'])?>
-		<?php echo printYSlowGradeBreakdown('Make AJAX cacheable', 'cacheajax', $row['yxhr'])?>
+		<?php echo printYSlowGradeBreakdown('Configure entity tags (ETags)', 'etags', 'yetags')?>
+		<?php echo printYSlowGradeBreakdown('Make AJAX cacheable', 'cacheajax', 'yxhr')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Use GET for AJAX requests', 'ajax_get', $row['yxhrmethod'])?>
-		<?php echo printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', $row['ymindom'])?>
+		<?php echo printYSlowGradeBreakdown('Use GET for AJAX requests', 'ajax_get', 'yxhrmethod')?>
+		<?php echo printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', 'yminidom')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', $row['yno404'])?>
-		<?php echo printYSlowGradeBreakdown('Reduce cookie size', 'cookie_size', $row['ymincookie'])?>
+		<?php echo printYSlowGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', 'yno404')?>
+		<?php echo printYSlowGradeBreakdown('Reduce cookie size', 'cookie_size', 'ymincookie')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Use cookie-free domains', 'cookie_free', $row['ycookiefree'])?>
-		<?php echo printYSlowGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', $row['ynofilter'])?>
+		<?php echo printYSlowGradeBreakdown('Use cookie-free domains', 'cookie_free', 'ycookiefree')?>
+		<?php echo printYSlowGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', 'ynofilter')?>
 		</tr>
 		<tr>
-		<?php echo printYSlowGradeBreakdown('Do not scale images in HTML', 'no_scale', $row['yimgnoscale'])?>
-		<?php echo printYSlowGradeBreakdown('Make favicon small and cacheable', 'favicon', $row['yfavicon'])?>
+		<?php echo printYSlowGradeBreakdown('Do not scale images in HTML', 'no_scale', 'yimgnoscale')?>
+		<?php echo printYSlowGradeBreakdown('Make favicon small and cacheable', 'favicon', 'yfavicon')?>
 		</tr>
 	</table>	
 <?php 

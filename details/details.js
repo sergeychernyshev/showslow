@@ -94,9 +94,22 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + psdataversion, ",", pagespeed);
 
 	var loader = new YAHOO.util.YUILoader({
-	    require: ["paginator", "datatable", "datasource"],
+	    require: ["dom", "container", "paginator", "datatable", "datasource"],
 	    loadOptional: true,
 	    onSuccess: function() {
+		for (name in details) {
+			if (details.hasOwnProperty(name)) {
+				var el = YAHOO.util.Dom.get('details_'+name);
+				el.innerHTML='+';
+
+				new YAHOO.widget.Tooltip("tt_"+name,  
+				{
+					context:	el,
+					text:		details[name].join('<br/>')
+				});
+			}
+		}
+
 		var yColumnDefs = [
 			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
 			{key:"w", label:"Page Size (bytes)", sortable:true},
