@@ -230,7 +230,7 @@ function printYSlowGradeBreakdown($name, $anchor, $slug) {
 		</tr>
 		<tr>
 		<?php echo printYSlowGradeBreakdown('Avoid CSS expressions', 'css_expressions', 'yexpressions')?>
-		<?php echo printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', 'yyexternal')?>
+		<?php echo printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', 'yexternal')?>
 		</tr>
 		<tr>
 		<?php echo printYSlowGradeBreakdown('Reduce DNS lookups', 'dns_lookups', 'ydns')?>

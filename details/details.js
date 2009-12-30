@@ -96,10 +96,17 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["dom", "container", "paginator", "datatable", "datasource"],
 	    loadOptional: true,
+	    timeout: 10000,
+	    combine: true,
 	    onSuccess: function() {
 		for (name in details) {
 			if (details.hasOwnProperty(name)) {
 				var el = YAHOO.util.Dom.get('details_'+name);
+
+				if (!el) {
+					continue;
+				}
+
 				el.innerHTML='+';
 
 				new YAHOO.widget.Tooltip("tt_"+name,  
@@ -168,9 +175,7 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			}),
 			initialRequest: "url=" + url + "&ver=" + psdataversion
 		});
-	    },
-	    timeout: 10000,
-	    combine: true
+	    }
 	});
 	loader.insert();
 }
