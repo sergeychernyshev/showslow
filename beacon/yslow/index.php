@@ -51,11 +51,6 @@ function getUrlId($url)
 }
 
 $post_data = file_get_contents("php://input");
-
-$postlog = fopen('/tmp/yslow_post.log', 'a');
-fwrite($postlog, $post_data."\n\n");
-fclose($postlog);
-
 $post = json_decode($post_data, true);
 
 if (!is_null($post) && array_key_exists('g', $post)
