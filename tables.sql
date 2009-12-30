@@ -162,6 +162,7 @@ CREATE TABLE `yslow2` (
   `ynofilter` smallint(6) default NULL COMMENT 'Avoid AlphaImageLoader filter',
   `yimgnoscale` smallint(6) default NULL COMMENT 'Do not scale images in HTML',
   `yfavicon` smallint(6) default NULL COMMENT 'Make favicon small and cacheable',
+  `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';

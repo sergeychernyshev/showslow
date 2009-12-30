@@ -51,6 +51,11 @@ function getUrlId($url)
 }
 
 $post_data = file_get_contents("php://input");
+
+$postlog = fopen('/tmp/yslow_post.log', 'a');
+fwrite($postlog, $post_data."\n\n");
+fclose($postlog);
+
 $post = json_decode($post_data, true);
 
 if (!is_null($post) && array_key_exists('g', $post)
@@ -89,14 +94,14 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$yfavicon	= $grades['yfavicon']['score'];
 
 	# adding new entry
-	$query = sprintf("/* POST */ INSERT INTO yslow2 (
+	$query = sprintf("/* grades POST */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i` , lt,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
 		`ymindom`,	`yno404`,	`ymincookie`,	`ycookiefree`,	`ynofilter`,
-		`yimgnoscale`,	`yfavicon`
+		`yimgnoscale`,	`yfavicon`, details
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%d', '%d', '%s', '%d',
@@ -104,7 +109,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
-		'%d', '%d'
+		'%d', '%d', '%s'
 	)",
 		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
 		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
@@ -135,7 +140,8 @@ if (!is_null($post) && array_key_exists('g', $post)
 		mysql_real_escape_string($ycookiefree),	
 		mysql_real_escape_string($ynofilter),
 		mysql_real_escape_string($yimgnoscale),	
-		mysql_real_escape_string($yfavicon)
+		mysql_real_escape_string($yfavicon),
+		mysql_real_escape_string($post_data)
 	);
 
 	if (!mysql_query($query))
@@ -156,7 +162,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 	$url_id = getUrlId($_GET['u']);
 
 	# adding new entry
-	$query = sprintf("/* GET1 */ INSERT INTO yslow2 (
+	$query = sprintf("/* basic GET */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i`, lt,
 		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
