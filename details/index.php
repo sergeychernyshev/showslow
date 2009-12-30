@@ -63,7 +63,7 @@ window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function
 }
 
 .details {
-	cursor: pointer;
+	cursor: help;
 }
 </style>
 </head>
