@@ -61,6 +61,10 @@ window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function
 .yslow2 {
 	color: #2175D9;
 }
+
+.details {
+	cursor: pointer;
+}
 </style>
 </head>
 <body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($_GET['url'])?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
