@@ -39,6 +39,22 @@ _loadSuper = window.onload;
 window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
 </script>
 <?php } ?>
+<?php if ($googleAnalyticsProfile) {?>
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script');
+ga.src = ('https:' == document.location.protocol ?
+    'https://ssl' : 'http://www') +
+    '.google-analytics.com/ga.js';
+ga.setAttribute('async', 'true');
+document.documentElement.firstChild.appendChild(ga);
+})();
+</script>
+<?php }?>
 </head>
 <body class="yui-skin-sam">
 <a href="http://code.google.com/p/showslow/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
@@ -102,15 +118,4 @@ window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function
     tabView.getTab(2).addListener("click", function() { window.location.href='configure.php'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
-<?php if ($googleAnalyticsProfile) {?>
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker('<?php echo $googleAnalyticsProfile?>');
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<?php }?>
 </body></html>
