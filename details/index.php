@@ -22,6 +22,10 @@ body {
 	margin:0;
 	padding:0;
 }
+
+.yui-dt-paginator {
+	font-size: small;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
 <script type="text/javascript" src="<?php echo $TimePlotBase?>timeplot-api.js"></script>
