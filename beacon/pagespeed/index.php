@@ -62,6 +62,14 @@ if (array_key_exists('v', $_GET)
 {
 	$url_id = getUrlId($_GET['u']);
 
+	if ($_GET['v'] >= 1.6) {
+		$scaleimgs = $_GET['pSpecifyImageDimensions'];
+		$imgdims = $_GET['pSpecifyImageDimensions'];
+	} else {
+		$scaleimgs = $_GET['pScaleImgs'];
+		$imgdims = $_GET['pImgDims'];
+	}
+
 	# adding new entry
 	$query = sprintf("INSERT INTO pagespeed (
 		`ip` , `user_agent` , `url_id` ,
@@ -87,10 +95,20 @@ if (array_key_exists('v', $_GET)
 		pMinDns,
 		pDupeRsrc,
 		pMinifyCSS,
-		pScaleImgs
+		pScaleImgs,
+		pMinifyHTML,
+		pMinimizeRequestSize,
+		pOptimizeTheOrderOfStylesAndScripts,
+		pPutCssInTheDocumentHead,
+		pSpecifyCharsetEarly
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%f', '%d', '%d', '%d', '%s',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
 		'%3.2f',
 		'%3.2f',
 		'%3.2f',
@@ -125,7 +143,7 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['v']),
 		mysql_real_escape_string($_GET['pMinifyJS'] > 0 ? $_GET['pMinifyJS'] : 0),
 		mysql_real_escape_string($_GET['pOptImgs'] > 0 ? $_GET['pOptImgs'] : 0),
-		mysql_real_escape_string($_GET['pImgDims'] > 0 ? $_GET['pImgDims'] : 0),
+		mysql_real_escape_string($imgdims > 0 ? $imgdims : 0),
 		mysql_real_escape_string($_GET['pCombineJS'] > 0 ? $_GET['pCombineJS'] : 0),
 		mysql_real_escape_string($_GET['pCombineCSS'] > 0 ? $_GET['pCombineCSS'] : 0),
 		mysql_real_escape_string($_GET['pCssInHead'] > 0 ? $_GET['pCssInHead'] : 0),
@@ -144,7 +162,12 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['pMinDns'] > 0 ? $_GET['pMinDns'] : 0),
 		mysql_real_escape_string($_GET['pDupeRsrc'] > 0 ? $_GET['pDupeRsrc'] : 0),
 		mysql_real_escape_string($_GET['pMinifyCSS'] > 0 ? $_GET['pMinifyCSS'] : 0),
-		mysql_real_escape_string($_GET['pScaleImgs'] > 0 ? $_GET['pScaleImgs'] : 0)
+		mysql_real_escape_string($scaleimgs > 0 ? $scaleimgs : 0),
+		mysql_real_escape_string($_GET['pMinifyHTML'] > 0 ? $_GET['pMinifyHTML'] : 0),
+		mysql_real_escape_string($_GET['pMinimizeRequestSize'] > 0 ? $_GET['pMinimizeRequestSize'] : 0),
+		mysql_real_escape_string($_GET['pOptimizeTheOrderOfStylesAndScripts'] > 0 ? $_GET['pOptimizeTheOrderOfStylesAndScripts'] : 0),
+		mysql_real_escape_string($_GET['pPutCssInTheDocumentHead'] > 0 ? $_GET['pPutCssInTheDocumentHead'] : 0),
+		mysql_real_escape_string($_GET['pSpecifyCharsetEarly'] > 0 ? $_GET['pSpecifyCharsetEarly'] : 0)
 	);
 
 #	error_log($query);
