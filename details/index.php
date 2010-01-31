@@ -129,7 +129,7 @@ $query = sprintf("SELECT timestamp, w, o, l, r, t, v,
 			pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
 			pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
 			pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
-			pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc
+			pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc, pScaleImgs
 		FROM pagespeed p
 		WHERE url_id = %d
 		ORDER BY timestamp DESC
@@ -341,15 +341,12 @@ function printPageSpeedGradeBreakdown($name, $doc, $value) {
 		</tr>
 		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Serve resources from a consistent URL', 'payload.html#duplicate_resources', $ps_row['pDupeRsrc'])?>
+		<?php echo printPageSpeedGradeBreakdown('Serve scaled images', 'payload.html#ScaleImages', $ps_row['pScaleImgs'])?>
 		</tr>
 	<tr><td colspan="6" style="padding-top: 1em"><b>Optimize browser rendering</b></td></tr>
 		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Use efficient CSS selectors', 'rendering.html#UseEfficientCSSSelectors', $ps_row['pCssSelect'])?>
 		<?php echo printPageSpeedGradeBreakdown('Avoid CSS expressions', 'rendering.html#AvoidCSSExpressions', $ps_row['pCssExpr'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Put CSS in the document head', 'rendering.html#PutCSSInHead', $ps_row['pCssInHead'])?>
-		<?php echo printPageSpeedGradeBreakdown('Specify image dimensions', 'rendering.html#SpecifyImageDimensions', $ps_row['pImgDims'])?>
 		</tr>
 	</table>	
 <?php 

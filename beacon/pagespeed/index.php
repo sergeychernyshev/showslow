@@ -51,13 +51,6 @@ function getUrlId($url)
 
 }
 
-error_log($_GET['w'].' => '.filter_var($_GET['w'], FILTER_VALIDATE_INT));
-error_log($_GET['o'].' => '.filter_var($_GET['o'], FILTER_VALIDATE_FLOAT));
-error_log($_GET['l'].' => '.filter_var($_GET['l'], FILTER_VALIDATE_INT));
-error_log($_GET['r'].' => '.filter_var($_GET['r'], FILTER_VALIDATE_INT));
-error_log($_GET['t'].' => '.filter_var($_GET['t'], FILTER_VALIDATE_INT));
-error_log($_GET['u'].' => '.filter_var($_GET['u'], FILTER_VALIDATE_URL));
-
 if (array_key_exists('v', $_GET)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_FLOAT) !== false
@@ -73,17 +66,53 @@ if (array_key_exists('v', $_GET)
 	$query = sprintf("INSERT INTO pagespeed (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `l`, `r` , `t`, `v` ,
-		pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
-		pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
-		pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
-		pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc	
+		pMinifyJS,
+		pOptImgs,
+		pImgDims,
+		pCombineJS,
+		pCombineCSS,
+		pCssInHead,
+		pBrowserCache,
+		pProxyCache,
+		pNoCookie,
+		pCookieSize,
+		pParallelDl,
+		pCssSelect,
+		pCssJsOrder,
+		pDeferJS,
+		pGzip,
+		pMinRedirect,
+		pCssExpr,
+		pUnusedCSS,
+		pMinDns,
+		pDupeRsrc,
+		pMinifyCSS,
+		pScaleImgs
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%f', '%d', '%d', '%d', '%s',
-		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
-		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
-		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f',
-		'%3.2f', '%3.2f', '%3.2f', '%3.2f', '%3.2f'
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f',
+		'%3.2f'
 	)",
 		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
 		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
@@ -94,7 +123,6 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['r']),
 		mysql_real_escape_string($_GET['t']),
 		mysql_real_escape_string($_GET['v']),
-		mysql_real_escape_string($_GET['pMinifyCSS'] > 0 ? $_GET['pMinifyCSS'] : 0),
 		mysql_real_escape_string($_GET['pMinifyJS'] > 0 ? $_GET['pMinifyJS'] : 0),
 		mysql_real_escape_string($_GET['pOptImgs'] > 0 ? $_GET['pOptImgs'] : 0),
 		mysql_real_escape_string($_GET['pImgDims'] > 0 ? $_GET['pImgDims'] : 0),
@@ -114,7 +142,9 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['pCssExpr'] > 0 ? $_GET['pCssExpr'] : 0),
 		mysql_real_escape_string($_GET['pUnusedCSS'] > 0 ? $_GET['pUnusedCSS'] : 0),
 		mysql_real_escape_string($_GET['pMinDns'] > 0 ? $_GET['pMinDns'] : 0),
-		mysql_real_escape_string($_GET['pDupeRsrc'] > 0 ? $_GET['pDupeRsrc'] : 0)
+		mysql_real_escape_string($_GET['pDupeRsrc'] > 0 ? $_GET['pDupeRsrc'] : 0),
+		mysql_real_escape_string($_GET['pMinifyCSS'] > 0 ? $_GET['pMinifyCSS'] : 0),
+		mysql_real_escape_string($_GET['pScaleImgs'] > 0 ? $_GET['pScaleImgs'] : 0)
 	);
 
 #	error_log($query);

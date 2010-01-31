@@ -68,6 +68,7 @@ CREATE TABLE `pagespeed` (
   `pUnusedCSS` float unsigned NOT NULL default '0',
   `pMinDns` float unsigned NOT NULL default '0',
   `pDupeRsrc` float unsigned NOT NULL default '0',
+  `pScaleImgs` float unsigned NOT NULL default '0' COMMENT 'Scale Images',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
