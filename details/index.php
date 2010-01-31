@@ -361,15 +361,15 @@ function printPageSpeedGradeBreakdown($name, $doc, $value) {
 		</tr>
 	<tr><td colspan="6" style="padding-top: 1em"><b>Misc</b></td></tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('pMinifyHTML', '', $ps_row['pMinifyHTML'])?>
-		<?php echo printPageSpeedGradeBreakdown('pMinimizeRequestSize', '', $ps_row['pMinimizeRequestSize'])?>
+		<?php echo printPageSpeedGradeBreakdown('Minify HTML', '', $ps_row['pMinifyHTML'])?>
+		<?php echo printPageSpeedGradeBreakdown('Minimize Request Size', '', $ps_row['pMinimizeRequestSize'])?>
 		</tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('pOptimizeTheOrderOfStylesAndScripts', '', $ps_row['pOptimizeTheOrderOfStylesAndScripts'])?>
-		<?php echo printPageSpeedGradeBreakdown('pPutCssInTheDocumentHead', '', $ps_row['pPutCssInTheDocumentHead'])?>
+		<?php echo printPageSpeedGradeBreakdown('Optimize The Order Of Styles And Scripts', '', $ps_row['pOptimizeTheOrderOfStylesAndScripts'])?>
+		<?php echo printPageSpeedGradeBreakdown('Put Css In The Document Head', '', $ps_row['pPutCssInTheDocumentHead'])?>
 		</tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('pSpecifyCharsetEarly', '', $ps_row['pSpecifyCharsetEarly'])?>
+		<?php echo printPageSpeedGradeBreakdown('Specify Charset Early', '', $ps_row['pSpecifyCharsetEarly'])?>
 		</tr>
 	</table>	
 <?php 
