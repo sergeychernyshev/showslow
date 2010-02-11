@@ -21,6 +21,34 @@ function updateUrlAggregates($url_id, $w, $o, $r)
 
 function getUrlId($url)
 {
+	global $limitURLs;
+
+	if ($limitURLs !== false && is_array($limitURLs)) {
+		$matched = false;
+
+		foreach ($limitURLs as $prefix) {
+			if (substr($url, 0, strlen($prefix)) == $prefix) {
+				$matched = true;
+				break;
+			}
+		}
+
+		if (!$matched) {
+			header('HTTP/1.0 400 Bad Request');
+
+			?><html>
+<head>
+<title>Bad Request: YSlow beacon</title>
+</head>
+<body>
+<h1>Bad Request: YSlow beacon</h1>
+<p>URL doesn't match any of the prefixes.</p>
+</body></html>
+<?php 
+			exit;
+		}
+	}
+
 	# get URL id
 	$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
 	$result = mysql_query($query);

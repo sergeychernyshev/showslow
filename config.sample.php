@@ -11,6 +11,9 @@ $host = 'localhost';
 # change it if you want to allow other profiles including your custom profiles
 #$YSlow2AllowedProfiles = array('ydefault');
 
+# If not false, then should be an array of prefix matches - if one of them matches, URL will be accepted
+#$limitURLs = array( 'http://www.yahoo.com/', 'http://www.google.com/' );
+
 # URL of timeplot installation
 #$TimePlotBase = '/timeplot/';
 
