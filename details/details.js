@@ -88,10 +88,31 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		})
 	];
 
+	for (var name in metrics) {
+		metrics[name]['source'] = new Timeplot.DefaultEventSource();
+
+		plotInfo[plotInfo.length] = Timeplot.createPlotInfo({
+			id: "showslowmetric"+name,
+			label: metrics[name].title,
+			dataSource: new Timeplot.ColumnSource(metrics[name].source,1),
+			timeGeometry: timeGeometry,
+			valueGeometry: new Timeplot.DefaultValueGeometry({
+                		min: metrics[name].min,
+                		max: metrics[name].max
+			}),
+			lineColor:  metrics[name].color,
+			showValues: true
+		});
+	}
+
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
 	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
 	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
 	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + psdataversion, ",", pagespeed);
+
+	for (var name in metrics) {
+		timeplot.loadText('data_metric.php?metric=' + name + '&url=' + url, ",", metrics[name].source);
+	}
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["dom", "container", "paginator", "datatable", "datasource"],

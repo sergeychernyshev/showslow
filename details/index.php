@@ -2,7 +2,7 @@
 require_once('../global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
-	?><html>
+?><html>
 <head>
 <title>Error - no URL specified</title>
 </head>
@@ -11,7 +11,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <p><a href="../">Go back</a> and pick the URL</p>
 </body></html>
 <?php 
-	return;
+return;
 }
 
 ?><html>
@@ -19,18 +19,23 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 <title>Show Slow: Details for <?php echo htmlentities($_GET['url'])?></title>
 <style type="text/css">
 body {
-	margin:0;
-	padding:0;
+margin:0;
+padding:0;
 }
 
 .yui-dt-paginator {
-	font-size: small;
+font-size: small;
 }
 </style>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
 <script type="text/javascript" src="<?php echo $TimePlotBase?>timeplot-api.js"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js?v=3" type="text/javascript"></script>
+<script src="details.js?v=4" type="text/javascript"></script>
+<script>
+<?php
+echo 'var metrics = '.json_encode($metrics);
+?>
+</script>
 <?php if ($showFeedbackButton) {?>
 <script type="text/javascript">
 var uservoiceOptions = {
@@ -197,7 +202,13 @@ eventversion = '<?php echo urlencode($eventupdate)?>';
 <span style="color: #75CF74">Total Requests</span>;
 <span class="yslow2">YSlow Grade</span> (0-100);
 <span style="color: #6F4428">PageSpeed Grade</span> (0-100);
-<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms)
+<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms);
+<?php
+foreach ($metrics as $name => $metric)
+{
+	?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($_GET['url']);?>">csv</a>)</span>;<?
+}
+?>
 </div>
 
 <?php 

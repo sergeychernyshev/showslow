@@ -5,6 +5,9 @@ $YSlow2AllowedProfiles = array('ydefault');
 # If not false, then should be an array of prefix matches - if one of them matches, URL will be accepted
 $limitURLs = false;
 
+# Custom metrics array
+$metrics = array();
+
 # URL of timeplot installation
 $TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
 

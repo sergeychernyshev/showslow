@@ -8,6 +8,16 @@ $user = 'showslow';
 $pass = '... database-password ...';
 $host = 'localhost';
 
+# Custom metrics supported
+#$metrics['bouncerate'] = array(
+#	'id' => 1,
+#	'title' => 'Bounce Rate (in %)',
+#	'color' => 'purple',
+#	'description' => 'Bounce rate measured by Google Analytics',
+#	'min' => 0,
+#	'max' => 100
+#);
+
 # change it if you want to allow other profiles including your custom profiles
 #$YSlow2AllowedProfiles = array('ydefault');
 
