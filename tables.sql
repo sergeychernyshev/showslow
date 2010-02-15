@@ -31,6 +31,20 @@ CREATE TABLE `event` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `metric`
+--
+
+DROP TABLE IF EXISTS `metric`;
+CREATE TABLE `metric` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `url_id` bigint(20) unsigned NOT NULL default '0',
+  `metric_id` mediumint(8) unsigned NOT NULL default '0',
+  `value` float NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
 -- Table structure for table `pagespeed`
 --
 
@@ -68,7 +82,7 @@ CREATE TABLE `pagespeed` (
   `pUnusedCSS` float unsigned NOT NULL default '0',
   `pMinDns` float unsigned NOT NULL default '0',
   `pDupeRsrc` float unsigned NOT NULL default '0',
-  `pScaleImgs` float unsigned NOT NULL default '0',
+  `pScaleImgs` float unsigned NOT NULL default '0' COMMENT 'Scale Images',
   `pMinifyHTML` float unsigned NOT NULL default '0',
   `pMinimizeRequestSize` float unsigned NOT NULL default '0',
   `pOptimizeTheOrderOfStylesAndScripts` float unsigned NOT NULL default '0',
