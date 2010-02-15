@@ -60,27 +60,27 @@ function getUrlId($url)
 
 }
 
-if (array_key_exists('metric', $_GET) && array_key_exists($_GET['metric'], $metrics)
-	&& array_key_exists('value', $_GET) && is_numeric($_GET['value']) !== false
-	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
+if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'], $metrics)
+	&& array_key_exists('value', $_REQUEST) && is_numeric($_REQUEST['value']) !== false
+	&& array_key_exists('u', $_REQUEST) && filter_var($_REQUEST['u'], FILTER_VALIDATE_URL) !== false
 	)
 {
-	$url_id = getUrlId($_GET['u']);
+	$url_id = getUrlId($_REQUEST['u']);
 
-	if (array_key_exists('timestamp', $_GET) && $_GET['timestamp']) {
+	if (array_key_exists('timestamp', $_REQUEST) && $_REQUEST['timestamp']) {
 		# adding new entry
 		$query = sprintf("INSERT INTO metric (timestamp, url_id, metric_id, value) VALUES ('%s', '%d', '%d', '%f')",
-			mysql_real_escape_string($_GET['timestamp']),
+			mysql_real_escape_string($_REQUEST['timestamp']),
 			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($metrics[$_GET['metric']]['id']),
-			mysql_real_escape_string($_GET['value'])
+			mysql_real_escape_string($metrics[$_REQUEST['metric']]['id']),
+			mysql_real_escape_string($_REQUEST['value'])
 		);
 	} else {
 		# adding new entry
 		$query = sprintf("INSERT INTO metric (url_id, metric_id, value) VALUES ('%d', '%d', '%f')",
 			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($metrics[$_GET['metric']]['id']),
-			mysql_real_escape_string($_GET['value'])
+			mysql_real_escape_string($metrics[$_REQUEST['metric']]['id']),
+			mysql_real_escape_string($_REQUEST['value'])
 		);
 	}
 
@@ -103,7 +103,7 @@ if (array_key_exists('metric', $_GET) && array_key_exists($_GET['metric'], $metr
 <h1>Bad Request: Custom Metric beacon</h1>
 <p>This is custom metric beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to this URL:</p>
-<b><pre><?php echo $showslow_base?>beacon/metric/?metric=<i>metricname</i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i></pre></b>
+<b><pre><?php echo $showslow_base?>beacon/metric/?metric=<i>metricname</i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i>&amp;timestamp=<i>mysql_timestamp</i></pre></b>
 or use form below to manually enter metric values.
 
 <h2>Add metric</h2>
