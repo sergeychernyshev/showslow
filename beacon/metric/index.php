@@ -67,12 +67,22 @@ if (array_key_exists('metric', $_GET) && array_key_exists($_GET['metric'], $metr
 {
 	$url_id = getUrlId($_GET['u']);
 
-	# adding new entry
-	$query = sprintf("INSERT INTO metric (url_id, metric_id, value) VALUES ('%d', '%d', '%f')",
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($metrics[$_GET['metric']]['id']),
-		mysql_real_escape_string($_GET['value'])
-	);
+	if (array_key_exists('timestamp', $_GET) && $_GET['timestamp']) {
+		# adding new entry
+		$query = sprintf("INSERT INTO metric (timestamp, url_id, metric_id, value) VALUES ('%s', '%d', '%d', '%f')",
+			mysql_real_escape_string($_GET['timestamp']),
+			mysql_real_escape_string($url_id),
+			mysql_real_escape_string($metrics[$_GET['metric']]['id']),
+			mysql_real_escape_string($_GET['value'])
+		);
+	} else {
+		# adding new entry
+		$query = sprintf("INSERT INTO metric (url_id, metric_id, value) VALUES ('%d', '%d', '%f')",
+			mysql_real_escape_string($url_id),
+			mysql_real_escape_string($metrics[$_GET['metric']]['id']),
+			mysql_real_escape_string($_GET['value'])
+		);
+	}
 
 #	error_log($query);
 
@@ -99,6 +109,7 @@ or use form below to manually enter metric values.
 <h2>Add metric</h2>
 <form action="" method="GET">
 <table>
+<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr><td>Metric:</td><td><select name="metric">
 <option value="">-- pick metric --</option>
 <?php
