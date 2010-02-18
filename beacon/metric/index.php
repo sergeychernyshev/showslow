@@ -98,6 +98,11 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 	?><html>
 <head>
 <title>Bad Request: Custom Metric beacon</title>
+<style>
+i {
+        color: red;
+}
+</style>
 </head>
 <body>
 <h1>Bad Request: Custom Metric beacon</h1>
@@ -105,12 +110,19 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 <p>You can use automated script to publish events using GET call to this URL:</p>
 <b><pre><?php echo $showslow_base?>beacon/metric/?metric=<i>metricname</i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i>&amp;timestamp=<i>mysql_timestamp</i></pre></b>
 or use form below to manually enter metric values.
+<?php
+$nometrics = false;
+if (count($metrics) == 0) {
+	$nometrics = true;
 
+	?><p style="color: red">No custom metrics configured for this instance of ShowSlow.<br/>Add entries to <tt>$metrics</tt> array in configuration file to enable custom metric reporting.</p><?
+}
+?>
 <h2>Add metric</h2>
 <form action="" method="GET">
 <table>
-<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
-<tr><td>Metric:</td><td><select name="metric">
+<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if ($nometrics) {?> disabled="disabled"<?}?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
+<tr><td>Metric:</td><td><select name="metric"<?php if ($nometrics) {?> disabled="disabled"<?}?>>
 <option value="">-- pick metric --</option>
 <?php
 foreach ($metrics as $name => $metric) {
@@ -118,9 +130,9 @@ foreach ($metrics as $name => $metric) {
 }
 ?>
 </select></td></tr>
-<tr><td>URL:</td><td><input type="text" name="u" value="http://www.example.com/" size="80"/></td></tr>
-<tr><td>Value:</td><td><input type="text" name="value" size="80"/> (integer value)</td></tr>
-<tr><td></td><td><input type="submit" value="add"/></td></tr>
+<tr><td>URL:</td><td><input type="text" name="u" value="http://www.example.com/" size="80"<?php if ($nometrics) {?> disabled="disabled"<?}?>/></td></tr>
+<tr><td>Value:</td><td><input type="text" name="value" size="80"<?php if ($nometrics) {?> disabled="disabled"<?}?>/> (integer value)</td></tr>
+<tr><td></td><td><input type="submit" value="add"<?php if ($nometrics) {?> disabled="disabled"<?}?>/></td></tr>
 
 </table>
 </form>

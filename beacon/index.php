@@ -9,6 +9,7 @@ This instance of ShowSlow supports following beacons:
 <li><a href="yslow/">YSlow beacon</a></li>
 <li><a href="pagespeed/">Page Speed beacon</a></li>
 <li><a href="events/">Custom events beacon</a></li>
+<li><a href="metric/">Custom metrics beacon</a></li>
 </ul>
 
 </body></html>
