@@ -1,5 +1,5 @@
 <?php 
-require_once('../global.php');
+require_once(dirname(dirname(__FILE__)).'/global.php');
 ?><html>
 <head>
 <title>ShowSlow Beacons</title>
