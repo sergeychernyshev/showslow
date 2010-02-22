@@ -1,5 +1,5 @@
 <?php 
-require_once('../global.php');
+require_once(dirname(dirname(__FILE__)).'/global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
 ?><html>
@@ -93,8 +93,8 @@ document.documentElement.firstChild.appendChild(ga);
 </style>
 </head>
 <body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($_GET['url'])?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
-<a href="http://code.google.com/p/showslow/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
-<div style="float: right">powered by <a href="http://code.google.com/p/showslow/">showslow</a></div>
+<a href="http://www.showslow.org/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($_GET['url'])?>"><?php echo htmlentities(substr($_GET['url'], 0, 30))?><?php if (strlen($_GET['url']) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp

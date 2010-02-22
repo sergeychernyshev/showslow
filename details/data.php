@@ -1,5 +1,5 @@
 <?php 
-require_once('../global.php');
+require_once(dirname(dirname(__FILE__)).'/global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
 	header('HTTP/1.0 400 Bad Request');

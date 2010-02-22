@@ -1,5 +1,5 @@
 <?php 
-require_once('../global.php');
+require_once(dirname(dirname(__FILE__)).'/global.php');
 
 if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false
 	|| !array_key_exists('metric', $_GET) || !array_key_exists($_GET['metric'], $metrics)) {
