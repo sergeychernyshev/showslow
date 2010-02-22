@@ -5,6 +5,9 @@ $YSlow2AllowedProfiles = array('ydefault');
 # If not false, then should be an array of prefix matches - if one of them matches, URL will be accepted
 $limitURLs = false;
 
+# If set to true, drop all query strings. If array, then match prefixes.
+$dropQueryStrings = false;
+
 # Custom metrics array
 $metrics = array();
 

@@ -3,7 +3,30 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
 
 function getUrlId($url)
 {
-	global $limitURLs;
+	global $limitURLs, $dropQueryStrings;
+
+	if ($dropQueryStrings) {
+		$drop = false;
+
+		if (is_array($dropQueryStrings)) {
+			foreach ($dropQueryStrings as $prefix) {
+				if (substr($url, 0, strlen($prefix)) == $prefix) {
+					$drop = true;
+					break;
+				}
+			}
+		} else {
+			$drop = true;
+		}
+
+		if ($drop) {
+			$querypos = strpos($url, '?');
+
+			if ($querypos !== false) {
+				$url = substr($url, 0, $querypos);
+			}
+		}
+	}
 
 	if ($limitURLs !== false && is_array($limitURLs)) {
 		$matched = false;
