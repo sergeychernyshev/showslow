@@ -115,36 +115,6 @@ CREATE TABLE `urls` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `yslow`
---
-
-DROP TABLE IF EXISTS `yslow`;
-CREATE TABLE `yslow` (
-  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Entry id',
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement timestamp',
-  `url_id` bigint(20) unsigned NOT NULL default '0',
-  `ip` int(4) unsigned NOT NULL default '0' COMMENT 'IP address of the agent',
-  `user_agent` text NOT NULL COMMENT 'User agent string',
-  `w` smallint(6) NOT NULL default '0' COMMENT 'PAGE WEIGHT: Empty Cache (KB)',
-  `o` smallint(6) NOT NULL default '0' COMMENT 'YSLOW SCORE',
-  `u` text NOT NULL COMMENT 'URL',
-  `r` smallint(6) NOT NULL default '0' COMMENT 'Empty Cache - Total Requests',
-  `numcomps` smallint(6) NOT NULL default '0' COMMENT 'Number of Components',
-  `cdn` smallint(6) NOT NULL default '0' COMMENT 'Using CDN',
-  `expires` smallint(6) NOT NULL default '0' COMMENT 'Expires Headers',
-  `gzip` smallint(6) NOT NULL default '0' COMMENT 'Gzip components',
-  `cssattop` smallint(6) NOT NULL default '0' COMMENT 'CSS at the top',
-  `jsatbottom` smallint(6) NOT NULL default '0' COMMENT 'JS at the bottom',
-  `expression` smallint(6) NOT NULL default '0' COMMENT 'CSS expressions',
-  `domains` smallint(6) NOT NULL default '0' COMMENT 'Reduce DNS lookups',
-  `obfuscate` smallint(6) NOT NULL default '0' COMMENT 'JS minify',
-  `redirects` smallint(6) NOT NULL default '0' COMMENT 'Avoid Redirects',
-  `jstwice` smallint(6) NOT NULL default '0' COMMENT 'Duplicate JS',
-  `etags` smallint(6) NOT NULL default '0' COMMENT 'ETAGS',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='DEPRECATED: Measurements gathered from yslow beacon';
-
---
 -- Table structure for table `yslow2`
 --
 
