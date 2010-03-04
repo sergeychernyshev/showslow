@@ -18,6 +18,9 @@ $host = 'localhost';
 #	'max' => 100
 #);
 
+# Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
+#$enableHARBeacon = true;
+
 # change it if you want to allow other profiles including your custom profiles
 #$YSlow2AllowedProfiles = array('ydefault');
 

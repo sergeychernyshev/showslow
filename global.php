@@ -36,6 +36,9 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
 ';
 
+# Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
+$enableHARBeacon = false;
+
 # config will override defaults above
 require_once('config.php');
 

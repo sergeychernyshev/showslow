@@ -1,6 +1,6 @@
 -- MySQL dump 10.9
 --
--- Host: localhost    Database: showslow
+-- Host: localhost    Database: showslow_dev
 -- ------------------------------------------------------
 -- Server version	4.1.16
 
@@ -12,6 +12,16 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `db_version`
+--
+
+DROP TABLE IF EXISTS `db_version`;
+CREATE TABLE `db_version` (
+  `version` int(10) unsigned NOT NULL default '2',
+  PRIMARY KEY  (`version`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event`
@@ -28,6 +38,20 @@ CREATE TABLE `event` (
   `resource_url` blob COMMENT 'additional URL to resource related to the event.',
   PRIMARY KEY  (`id`),
   KEY `start` (`start`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `har`
+--
+
+DROP TABLE IF EXISTS `har`;
+CREATE TABLE `har` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Unique HAR id',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `url_id` bigint(20) unsigned NOT NULL default '0' COMMENT 'URL id',
+  `har` longblob NOT NULL COMMENT 'HAR contents',
+  `compressed` tinyint(1) NOT NULL default '0' COMMENT 'Indicates that HAR data is stored compressed',
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
