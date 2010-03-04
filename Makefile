@@ -1,4 +1,6 @@
 all:
+	svn update
+	php dbupgrade.php
 
 rel:	release
 release:
