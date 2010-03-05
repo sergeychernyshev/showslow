@@ -39,6 +39,9 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 # Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
 $enableHARBeacon = false;
 
+# HAR Viewer base URL
+$HARViewerBase = 'http://www.softwareishard.com/har/viewer/';
+
 # config will override defaults above
 require_once('config.php');
 

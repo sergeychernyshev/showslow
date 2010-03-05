@@ -21,6 +21,9 @@ $host = 'localhost';
 # Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
 #$enableHARBeacon = true;
 
+# HAR Viewer base URL
+#$HARViewerBase = '/harviewer/';
+
 # change it if you want to allow other profiles including your custom profiles
 #$YSlow2AllowedProfiles = array('ydefault');
 
