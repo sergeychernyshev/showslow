@@ -57,14 +57,14 @@ $nometrics = false;
 if (count($metrics) == 0) {
 	$nometrics = true;
 
-	?><p style="color: red">No custom metrics configured for this instance of ShowSlow.<br/>Add entries to <tt>$metrics</tt> array in configuration file to enable custom metric reporting.</p><?
+	?><p style="color: red">No custom metrics configured for this instance of ShowSlow.<br/>Add entries to <tt>$metrics</tt> array in configuration file to enable custom metric reporting.</p><?php
 }
 ?>
 <h2>Add metric</h2>
 <form action="" method="GET">
 <table>
-<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if ($nometrics) {?> disabled="disabled"<?}?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
-<tr><td>Metric:</td><td><select name="metric"<?php if ($nometrics) {?> disabled="disabled"<?}?>>
+<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if ($nometrics) {?> disabled="disabled"<?php }?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
+<tr><td>Metric:</td><td><select name="metric"<?php if ($nometrics) {?> disabled="disabled"<?php }?>>
 <option value="">-- pick metric --</option>
 <?php
 foreach ($metrics as $name => $metric) {
@@ -72,9 +72,9 @@ foreach ($metrics as $name => $metric) {
 }
 ?>
 </select></td></tr>
-<tr><td>URL:</td><td><input type="text" name="u" value="http://www.example.com/" size="80"<?php if ($nometrics) {?> disabled="disabled"<?}?>/></td></tr>
-<tr><td>Value:</td><td><input type="text" name="value" size="80"<?php if ($nometrics) {?> disabled="disabled"<?}?>/> (integer value)</td></tr>
-<tr><td></td><td><input type="submit" value="add"<?php if ($nometrics) {?> disabled="disabled"<?}?>/></td></tr>
+<tr><td>URL:</td><td><input type="text" name="u" value="http://www.example.com/" size="80"<?php if ($nometrics) {?> disabled="disabled"<?php }?>/></td></tr>
+<tr><td>Value:</td><td><input type="text" name="value" size="80"<?php if ($nometrics) {?> disabled="disabled"<?php }?>/> (integer value)</td></tr>
+<tr><td></td><td><input type="submit" value="add"<?php if ($nometrics) {?> disabled="disabled"<?php }?>/></td></tr>
 
 </table>
 </form>

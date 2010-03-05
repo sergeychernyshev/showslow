@@ -21,7 +21,7 @@ if ($filename == '') {
 <h1>Bad Request: no HAR data</h1>
 No HAR data submitted
 </body>
-</html><?
+</html><?php
 	exit;
 }
 
@@ -38,7 +38,7 @@ if ($har_data === FALSE || json_decode($har_data) === FALSE) {
 <h1>Bad Request: malformed HAR data</h1>
 Can't parse JSON data from HAR
 </body>
-</html><?
+</html><?php
 	exit;
 }
 
@@ -95,18 +95,18 @@ if (array_key_exists('url', $_REQUEST) && filter_var(urldecode($_REQUEST['url'])
 <ul>
 <li><a href="http://getfirebug.com/releases/extensions.html#netexport">NetExport</a> extension for Firebug</li>
 </ul>
-<?
+<?php
 if (!$enableHARBeacon) {
-	?><p style="color: red">HAR beacon is disabled on this instance of ShowSlow.<br/>Add <tt>$enableHARBeacon = true;</tt> to your configuration file to enable it.</p><?
+	?><p style="color: red">HAR beacon is disabled on this instance of ShowSlow.<br/>Add <tt>$enableHARBeacon = true;</tt> to your configuration file to enable it.</p><?php
 }
 ?>
 <h1>Submit HAR manually</h1>
 <form action="" method="POST" enctype="multipart/form-data">
 <table>
-<tr><td>URL:</td><td><input type="text" name="url" value="http://www.example.com/" size="80"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?}?>/></td></tr>
-<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?}?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
-<tr><td>Pick HAR file:</td><td><input name="har" type="file"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?}?>/></td></tr>
-<tr><td></td><td><input type="submit" value="add"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?}?>/></td></tr>
+<tr><td>URL:</td><td><input type="text" name="url" value="http://www.example.com/" size="80"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php } ?>/></td></tr>
+<tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
+<tr><td>Pick HAR file:</td><td><input name="har" type="file"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/></td></tr>
+<tr><td></td><td><input type="submit" value="add"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/></td></tr>
 
 </table>
 </form>

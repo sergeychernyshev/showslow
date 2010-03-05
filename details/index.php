@@ -206,7 +206,7 @@ eventversion = '<?php echo urlencode($eventupdate)?>';
 <?php
 foreach ($metrics as $name => $metric)
 {
-	?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($_GET['url']);?>">csv</a>)</span>;<?
+	?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($_GET['url']);?>">csv</a>)</span>;<?php
 }
 ?>
 </div>
