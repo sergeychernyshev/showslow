@@ -49,10 +49,10 @@ function getUrlId($url)
 
 			?><html>
 <head>
-<title>Bad Request: YSlow beacon</title>
+<title>Bad Request: ShowSlow beacon</title>
 </head>
 <body>
-<h1>Bad Request: YSlow beacon</h1>
+<h1>Bad Request: ShowSlow beacon</h1>
 <p>URL doesn't match any URLs allowed allowed to this instance.</p>
 </body></html>
 <?php 
