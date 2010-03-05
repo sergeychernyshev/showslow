@@ -434,14 +434,14 @@ if (count($har) > 0) {
 ?>
 	<h2>HAR data collected</h2>
 
-	<p>You can see latest HAR data in the viewer here: <a href="http://www.softwareishard.com/har/viewer/?inputUrl=http://www.showslow.com/dev/details/har.php%3Fid%3D<?php echo urlencode($har)?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($_GET['url'])?></a>.</p>
+	<p>You can see latest HAR data in the viewer here: <a href="http://www.softwareishard.com/har/viewer/?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($har[0]['id']); ?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($_GET['url'])?></a>.</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
 	<tr><th>Time</th><th>HAR</th></tr>
 <?php
 	foreach ($har as $harentry) {
 ?>
-	<tr><th><?php echo htmlentities($harentry['t'])?></th><th><a href="http://www.softwareishard.com/har/viewer/?inputUrl=http://www.showslow.com/dev/details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></th></tr>
+	<tr><th><?php echo htmlentities($harentry['t'])?></th><th><a href="http://www.softwareishard.com/har/viewer/?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></th></tr>
 <?php
 	}
 ?>
