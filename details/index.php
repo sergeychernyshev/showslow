@@ -111,7 +111,7 @@ $urlid = $row['id'];
 mysql_free_result($result);
 
 // latest YSlow result
-$query = sprintf("SELECT timestamp, w, o, i,
+$query = sprintf("SELECT timestamp, w, o, i, lt,
 		ynumreq,	ycdn,		yexpires,	ycompress,	ycsstop,
 		yjsbottom,	yexpressions,	yexternal,	ydns,		yminify,
 		yredirects,	ydupes,		yetags,		yxhr,		yxhrmethod,
@@ -222,12 +222,25 @@ if ($row || $ps_row)
 	<h2 style="clear: both">Measurements over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
 	<div style="fint-size: 0.2em">
+	<?php
+	if ($row)
+	{
+	?>
 	<span style="color: #D0A825">Page Size</span> (in bytes);
+	<span style="color: purple">Page Load time (YSlow)</span> (in ms);
 	<span style="color: #75CF74">Total Requests</span>;
 	<span class="yslow2">YSlow Grade</span> (0-100);
+	<?php
+	}
+
+	if ($ps_row)
+	{
+	?>
 	<span style="color: #6F4428">PageSpeed Grade</span> (0-100);
 	<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms);
 	<?php
+	}
+
 	foreach ($metrics as $name => $metric)
 	{
 		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($_GET['url']);?>">csv</a>)</span>;<?php
