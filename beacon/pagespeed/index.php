@@ -162,7 +162,9 @@ if (array_key_exists('v', $_GET)
 <p>This is <a href="http://code.google.com/speed/page-speed/">PageSpeed</a> beacon entry point.</p>
 
 <h1>Configure your PageSpeed</h1>
-<p><b style="color: red">If you're OK with all your PageSpeed measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:</p>
+<p><b style="color: red">WARNING! Only use this beacon If you're OK with all your Page Speed data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
+
+Set these two Firefox parameters on <b>about:config</b> page:</p>
 
 <ul>
 <li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>

@@ -195,7 +195,9 @@ if (!is_null($post) && array_key_exists('g', $post)
 <p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
 
 <h1>Configure your YSlow</h1>
-<p><b style="color: red">If you're OK with all your YSlow measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a></b>, just set these two Firefox parameters on <b>about:config</b> page:</p>
+<p><b style="color: red">WARNING! Only use this beacon If you're OK with all your YSlow data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
+
+<p>Set these two Firefox parameters on <b>about:config</b> page:</p>
 
 </ul>
 <h2>Yslow 2.x</h2>

@@ -86,6 +86,7 @@ if (array_key_exists('url', $_REQUEST) && filter_var(urldecode($_REQUEST['url'])
 <p>This is <a href="http://groups.google.com/group/firebug-working-group/web/http-tracing---export-format">HAR</a> beacon entry point.</p>
 
 <h1>Configure your HAR provider</h1>
+<p><b style="color: red">WARNING! Only use this beacon If you're OK with all your HAR data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>All your data including cookies, IP addresses, sessions and possibly other sensitive information will be displayed on this instance.<br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 <p>To submit a beacon, you must send HAR file as a POST body or upload it as a file using form below.</p>
 <p>There is also a <tt>url</tt> parameter that you have to supply and optional <tt>timestamp</tt> parameter.</p>
 
