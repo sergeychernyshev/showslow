@@ -83,7 +83,7 @@ document.documentElement.firstChild.appendChild(ga);
 		<p><b style="color: red">WARNING! Only use this if you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 		<p>Set these two Firefox parameters on <b>about:config</b> page:</p>
-		<h2>Yslow 2.x</h2>
+		<h2>YSlow 2.x</h2>
 		<ul>
 		<li>extensions.yslow.beaconUrl = <b style="color: blue"><?php echo $showslow_base?>beacon/yslow/</b></li>
 		<li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
