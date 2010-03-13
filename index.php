@@ -6,7 +6,7 @@ require_once('global.php');
 <style type="text/css">
 body {
 	margin:0;
-	padding:0;
+	padding:1em;
 }
 </style>
 

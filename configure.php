@@ -11,7 +11,7 @@ require_once('global.php');
   CSS treatments. */
 body {
 	margin:0;
-	padding:0;
+	padding:1em;
 }
 </style>
 
