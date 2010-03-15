@@ -13,7 +13,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	});
 
 	var valueGeometryGrades = new Timeplot.DefaultValueGeometry({
-		min: 0,
 		max: 100,
 		gridColor: "#000000",
 		axisLabelsPlacement: "left"
