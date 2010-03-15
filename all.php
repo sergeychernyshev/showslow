@@ -2,7 +2,7 @@
 require_once('global.php');
 ?><html>
 <head>
-<title>Show Slow</title>
+<title>Show Slow: URLs measured</title>
 <style type="text/css">
 /*margin and padding on body element
   can introduce errors in determining

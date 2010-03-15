@@ -72,6 +72,7 @@ if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
 	header('Cache-control: max-age=315569260');
 }
+/*
 echo '# Measurement time, ';
 echo 'Page size (in bytes), ';
 echo 'YSlow grade, ';
@@ -100,7 +101,7 @@ echo 'Avoid AlphaImageLoader filter, ';
 echo 'Do not scale images in HTML, ';
 echo 'Make favicon small and cacheable, ';
 echo "YSlow profile used\n";
-
+*/
 while ($row = mysql_fetch_assoc($result)) {
         echo date('c', $row['t']).','.
 		($row['i'] == 'yslow1' ? $row['w'] * 1024 : $row['w']).','.$row['o'].','.$row['r'].','.$row['lt'].','.
