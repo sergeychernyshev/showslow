@@ -227,7 +227,7 @@ if ($row || $ps_row)
 	{
 	?>
 	<span style="color: #D0A825">Page Size</span> (in bytes);
-	<span style="color: purple">Page Load time (YSlow)</span> (in ms);
+	<!-- <span style="color: purple">Page Load time (YSlow)</span> (in ms); -->
 	<span style="color: #75CF74">Total Requests</span>;
 	<span class="yslow2">YSlow Grade</span> (0-100);
 	<?php

@@ -65,6 +65,7 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			lineColor: "#EE4F00",
 			showValues: true
 		}),
+/*
 		Timeplot.createPlotInfo({
 			id: "lt",
 			label: "Page Load Time (YSlow)",
@@ -74,7 +75,7 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			lineColor: "purple",
 			showValues: true
 		}),
-		Timeplot.createPlotInfo({
+*/		Timeplot.createPlotInfo({
 			id: "pageweight2",
 			label: "Page Size (bytes)",
 			dataSource: new Timeplot.ColumnSource(eventSource2,1),
