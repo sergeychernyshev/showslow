@@ -30,10 +30,8 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
-
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
@@ -79,5 +77,8 @@ foreach ($metrics as $name => $metric) {
 </table>
 </form>
 </body></html>
-<?php 
+<?php
+	exit;
 }
+
+header('HTTP/1.0 204 Data accepted');

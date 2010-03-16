@@ -16,8 +16,7 @@ function updateUrlAggregates($url_id, $w, $o, $l, $r, $t)
 	$result = mysql_query($query);
 
 	if (!$result) {
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 }
 
@@ -144,8 +143,7 @@ if (array_key_exists('v', $_GET)
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['l'], $_GET['r'], $_GET['t']);
@@ -172,5 +170,8 @@ Set these two Firefox parameters on <b>about:config</b> page:</p>
 </ul>
 
 </body></html>
-<?php 
+<?php
+	exit;
 }
+
+header('HTTP/1.0 204 Data accepted');

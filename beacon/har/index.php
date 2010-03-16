@@ -71,8 +71,7 @@ if (array_key_exists('url', $_REQUEST) && filter_var(urldecode($_REQUEST['url'])
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 } else {
 	header('HTTP/1.0 400 Bad Request');
@@ -115,3 +114,5 @@ if (!$enableHARBeacon) {
 </body></html>
 <?php 
 }
+
+header('HTTP/1.0 204 Data accepted');

@@ -63,8 +63,7 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 	# updating last_event_update for the matching URLs
@@ -74,10 +73,12 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 	$result = mysql_query($query);
 
 	if (!$result) {
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
-	?><html>
+
+	if (array_key_exists('manual', $_GET))
+	{
+		?><html>
 <head>
 <title>Event added</title>
 </head>
@@ -86,7 +87,9 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 <p>Event successfully added.</p>
 <p>Add <a href="./">one more</a>.</p>
 </body></html>
-<?php 
+<?php
+		exit;
+	}
 
 } else {
 	header('HTTP/1.0 400 Bad Request');
@@ -116,10 +119,13 @@ or use form below to manually enter events.
 <tr valign="top"><td>Start time:</td><td><input type="text" name="start" value="<?php echo date("Y-m-d H:i:s");?>"/> (leave blank for current time)<br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr valign="top"><td>End time:</td><td><input type="text" name="end"/> (or blank for momentary event)<br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr><td>Resource URL:</td><td><input type="text" name="resource_url" size="80"/></td></tr>
-<tr><td></td><td><input type="submit" value="add"/></td></tr>
+<tr><td></td><td><input type="submit" name="manual" value="add"/></td></tr>
 
 </table>
 </form>
 </body></html>
-<?php 
+<?php
+	exit;
 }
+
+header('HTTP/1.0 204 Data accepted');

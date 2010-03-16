@@ -14,8 +14,7 @@ function updateUrlAggregates($url_id, $w, $o, $r)
 	$result = mysql_query($query);
 
 	if (!$result) {
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 }
@@ -111,8 +110,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 	updateUrlAggregates($url_id, $post['w'], $post['o'], $post['r']);
@@ -178,8 +176,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 
 	if (!mysql_query($query))
 	{
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['r']);
@@ -208,5 +205,8 @@ if (!is_null($post) && array_key_exists('g', $post)
 </ul>
 
 </body></html>
-<?php 
+<?php
+	exit;
 }
+
+header('HTTP/1.0 204 Data accepted');
