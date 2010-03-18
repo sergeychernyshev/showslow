@@ -17,8 +17,6 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 	exit;
 }
 
-ob_start("ob_gzhandler");
-
 $query = sprintf("SELECT id FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
 $result = mysql_query($query);
 
