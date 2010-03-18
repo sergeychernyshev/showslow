@@ -73,7 +73,7 @@ document.documentElement.firstChild.appendChild(ga);
 		<table>
 		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?php 
-		$query = sprintf("SELECT url, o, ps_o, last_update FROM urls ORDER BY last_update DESC LIMIT 100");
+		$query = sprintf("SELECT url, yslow2.o as o, pagespeed.o as ps_o, last_update FROM urls LEFT JOIN yslow2 on urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed on urls.pagespeed_last_id = pagespeed.id ORDER BY urls.last_update DESC LIMIT 100");
 		$result = mysql_query($query);
 
 		if (!$result) {

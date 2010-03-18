@@ -98,7 +98,7 @@ document.documentElement.firstChild.appendChild(ga);
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($_GET['url'])?>"><?php echo htmlentities(substr($_GET['url'], 0, 30))?><?php if (strlen($_GET['url']) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp
-$query = sprintf("SELECT id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
 $result = mysql_query($query);
 
 if (!$result) {
@@ -108,6 +108,8 @@ if (!$result) {
 $row = mysql_fetch_assoc($result);
 $eventupdate = $row['last_event_update'];
 $urlid = $row['id'];
+$yslow2_last_id = $row['yslow2_last_id'];
+$pagespeed_last_id = $row['pagespeed_last_id'];
 mysql_free_result($result);
 
 // latest YSlow result
@@ -118,10 +120,8 @@ $query = sprintf("SELECT timestamp, w, o, i, lt,
 		ymindom,	yno404,		ymincookie,	ycookiefree,	ynofilter,
 		yimgnoscale,	yfavicon,	details
 		FROM yslow2 y
-		WHERE url_id = %d
-		ORDER BY timestamp DESC
-		LIMIT 1",
-	mysql_real_escape_string($urlid)
+		WHERE id = %d",
+	mysql_real_escape_string($yslow2_last_id)
 
 );
 $result = mysql_query($query);
@@ -142,10 +142,8 @@ $query = sprintf("SELECT timestamp, w, o, l, r, t, v,
 			pMinifyHTML, pMinimizeRequestSize, pOptimizeTheOrderOfStylesAndScripts,
 			pPutCssInTheDocumentHead, pSpecifyCharsetEarly
 		FROM pagespeed p
-		WHERE url_id = %d
-		ORDER BY timestamp DESC
-		LIMIT 1",
-	mysql_real_escape_string($urlid)
+		WHERE id = %d",
+	mysql_real_escape_string($pagespeed_last_id)
 );
 $result = mysql_query($query);
 

@@ -2,13 +2,11 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/beacon_functions.php');
 
-function updateUrlAggregates($url_id, $w, $o, $r)
+function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE urls set w = '%d', o = '%d', r = '%d', last_update = now() WHERE id = '%d'",
-		mysql_real_escape_string($w),
-		mysql_real_escape_string($o),
-		mysql_real_escape_string($r),
+	$query = sprintf("UPDATE urls set yslow2_last_id = %d, last_update = now() WHERE id = %d",
+		mysql_real_escape_string($measurement_id),
 		mysql_real_escape_string($url_id)
 	);
 	$result = mysql_query($query);
@@ -16,7 +14,6 @@ function updateUrlAggregates($url_id, $w, $o, $r)
 	if (!$result) {
 		beaconError(mysql_error());
 	}
-
 }
 
 $post_data = file_get_contents("php://input");
@@ -113,7 +110,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		beaconError(mysql_error());
 	}
 
-	updateUrlAggregates($url_id, $post['w'], $post['o'], $post['r']);
+	updateUrlAggregates($url_id, mysql_insert_id());
 
 } else if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
@@ -179,7 +176,7 @@ if (!is_null($post) && array_key_exists('g', $post)
 		beaconError(mysql_error());
 	}
 
-	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['r']);
+	updateUrlAggregates($url_id, mysql_insert_id());
 } else {
 	header('HTTP/1.0 400 Bad Request');
 

@@ -2,15 +2,11 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/beacon_functions.php');
 
-function updateUrlAggregates($url_id, $w, $o, $l, $r, $t)
+function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE urls SET ps_w = '%d', ps_o = '%f', ps_l = '%d', ps_r = '%d', ps_t = '%d', last_update = now() WHERE id = '%d'",
-		mysql_real_escape_string($w),
-		mysql_real_escape_string($o),
-		mysql_real_escape_string($l),
-		mysql_real_escape_string($r),
-		mysql_real_escape_string($t),
+	$query = sprintf("UPDATE urls set pagespeed_last_id = %d, last_update = now() WHERE id = %d",
+		mysql_real_escape_string($measurement_id),
 		mysql_real_escape_string($url_id)
 	);
 	$result = mysql_query($query);
@@ -146,8 +142,7 @@ if (array_key_exists('v', $_GET)
 		beaconError(mysql_error());
 	}
 
-	updateUrlAggregates($url_id, $_GET['w'], $_GET['o'], $_GET['l'], $_GET['r'], $_GET['t']);
-
+	updateUrlAggregates($url_id, mysql_insert_id());
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
