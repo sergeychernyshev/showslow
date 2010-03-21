@@ -127,7 +127,7 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	}
 
 	var loader = new YAHOO.util.YUILoader({
-	    require: ["dom", "container", "paginator", "datatable", "datasource"],
+	    require: ["dom", "container", "datatable", "datasource"],
 	    loadOptional: true,
 	    timeout: 10000,
 	    combine: true,
@@ -193,19 +193,15 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			"pMinRedirect", "pCssExpr", "pUnusedCSS", "pMinDns", "p.pDupeRsrc"]
 		};
 
-		var yDataTable = new YAHOO.widget.DataTable("measurementstable", yColumnDefs, yDataSource,
+		var yDataTable = new YAHOO.widget.ScrollingDataTable("measurementstable", yColumnDefs, yDataSource,
 		{
-			paginator: new YAHOO.widget.Paginator({
-			    rowsPerPage: 10 
-			}),
+			height: "15em",
 			initialRequest: "url=" + url + "&ver=" + ydataversion
 		});
 
-		var psDataTable = new YAHOO.widget.DataTable("ps_measurementstable", psColumnDefs, psDataSource,
+		var psDataTable = new YAHOO.widget.ScrollingDataTable("ps_measurementstable", psColumnDefs, psDataSource,
 		{
-			paginator: new YAHOO.widget.Paginator({
-			    rowsPerPage: 10
-			}),
+			height: "15em",
 			initialRequest: "url=" + url + "&ver=" + psdataversion
 		});
 	    }
