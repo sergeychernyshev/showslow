@@ -25,7 +25,36 @@ No HAR data submitted
 	exit;
 }
 
-$har_data = file_get_contents($filename);
+$har_data = FALSE;
+
+if (defined('FORCE_GZIP'))
+{
+	if ($gzfile = gzopen($filename, 'r'))
+	{
+		while ($chunk = gzread($gzfile, 100000))
+		{
+			$har_data = $har_data.$chunk;
+		}
+		gzclose($gzfile);
+	}
+	else
+	{
+?><html>
+<head>
+<title>Bad Request: Can't read POST payload</title>
+</head>
+<body>
+<h1>Bad Request: Can't read POST payload</h1>
+Can't read POST payload
+</body>
+</html><?php
+		exit;
+	}
+}
+else
+{
+	$har_data = file_get_contents($filename);
+}
 
 if ($har_data === FALSE || json_decode($har_data) === FALSE) {
 	header('HTTP/1.0 400 Bad Request');
