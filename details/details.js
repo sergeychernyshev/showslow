@@ -101,18 +101,25 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	];
 
 	for (var name in metrics) {
-		metrics[name]['source'] = new Timeplot.DefaultEventSource();
+		var metric = metrics[name];
+
+		metric['source'] = new Timeplot.DefaultEventSource();
+
+		var config = {};
+		if (typeof(metric.min) !== 'undefined') {
+			config.min = metric.min;
+		}
+		if (typeof(metric.max) !== 'undefined') {
+			config.max = metric.max;
+		}
 
 		plotInfo[plotInfo.length] = Timeplot.createPlotInfo({
 			id: "showslowmetric"+name,
-			label: metrics[name].title,
-			dataSource: new Timeplot.ColumnSource(metrics[name].source,1),
+			label: metric.title,
+			dataSource: new Timeplot.ColumnSource(metric.source,1),
 			timeGeometry: timeGeometry,
-			valueGeometry: new Timeplot.DefaultValueGeometry({
-                		min: metrics[name].min,
-                		max: metrics[name].max
-			}),
-			lineColor:  metrics[name].color,
+			valueGeometry: new Timeplot.DefaultValueGeometry(config),
+			lineColor:  metric.color,
 			showValues: true
 		});
 	}
