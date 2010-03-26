@@ -81,8 +81,7 @@ function getUrlId($url)
 	$result = mysql_query($query);
 
 	if (!$result) {
-		error_log(mysql_error());
-		exit;
+		beaconError(mysql_error());
 	}
 
 	if (mysql_num_rows($result) == 1) {
@@ -93,14 +92,12 @@ function getUrlId($url)
 		$result = mysql_query($query);
 
 		if (!$result) {
-			error_log(mysql_error());
-			exit;
+			beaconError(mysql_error());
 		}
 
 		return mysql_insert_id();
 	} else {
-		error_log('more then one entry found for the URL');
-		exit;
+		beaconError('more then one entry found for the URL');
 	}
 
 }
