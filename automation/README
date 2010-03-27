@@ -1,0 +1,95 @@
+###########################################################################
+##
+## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+## "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+## LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+## A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+## HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+## SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+## LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+## DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+## THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+## (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+##
+###########################################################################
+
+This directory contains scripts for use in the automation (specifically
+Mozilla Firefox).
+
+The scripts here are still under heavy development, but are seeing 
+production use and monitoring hundreds of URLs via simple linux virtual
+machine zombies.
+
+Instructions:
+
+    0.  Setup Xvfb (virtual X11, essentially headless).  A good method to 
+        test the configuration and setup the Firefox profiles as well as 
+	the execution of the script/process is to use vncserver and 
+	initially pass the automation script the appropriate DISPLAY 
+	value without having to install a full x11 instance.  Then once 
+	everything is setup run the script against Xvfb.
+
+            Xvfb <display> -screen <screen#> <height>x<width>x<color depth>
+                display 	= DISPLAY ASSIGNMENT (DISPLAY=:1)
+		screen  	= screen number
+                height  	= virtual screen height
+		width   	= virtual screen width
+		color depth  	= color bit depth (e.g. 24)
+
+            Example:
+	        Xvfb :1 -screen 0 1152x864x24 +extension RANDR &
+
+    1.  Create a text file of URLs to be monitored, each URL on a separate
+        line and make it available via HTTP to the zombies:
+
+            http://www.example.com/test_urls.txt:
+ 
+	        http://www.google.com/
+	        http://www.yahoo.com/
+
+    2.  Create Mozilla Firefox profile(s) (see STEP 0 for advice).  An
+	interactive process is NOT required.  Edit the prefs.js file with
+	appropriate values after cloning a working profile.  Install and 
+	configure both YSlow and Page Speed.  Session crash recovery _MUST_
+	be disabled via about:config. 
+
+            ** SESSION RECOVERY MUST BE DISABLED **
+
+            user_pref("browser.sessionstore.resume_from_crash", false);
+
+	Other variables to consider:
+	    
+	    * cache size
+	    * disable update checks
+	    * delete history data (cookies)
+            * disable all warnings
+	    * where to dump Google Page Speed optimization data
+
+	To clone or backup an existing profile see the following Mozilla
+	documentation:
+
+        http://support.mozilla.com/en-US/kb/Profiles#Moving_your_profile_information  
+
+    3.  Manually run and confirm the test_harness.pl script execution.  Simply run
+	the script without any args for usage.
+
+	    usage:  test_harness.pl --source URL --profile PATH --wait SEC [--verbose|debug]
+    		--firefox  path to Firefox binary ( default = /usr/bin/firefox )
+    		--source   uniform resource locator ( e.g. http://www.example.com/list )
+    		--profile  path to Firefox profile ( e.g. /home/foo/profile )
+    		--wait     thread execution time in seconds ( default = 30 )
+    		--display  x11 display ( e.g. :99 )
+    		--debug
+
+    4.  Edit the monitor.sh script to reflect your desired settings.  The script can
+	be run manually and once tested (see STEP 0) added to cron and exists as a 
+	wrapper for execution of the test_harness.pl script.  I have a number of post
+	execution clean-up commands which purge Page Speed optimization data, Flash
+	plug-in data, any "downloads" automatically attempted, etc., which run after
+	each pass.
+
+	    Example:
+
+    	        0,15,30,45 * * * * /home/tmnz/monitor.sh >> /home/tmnz/monitor.log 2>&1
+
