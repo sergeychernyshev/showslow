@@ -149,7 +149,7 @@ $colorindex = 0;
 $data = array();
 while ($row = mysql_fetch_assoc($result)) {
 	$data[$row['url']] = array(
-		'version' => $row['url']['version'],
+		'version' => urlencode($row['version']),
 		'color' => $colors[$colorindex]
 	);
 
