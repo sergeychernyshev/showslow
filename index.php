@@ -1,5 +1,25 @@
 <?php 
 require_once('global.php');
+
+$compareParams = '';
+if (is_array($defaultURLsToCompare)) {
+	$compareParams = '?';
+
+	if ($defaultRankerToCompare == 'pagespeed') {
+		$compareParams .= 'ranker=pagespeed&';
+	}
+
+	$first = true;
+	foreach ($defaultURLsToCompare as $url) {
+		if ($first) {
+			$first = false;	
+		}
+		else {
+			$compareParams.= '&';
+		}
+		$compareParams.='url[]='.urlencode($url);
+	}
+}
 ?><html>
 <head>
 <title>Show Slow</title>
@@ -65,6 +85,7 @@ document.documentElement.firstChild.appendChild(ga);
     <ul class="yui-nav">
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
         <li><a href="all.php"><em>URLs measured</em></a></li>
+        <li><a href="details/compare.php<?php echo $compareParams?>"><em>Compare rankings</em></a></li>
         <li><a href="configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
@@ -107,6 +128,8 @@ document.documentElement.firstChild.appendChild(ga);
 	</div>
         <div id="urls">
 	</div>
+        <div id="compare">
+	</div>
 	<div id="configure">
 	</div>
     </div>
@@ -115,7 +138,8 @@ document.documentElement.firstChild.appendChild(ga);
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
     tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
-    tabView.getTab(2).addListener("click", function() { window.location.href='configure.php'; });
-    tabView.getTab(3).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
+    tabView.getTab(2).addListener("click", function() { window.location.href='details/compare.php<?php echo $compareParams?>'; });
+    tabView.getTab(3).addListener("click", function() { window.location.href='configure.php'; });
+    tabView.getTab(4).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
 </script>
 </body></html>

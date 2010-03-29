@@ -36,6 +36,13 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
 ';
 
+# a list of URLs to compare by default. Set to NULL to not send any URLs
+# $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
+$defaultURLsToCompare = NULL;
+
+# Change this to 'pagespeed' to use it for comparison by default
+$defaultRankerToCompare = 'yslow';
+
 # Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
 $enableHARBeacon = false;
 
