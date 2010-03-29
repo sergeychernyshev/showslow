@@ -33,9 +33,9 @@ function onLoad(data) {
 
 	for (var url in data) {
 		if (data[url].ranker == 'pagespeed') {
-			timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data_pagespeed.php?url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else {
-			timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data.php?profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		}
 	}
 

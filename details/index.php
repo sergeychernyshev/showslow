@@ -1,7 +1,7 @@
 <?php 
 require_once(dirname(dirname(__FILE__)).'/global.php');
 
-if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
+if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_VALIDATE_URL)) === false) {
 ?><html>
 <head>
 <title>Error - no URL specified</title>
@@ -16,7 +16,7 @@ return;
 
 ?><html>
 <head>
-<title>Show Slow: Details for <?php echo htmlentities($_GET['url'])?></title>
+<title>Show Slow: Details for <?php echo htmlentities($url)?></title>
 <style type="text/css">
 body {
 margin:0;
@@ -92,13 +92,13 @@ document.documentElement.firstChild.appendChild(ga);
 }
 </style>
 </head>
-<body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($_GET['url'])?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
+<body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($url) ?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
 <a href="http://www.showslow.org/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
-<h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($_GET['url'])?>"><?php echo htmlentities(substr($_GET['url'], 0, 30))?><?php if (strlen($_GET['url']) > 30) { ?>...<?php } ?></a></h1>
+<h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($url)?>"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp
-$query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($url));
 $result = mysql_query($query);
 
 if (!$result) {
@@ -156,7 +156,7 @@ mysql_free_result($result);
 
 // checking if there is har data
 $query = sprintf("SELECT har.timestamp as t, har.id as id FROM har, urls WHERE urls.url = '%s' AND har.url_id = urls.id ORDER BY timestamp DESC",
-	mysql_real_escape_string($_GET['url'])
+	mysql_real_escape_string($url)
 );
 
 $result = mysql_query($query);
@@ -241,7 +241,7 @@ if ($row || $ps_row)
 
 	foreach ($metrics as $name => $metric)
 	{
-		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($_GET['url']);?>">csv</a>)</span>;<?php
+		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>)</span>;<?php
 	}
 	?>
 	</div>
@@ -429,14 +429,14 @@ if ($row || $ps_row)
 
 if ($row) {
 ?>
-	<h2>YSlow measurements history (<a href="data.php?url=<?php echo urlencode($_GET['url'])?>">csv</a>)</h3>
+	<h2>YSlow measurements history (<a href="data.php?url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
 	<?php 
 }
 
 if ($ps_row) {
 ?>
-	<h2>PageSpeed measurements history (<a href="data_pagespeed.php?url=<?php echo urlencode($_GET['url'])?>">csv</a>)</h3>
+	<h2>PageSpeed measurements history (<a href="data_pagespeed.php?url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="ps_measurementstable"></div>
 <?php 
 }
@@ -445,7 +445,7 @@ if (count($har) > 0) {
 ?>
 	<h2>HAR data collected</h2>
 
-	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($har[0]['id']); ?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($_GET['url'])?></a>.</p>
+	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($har[0]['id']); ?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
 	<tr><th>Time</th><th>HAR</th></tr>
