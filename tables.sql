@@ -1,6 +1,6 @@
 -- MySQL dump 10.9
 --
--- Host: localhost    Database: showslow_dev
+-- Host: localhost    Database: showslow
 -- ------------------------------------------------------
 -- Server version	4.1.16
 
@@ -19,7 +19,7 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '2',
+  `version` int(10) unsigned NOT NULL default '3',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -126,14 +126,8 @@ CREATE TABLE `urls` (
   `url` blob NOT NULL COMMENT 'url',
   `last_update` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `last_event_update` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Last time events were updated for this URL',
-  `w` bigint(20) unsigned NOT NULL default '0' COMMENT 'latest size of the page in bytes',
-  `o` smallint(6) unsigned default NULL COMMENT 'latest overall YSlow grade calculated for this profile',
-  `r` smallint(6) unsigned NOT NULL default '0' COMMENT 'latest amount of requests with empty cache',
-  `ps_w` bigint(20) unsigned NOT NULL default '0',
-  `ps_o` float unsigned default NULL,
-  `ps_l` bigint(20) unsigned NOT NULL default '0',
-  `ps_r` smallint(6) unsigned NOT NULL default '0',
-  `ps_t` bigint(20) unsigned NOT NULL default '0',
+  `yslow2_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for YSlow beacon',
+  `pagespeed_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for PageSpeed beacon',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
