@@ -17,12 +17,15 @@ else
 	#
 	# Creating release tarball and zip
 	#
-	svn export . showslow_${subst .,_,${v}}
+	svn export https://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
 	# Not including Makefile into the package since it's not doing anything but release packaging
-	rm showslow_${subst .,_,${v}}/Makefile
-	tar -c showslow_${subst .,_,${v}} |gzip > showslow_${v}.tgz
-	zip -r showslow_${v}.zip showslow_${subst .,_,${v}}
-	rm -rf showslow_${subst .,_,${v}}
+	tar -c showslow_${v} |gzip > showslow_${v}.tgz
+	zip -r showslow_${v}.zip showslow_${v}
+	rm -rf showslow_${v}
+	# upload to Google Code repository (need account with enough permissions)
+	googlecode/googlecode_upload.py -s "ShowSlow v${v} (tarball)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.tgz
+	googlecode/googlecode_upload.py -s "ShowSlow v${v} (zip)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.zip
+	rm showslow_${v}.tgz showslow_${v}.zip
 endif
 
 timeplot-patch:
