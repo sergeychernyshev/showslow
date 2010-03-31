@@ -146,27 +146,29 @@ $colors = array(
 );
 $colorindex = 0;
 
-$data = array();
-while ($row = mysql_fetch_assoc($result)) {
-	$data[$row['url']] = array(
-		'version' => urlencode($row['version']),
-		'color' => $colors[$colorindex]
-	);
+if (!$badinput) {
+	$data = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		$data[$row['url']] = array(
+			'version' => urlencode($row['version']),
+			'color' => $colors[$colorindex]
+		);
 
-	if ($pagespeed) {
-		$data[$row['url']]['ranker'] = 'pagespeed';
-	} else {
-		$data[$row['url']]['ranker'] = 'yslow';
+		if ($pagespeed) {
+			$data[$row['url']]['ranker'] = 'pagespeed';
+		} else {
+			$data[$row['url']]['ranker'] = 'yslow';
+		}
+	
+		if ($colorindex == count($colors))
+		{
+			$colorindex = 0;
+		} else {
+			$colorindex += 1;
+		}
 	}
-
-	if ($colorindex == count($colors))
-	{
-		$colorindex = 0;
-	} else {
-		$colorindex += 1;
-	}
+	mysql_free_result($result);
 }
-mysql_free_result($result);
 
 $params = '';
 $first = true;
