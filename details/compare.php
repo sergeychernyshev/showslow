@@ -112,42 +112,42 @@ document.documentElement.firstChild.appendChild(ga);
 <h1><a title="Click here to go to home page" href="../">Show Slow</a></h1>
 
 <?php 
-// last event timestamp
-$first = true;
-$urllist = '';
-foreach ($urls as $url) {
-	if ($first) {
-		$first = false;	
+$data = array();
+if (count($urls) > 0) {
+	// last event timestamp
+	$first = true;
+	$urllist = '';
+	foreach ($urls as $url) {
+		if ($first) {
+			$first = false;	
+		}
+		else {
+			$urllist .= ', ';
+		}
+
+		$urllist .= sprintf("'%s'", mysql_real_escape_string($url));
 	}
-	else {
-		$urllist .= ', ';
+
+	if ($pagespeed) {
+		$query = "SELECT url, pagespeed.timestamp as version FROM urls INNER JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id WHERE urls.url IN ($urllist) AND urls.pagespeed_last_id IS NOT NULL";
+	} else {
+		$query = "SELECT url, yslow2.timestamp as version FROM urls INNER JOIN yslow2 ON urls.yslow2_last_id = yslow2.id WHERE urls.url IN ($urllist) AND urls.yslow2_last_id IS NOT NULL";
+	}
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
 	}
 
-	$urllist .= sprintf("'%s'", mysql_real_escape_string($url));
-}
+	$colors = array(
+		'#FD4320',
+		'#3E25FA',
+		'#3EDF16',
+		'#EEB423',
+		'#F514B5'
+	);
+	$colorindex = 0;
 
-if ($pagespeed) {
-	$query = "SELECT url, pagespeed.timestamp as version FROM urls INNER JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id WHERE urls.url IN ($urllist) AND urls.pagespeed_last_id IS NOT NULL";
-} else {
-	$query = "SELECT url, yslow2.timestamp as version FROM urls INNER JOIN yslow2 ON urls.yslow2_last_id = yslow2.id WHERE urls.url IN ($urllist) AND urls.yslow2_last_id IS NOT NULL";
-}
-$result = mysql_query($query);
-
-if (!$result) {
-	error_log(mysql_error());
-}
-
-$colors = array(
-	'#FD4320',
-	'#3E25FA',
-	'#3EDF16',
-	'#EEB423',
-	'#F514B5'
-);
-$colorindex = 0;
-
-if (!$badinput) {
-	$data = array();
 	while ($row = mysql_fetch_assoc($result)) {
 		$data[$row['url']] = array(
 			'version' => urlencode($row['version']),
