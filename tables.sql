@@ -19,7 +19,7 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '3',
+  `version` int(10) unsigned NOT NULL default '4',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -91,14 +91,11 @@ CREATE TABLE `pagespeed` (
   `pImgDims` float unsigned NOT NULL default '0',
   `pCombineJS` float unsigned NOT NULL default '0',
   `pCombineCSS` float unsigned NOT NULL default '0',
-  `pCssInHead` float unsigned NOT NULL default '0',
   `pBrowserCache` float unsigned NOT NULL default '0',
   `pProxyCache` float unsigned NOT NULL default '0',
   `pNoCookie` float unsigned NOT NULL default '0',
-  `pCookieSize` float unsigned NOT NULL default '0',
   `pParallelDl` float unsigned NOT NULL default '0',
   `pCssSelect` float unsigned NOT NULL default '0',
-  `pCssJsOrder` float unsigned NOT NULL default '0',
   `pDeferJS` float unsigned NOT NULL default '0',
   `pGzip` float unsigned NOT NULL default '0',
   `pMinRedirect` float unsigned NOT NULL default '0',

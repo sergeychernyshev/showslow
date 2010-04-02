@@ -7,6 +7,23 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 4
+ *
+ * Combining renamed PageSpeed's metrics
+*/
+$versions[4]['up'][] = "UPDATE pagespeed SET pOptimizeTheOrderOfStylesAndScripts = pCssJsOrder WHERE pCssJsOrder > pOptimizeTheOrderOfStylesAndScripts";
+$versions[4]['up'][] = "ALTER TABLE pagespeed DROP COLUMN pCssJsOrder";
+
+$versions[4]['up'][] = "UPDATE pagespeed SET pPutCssInTheDocumentHead = pCssInHead WHERE pCssInHead > pPutCssInTheDocumentHead";
+$versions[4]['up'][] = "ALTER TABLE pagespeed DROP COLUMN pCssInHead";
+
+$versions[4]['up'][] = "UPDATE pagespeed SET pMinimizeRequestSize = pCookieSize WHERE pCookieSize > pMinimizeRequestSize";
+$versions[4]['up'][] = "ALTER TABLE pagespeed DROP COLUMN pCookieSize";
+
+$versions[4]['down'][] = "ALTER TABLE pagespeed ADD pCssJsOrder FLOAT UNSIGNED NOT NULL DEFAULT '0'";
+$versions[4]['down'][] = "ALTER TABLE pagespeed ADD pCssInHead FLOAT UNSIGNED NOT NULL DEFAULT '0'";
+$versions[4]['down'][] = "ALTER TABLE pagespeed ADD pCookieSize FLOAT UNSIGNED NOT NULL DEFAULT '0'";
+
 /* version 3
  *
  * Adding last measurement ID to the urls table for faster retrieval by primary key

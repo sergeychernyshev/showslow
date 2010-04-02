@@ -136,11 +136,10 @@ mysql_free_result($result);
 // Latest PageSpeed result
 $query = sprintf("SELECT timestamp, w, o, l, r, t, v,
 			pMinifyCSS, pMinifyJS, pOptImgs, pImgDims, pCombineJS, pCombineCSS,
-			pCssInHead, pBrowserCache, pProxyCache, pNoCookie, pCookieSize,
-			pParallelDl, pCssSelect, pCssJsOrder, pDeferJS, pGzip,
+			pPutCssInTheDocumentHead, pBrowserCache, pProxyCache, pNoCookie, 
+			pParallelDl, pCssSelect, pOptimizeTheOrderOfStylesAndScripts, pDeferJS, pGzip,
 			pMinRedirect, pCssExpr, pUnusedCSS, pMinDns, pDupeRsrc, pScaleImgs,
-			pMinifyHTML, pMinimizeRequestSize, pOptimizeTheOrderOfStylesAndScripts,
-			pPutCssInTheDocumentHead, pSpecifyCharsetEarly
+			pMinifyHTML, pMinimizeRequestSize, pSpecifyCharsetEarly
 		FROM pagespeed p
 		WHERE id = %d",
 	mysql_real_escape_string($pagespeed_last_id)
@@ -380,13 +379,15 @@ if ($row || $ps_row)
 		<?php echo printPageSpeedGradeBreakdown('Combine external CSS', 'rtt.html#CombineExternalCSS', $ps_row['pCombineCSS'])?>
 		</tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Optimize the order of styles and scripts', 'rtt.html#PutStylesBeforeScripts', $ps_row['pCssJsOrder'])?>
+		<?php echo printPageSpeedGradeBreakdown('Optimize the order of styles and scripts', 'rtt.html#PutStylesBeforeScripts', $ps_row['pOptimizeTheOrderOfStylesAndScripts'])?>
 		<?php echo printPageSpeedGradeBreakdown('Parallelize downloads across hostnames', 'rtt.html#ParallelizeDownloads', $ps_row['pParallelDl'])?>
 		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize request size</b></td></tr>
+	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize request overhead</b></td></tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minimize cookie size', 'request.html#MinimizeCookieSize', $ps_row['pCookieSize'])?>
+		<?php echo printPageSpeedGradeBreakdown('Minimize Request Size', 'request.html#MinimizeRequestSize', $ps_row['pMinimizeRequestSize'])?>
 		<?php echo printPageSpeedGradeBreakdown('Serve static content from a cookieless domain', 'request.html#ServeFromCookielessDomain', $ps_row['pNoCookie'])?>
+		</tr>
+		<tr>
 		</tr>
 	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize payload size</b></td></tr>
 		<tr>
@@ -398,29 +399,24 @@ if ($row || $ps_row)
 		<?php echo printPageSpeedGradeBreakdown('Minify CSS', 'payload.html#MinifyCSS', $ps_row['pMinifyCSS'])?>
 		</tr>
 		<tr>
+		<?php echo printPageSpeedGradeBreakdown('Minify HTML', 'payload.html#MinifyHTML', $ps_row['pMinifyHTML'])?>
 		<?php echo printPageSpeedGradeBreakdown('Defer loading of JavaScript', 'payload.html#DeferLoadingJS', $ps_row['pDeferJS'])?>
+		</tr>
+		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Optimize images', 'payload.html#CompressImages', $ps_row['pOptImgs'])?>
+		<?php echo printPageSpeedGradeBreakdown('Serve scaled images', 'payload.html#ScaleImages', $ps_row['pScaleImgs'])?>
 		</tr>
 		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Serve resources from a consistent URL', 'payload.html#duplicate_resources', $ps_row['pDupeRsrc'])?>
-		<?php echo printPageSpeedGradeBreakdown('Serve scaled images', 'payload.html#ScaleImages', $ps_row['pScaleImgs'])?>
 		</tr>
 	<tr><td colspan="6" style="padding-top: 1em"><b>Optimize browser rendering</b></td></tr>
 		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Use efficient CSS selectors', 'rendering.html#UseEfficientCSSSelectors', $ps_row['pCssSelect'])?>
 		<?php echo printPageSpeedGradeBreakdown('Avoid CSS expressions', 'rendering.html#AvoidCSSExpressions', $ps_row['pCssExpr'])?>
 		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Misc</b></td></tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minify HTML', '', $ps_row['pMinifyHTML'])?>
-		<?php echo printPageSpeedGradeBreakdown('Minimize Request Size', '', $ps_row['pMinimizeRequestSize'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Optimize The Order Of Styles And Scripts', '', $ps_row['pOptimizeTheOrderOfStylesAndScripts'])?>
-		<?php echo printPageSpeedGradeBreakdown('Put Css In The Document Head', '', $ps_row['pPutCssInTheDocumentHead'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Specify Charset Early', '', $ps_row['pSpecifyCharsetEarly'])?>
+		<?php echo printPageSpeedGradeBreakdown('Put Css In The Document Head', 'rendering.html#PutCSSInHead', $ps_row['pPutCssInTheDocumentHead'])?>
+		<?php echo printPageSpeedGradeBreakdown('Specify Charset Early', 'rendering.html#SpecifyCharsetEarly', $ps_row['pSpecifyCharsetEarly'])?>
 		</tr>
 	</table>	
 <?php 
