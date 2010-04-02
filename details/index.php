@@ -391,7 +391,7 @@ if ($row || $ps_row)
 		</tr>
 	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize payload size</b></td></tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Enable gzip compression', 'payload.html#GzipCompression', $ps_row['pGzip'])?>
+		<?php echo printPageSpeedGradeBreakdown('Enable compression', 'payload.html#GzipCompression', $ps_row['pGzip'])?>
 		<?php echo printPageSpeedGradeBreakdown('Remove unused CSS', 'payload.html#RemoveUnusedCSS', $ps_row['pUnusedCSS'])?>
 		</tr>
 		<tr>
@@ -415,7 +415,7 @@ if ($row || $ps_row)
 		<?php echo printPageSpeedGradeBreakdown('Avoid CSS expressions', 'rendering.html#AvoidCSSExpressions', $ps_row['pCssExpr'])?>
 		</tr>
 		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Put Css In The Document Head', 'rendering.html#PutCSSInHead', $ps_row['pPutCssInTheDocumentHead'])?>
+		<?php echo printPageSpeedGradeBreakdown('Put CSS In The Document Head', 'rendering.html#PutCSSInHead', $ps_row['pPutCssInTheDocumentHead'])?>
 		<?php echo printPageSpeedGradeBreakdown('Specify Charset Early', 'rendering.html#SpecifyCharsetEarly', $ps_row['pSpecifyCharsetEarly'])?>
 		</tr>
 	</table>	
