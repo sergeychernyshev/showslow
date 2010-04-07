@@ -15,9 +15,12 @@
 ###########################################################################
 
 This directory contains scripts for use in the automation (specifically
-Mozilla Firefox).
+Mozilla Firefox) and benefit greatly from the following patch which will
+be applied to the Google Page Speed v1.7 tree:
 
-The scripts here are still under heavy development, but are seeing 
+    http://page-speed-codereview.appspot.com/151001
+
+The script(s) here are still under heavy development, but are seeing 
 production use and monitoring hundreds of URLs via simple linux virtual
 machine zombies.
 
@@ -60,11 +63,13 @@ Instructions:
 
 	Other variables to consider:
 	    
-	    * cache size
-	    * disable update checks
-	    * delete history data (cookies)
+            * cache size
+            * pop-up suppression
+            * disable java script resize & position
+            * disable update checks
+            * delete history data (cookies)
             * disable all warnings
-	    * where to dump Google Page Speed optimization data
+            * where to dump Google Page Speed optimization data
 
 	To clone or backup an existing profile see the following Mozilla
 	documentation:
@@ -73,14 +78,17 @@ Instructions:
 
     3.  Manually run and confirm the test_harness.pl script execution.  Simply run
 	the script without any args for usage.
+	
+	usage:  test_harness.pl --display <DISPLAY> --firefox <PATH> --source <URL> \
+                    --profile <PATH> [--timeout <SECONDS>] [--quiet] [--verbose]
 
-	    usage:  test_harness.pl --source URL --profile PATH --wait SEC [--verbose|debug]
-    		--firefox  path to Firefox binary ( default = /usr/bin/firefox )
-    		--source   uniform resource locator ( e.g. http://www.example.com/list )
+    		--display  x11 display ( e.g. ':99' )
+   	 	--firefox  path to Firefox binary ( default = /usr/bin/firefox )
     		--profile  path to Firefox profile ( e.g. /home/foo/profile )
-    		--wait     thread execution time in seconds ( default = 30 )
-    		--display  x11 display ( e.g. :99 )
-    		--debug
+    		--source   uniform resource locator ( e.g. http://www.example.com/list )
+    		--quiet    supress debug messages ( default TRUE )
+    		--timeout  thread execution timeout in seconds ( default = 60 )
+    		--verbose  enable verbose ouput to STDOUT ( default FALSE )
 
     4.  Edit the monitor.sh script to reflect your desired settings.  The script can
 	be run manually and once tested (see STEP 0) added to cron and exists as a 
