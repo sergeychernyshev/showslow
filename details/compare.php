@@ -184,9 +184,9 @@ foreach ($urls as $url) {
 
 if ($pagespeed) {
 ?>
-	<h2>Compare PageSpeed rankings (<a href="?<?php echo $params?>">YSlow</a>)</h2>
+	<h2>Compare PageSpeed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h2>
 <?php } else {?>
-	<h2>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">PageSpeed</a>)</h2>
+	<h2>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to PageSpeed</a>)</h2>
 <?php }?>
 <ul>
 <?php foreach ($urls as $url) { ?>
