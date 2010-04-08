@@ -195,8 +195,8 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			resultsList: "records",
 			fields: ["timestamp", "w", "o", "l", "r", "t", "v",
 			"pMinifyCSS", "pMinifyJS", "pOptImgs", "pImgDims", "pCombineJS", "pCombineCSS",
-			"pCssInHead", "pBrowserCache", "pProxyCache", "pNoCookie", "pCookieSize",
-			"pParallelDl", "pCssSelect", "pCssJsOrder", "pDeferJS", "pGzip",
+			"pPutCssInTheDocumentHead", "pBrowserCache", "pProxyCache", "pNoCookie", "pMinimizeRequestSize",
+			"pParallelDl", "pCssSelect", "pOptimizeTheOrderOfStylesAndScripts", "pDeferJS", "pGzip",
 			"pMinRedirect", "pCssExpr", "pUnusedCSS", "pMinDns", "p.pDupeRsrc"]
 		};
 

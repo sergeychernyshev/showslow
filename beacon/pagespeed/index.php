@@ -89,9 +89,6 @@ if (array_key_exists('v', $_GET)
 		'%3.2f',
 		'%3.2f',
 		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
 		'%3.2f'
 	)",
 		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),

@@ -30,8 +30,8 @@ mysql_free_result($result);
 $query = sprintf("SELECT UNIX_TIMESTAMP(p.timestamp) as time,
 		p.w, p.o, p.l, p.r, p.t, p.v,
 		p.pMinifyCSS, p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,
-		p.pCssInHead, p.pBrowserCache, p.pProxyCache, p.pNoCookie, p.pCookieSize,
-		p.pParallelDl, p.pCssSelect, p.pCssJsOrder, p.pDeferJS, p.pGzip,
+		p.pPutCssInTheDocumentHead, p.pBrowserCache, p.pProxyCache, p.pNoCookie, p.pMinimizeRequestSize,
+		p.pParallelDl, p.pCssSelect, p.pMinimizeRequestSize, p.pDeferJS, p.pGzip,
 		p.pMinRedirect, p.pCssExpr, p.pUnusedCSS, p.pMinDns, p.pDupeRsrc	
 	FROM pagespeed p WHERE p.url_id = %d AND p.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 ORDER BY p.timestamp DESC",
@@ -57,8 +57,8 @@ while ($row = mysql_fetch_assoc($result)) {
         echo date('c', $row['time']).','.
 		$row['w'].','.$row['o'].','.$row['l'].','.$row['r'].','.$row['t'].','.$row['v'].','.
 		$row['pMinifyCSS'].','.$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
-		$row['pCssInHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pCookieSize'].','.
-		$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pCssJsOrder'].','.$row['pDeferJS'].','.$row['pGzip'].','.
+		$row['pPutCssInTheDocumentHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pMinimizeRequestSize'].','.
+		$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pMinimizeRequestSize'].','.$row['pDeferJS'].','.$row['pGzip'].','.
 		$row['pMinRedirect'].','.$row['pCssExpr'].','.$row['pUnusedCSS'].','.$row['pMinDns'].','.$row['pDupeRsrc'].
 		"\n";
 }
