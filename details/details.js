@@ -41,7 +41,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "yslowgrade2",
 			label: "YSlow2 Grade",
-			dataSource: new Timeplot.ColumnSource(eventSource2,2),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(eventSource2,2),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#2175D9",
@@ -50,7 +53,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "pagespeed",
 			label: "Page Speed Grade",
-			dataSource: new Timeplot.ColumnSource(pagespeed,2),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(pagespeed,2),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#6F4428",
@@ -59,7 +65,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "pageload",
 			label: "Page Load Time (Page Speed)",
-			dataSource: new Timeplot.ColumnSource(pagespeed,3),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(pagespeed,2),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryTime,
 			lineColor: "#EE4F00",
@@ -68,7 +77,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "lt",
 			label: "Page Load Time (YSlow)",
-			dataSource: new Timeplot.ColumnSource(eventSource2,4),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(eventSource2,4),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryTime,
 			lineColor: "purple",
@@ -77,7 +89,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "pageweight2",
 			label: "Page Size (bytes)",
-			dataSource: new Timeplot.ColumnSource(eventSource2,1),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(eventSource2,1),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryWeight,
 			lineColor: "#D0A825",
@@ -86,7 +101,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		Timeplot.createPlotInfo({
 			id: "requests2",
 			label: "Total Requests",
-			dataSource: new Timeplot.ColumnSource(eventSource2,3),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(eventSource2,3),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryRequests,
 			lineColor: "#75CF74",
@@ -116,7 +134,10 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 		plotInfo[plotInfo.length] = Timeplot.createPlotInfo({
 			id: "showslowmetric"+name,
 			label: metric.title,
-			dataSource: new Timeplot.ColumnSource(metric.source,1),
+			dataSource: new Timeplot.Processor(
+				new Timeplot.ColumnSource(metric.source,1),
+				Timeplot.Operator.average, { size: 6 }
+			),
 			timeGeometry: timeGeometry,
 			valueGeometry: new Timeplot.DefaultValueGeometry(config),
 			lineColor:  metric.color,
