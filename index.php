@@ -28,6 +28,11 @@ body {
 	margin:0;
 	padding:1em;
 }
+
+.progress {
+	padding: 1em;
+	display: none;
+}
 </style>
 
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
@@ -127,10 +132,16 @@ document.documentElement.firstChild.appendChild(ga);
 		</table>
 	</div>
         <div id="urls">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
         <div id="compare">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
 	<div id="configure">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+	</div>
+	<div id="download">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
     </div>
 </div>
@@ -141,5 +152,8 @@ document.documentElement.firstChild.appendChild(ga);
     tabView.getTab(2).addListener("click", function() { window.location.href='details/compare.php<?php echo $compareParams?>'; });
     tabView.getTab(3).addListener("click", function() { window.location.href='configure.php'; });
     tabView.getTab(4).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
+    YAHOO.util.Dom.batch(YAHOO.util.Dom.getElementsByClassName('progress'), function(el) {
+	YAHOO.util.Dom.setStyle(el, 'display', 'block');
+    });
 </script>
 </body></html>

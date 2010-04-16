@@ -33,6 +33,11 @@ body {
 	margin:0;
 	padding:1em;
 }
+
+.progress {
+	padding: 1em;
+	display: none;
+}
 </style>
 
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
@@ -96,10 +101,13 @@ document.documentElement.firstChild.appendChild(ga);
     </ul> 
     <div class="yui-content">
         <div id="last100">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
         <div id="urls">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
         <div id="compare">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
 	</div>
 	<div id="configure">
 		<p>
@@ -121,6 +129,9 @@ document.documentElement.firstChild.appendChild(ga);
 		<h2>More metrics</h2>
 		<p>For more information about different beacons supported by this instance of ShowSlow, see <a href="beacon/">beacons page</a></p>
 	</div>
+	<div id="download">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+	</div>
     </div>
 </div>
 
@@ -130,6 +141,9 @@ document.documentElement.firstChild.appendChild(ga);
     tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
     tabView.getTab(2).addListener("click", function() { window.location.href='details/compare.php<?php echo $compareParams?>'; });
     tabView.getTab(4).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
+    YAHOO.util.Dom.batch(YAHOO.util.Dom.getElementsByClassName('progress'), function(el) {
+	YAHOO.util.Dom.setStyle(el, 'display', 'block');
+    });
 </script>
 </script>
 </body></html>
