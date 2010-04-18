@@ -7,6 +7,14 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 5
+ *
+ * Making last_update NULL unless actually updated
+*/
+
+$versions[5]['up'][] = "ALTER TABLE urls MODIFY last_update TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP";
+$versions[5]['down'][] = "ALTER TABLE urls MODIFY last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP";
+
 /* version 4
  *
  * Combining renamed PageSpeed's metrics

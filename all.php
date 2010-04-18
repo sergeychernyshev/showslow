@@ -112,7 +112,7 @@ echo $ShowSlowIntro;
 		<table>
 		<tr><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?php 
-		$query = sprintf("SELECT DISTINCT url, yslow2.o as o, pagespeed.o as ps_o FROM urls LEFT JOIN yslow2 on urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed on urls.pagespeed_last_id = pagespeed.id");
+		$query = sprintf("SELECT DISTINCT url, yslow2.o as o, pagespeed.o as ps_o FROM urls LEFT JOIN yslow2 on urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed on urls.pagespeed_last_id = pagespeed.id WHERE last_update IS NOT NULL");
 		$result = mysql_query($query);
 
 		if (!$result) {
