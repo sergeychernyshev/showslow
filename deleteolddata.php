@@ -54,7 +54,7 @@ if ($oldDataInterval > 0)
 		LEFT JOIN (SELECT DISTINCT url_id FROM yslow2) AS y ON urls.id = y.url_id
 		LEFT JOIN (SELECT DISTINCT url_id FROM pagespeed) AS p ON urls.id = p.url_id
 		LEFT JOIN (SELECT DISTINCT url_id FROM metric) AS m ON urls.id = m.url_id
-		SET last_update = NULL
+		SET last_update = NULL, yslow2_last_id = NULL, pagespeed_last_id = NULL
 		WHERE y.url_id IS NULL AND p.url_id IS NULL AND m.url_id IS NULL';
 
 	$result = mysql_query($query);
