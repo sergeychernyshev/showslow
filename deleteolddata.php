@@ -39,8 +39,23 @@ if ($oldDataInterval > 0)
 		exit;
 	}
 
-	# updating latest values for the URL
+	# deleting old URLs
 	$query = 'DELETE urls FROM urls LEFT JOIN (SELECT DISTINCT url_id FROM yslow2) AS y ON urls.id = y.url_id LEFT JOIN (SELECT DISTINCT url_id FROM pagespeed) AS p ON urls.id = p.url_id LEFT JOIN (SELECT DISTINCT url_id FROM metric) AS m ON urls.id = m.url_id LEFT JOIN (SELECT DISTINCT url_id FROM user_urls) AS uu ON urls.id = uu.url_id WHERE y.url_id IS NULL AND p.url_id IS NULL AND m.url_id IS NULL AND uu.url_id IS NULL';
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+		exit;
+	}
+
+	# resetting last_updated for URLs that have no measurements
+	$query = 'UPDATE urls
+		LEFT JOIN (SELECT DISTINCT url_id FROM yslow2) AS y ON urls.id = y.url_id
+		LEFT JOIN (SELECT DISTINCT url_id FROM pagespeed) AS p ON urls.id = p.url_id
+		LEFT JOIN (SELECT DISTINCT url_id FROM metric) AS m ON urls.id = m.url_id
+		SET last_update = NULL
+		WHERE y.url_id IS NULL AND p.url_id IS NULL AND m.url_id IS NULL';
 
 	$result = mysql_query($query);
 
