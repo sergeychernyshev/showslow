@@ -50,7 +50,7 @@ $enableHARBeacon = false;
 $HARViewerBase = 'http://www.softwareishard.com/har/viewer/';
 
 # config will override defaults above
-require_once('config.php');
+require_once(dirname(__FILE__).'/config.php');
 
 function yslowPrettyScore($num) {
 	$letter = 'F';
