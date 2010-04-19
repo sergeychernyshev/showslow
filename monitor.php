@@ -11,9 +11,9 @@ if (array_key_exists('new', $_GET)) {
 }
 
 if ($new) {
-	$query = sprintf("SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE last_update IS NULL");
+	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE last_update IS NULL";
 } else {
-	$query = sprintf("SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id";
+	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id";
 }
 
 $result = mysql_query($query);
