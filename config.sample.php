@@ -8,6 +8,8 @@ $user = 'showslow';
 $pass = '... database-password ...';
 $host = 'localhost';
 
+$sessionSecret = '...................................................';
+
 # Custom metrics supported
 #$metrics['bouncerate'] = array(
 #	'id' => 1,

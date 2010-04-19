@@ -88,6 +88,7 @@ document.documentElement.firstChild.appendChild(ga);
 <?php echo $ShowSlowIntro?>
 <div id="showslowlists" class="yui-navset">
     <ul class="yui-nav">
+	<?php if ($enableMyURLs) { ?><li><a href="my.php"><em>Add URL</em></a></li><?php } ?>
         <li class="selected"><a href="#last100"><em>Last 100 measurements</em></a></li>
         <li><a href="all.php"><em>URLs measured</em></a></li>
         <li><a href="details/compare.php<?php echo $compareParams?>"><em>Compare rankings</em></a></li>
@@ -95,6 +96,9 @@ document.documentElement.firstChild.appendChild(ga);
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
+        <?php if ($enableMyURLs) { ?><div id="my">
+		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+	</div><?php } ?>
         <div id="last100">
 		<table>
 		<tr><th>Timestamp</th><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
@@ -148,10 +152,13 @@ document.documentElement.firstChild.appendChild(ga);
 
 <script type="text/javascript">
     var tabView = new YAHOO.widget.TabView('showslowlists');
-    tabView.getTab(1).addListener("click", function() { window.location.href='all.php'; });
-    tabView.getTab(2).addListener("click", function() { window.location.href='details/compare.php<?php echo $compareParams?>'; });
-    tabView.getTab(3).addListener("click", function() { window.location.href='configure.php'; });
-    tabView.getTab(4).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
+    var i = 0;
+    <?php if ($enableMyURLs) { ?>tabView.getTab(i++).addListener("click", function() { window.location.href='my.php'; });<?php } ?>
+    i++;
+    tabView.getTab(i++).addListener("click", function() { window.location.href='all.php'; });
+    tabView.getTab(i++).addListener("click", function() { window.location.href='details/compare.php<?php echo $compareParams?>'; });
+    tabView.getTab(i++).addListener("click", function() { window.location.href='configure.php'; });
+    tabView.getTab(i++).addListener("click", function() { window.location.href='http://code.google.com/p/showslow/source/checkout'; });
     YAHOO.util.Dom.batch(YAHOO.util.Dom.getElementsByClassName('progress'), function(el) {
 	YAHOO.util.Dom.setStyle(el, 'display', 'block');
     });

@@ -1,13 +1,15 @@
--- MySQL dump 10.9
+-- MySQL dump 10.11
 --
 -- Host: localhost    Database: showslow
 -- ------------------------------------------------------
--- Server version	4.1.16
+-- Server version	5.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
@@ -19,7 +21,7 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '4',
+  `version` int(10) unsigned NOT NULL default '6',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -38,7 +40,7 @@ CREATE TABLE `event` (
   `resource_url` blob COMMENT 'additional URL to resource related to the event.',
   PRIMARY KEY  (`id`),
   KEY `start` (`start`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `har`
@@ -52,7 +54,7 @@ CREATE TABLE `har` (
   `har` longblob NOT NULL COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL default '0' COMMENT 'Indicates that HAR data is stored compressed',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=127 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `metric`
@@ -66,7 +68,7 @@ CREATE TABLE `metric` (
   `metric_id` mediumint(8) unsigned NOT NULL default '0',
   `value` float NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=359 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `pagespeed`
@@ -111,7 +113,57 @@ CREATE TABLE `pagespeed` (
   `pSpecifyCharsetEarly` float unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6828 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `u_googlefriendconnect`
+--
+
+DROP TABLE IF EXISTS `u_googlefriendconnect`;
+CREATE TABLE `u_googlefriendconnect` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `google_id` varchar(255) NOT NULL COMMENT 'Google Friend Connect ID',
+  `userpic` text NOT NULL COMMENT 'Google Friend Connect User picture',
+  PRIMARY KEY  (`user_id`,`google_id`),
+  CONSTRAINT `gfc_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `u_invitation`
+--
+
+DROP TABLE IF EXISTS `u_invitation`;
+CREATE TABLE `u_invitation` (
+  `code` char(10) NOT NULL COMMENT 'Code',
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'When invitation was created',
+  `issuedby` bigint(10) unsigned NOT NULL default '1' COMMENT 'User who issued the invitation. Default is Sergey.',
+  `sentto` text COMMENT 'Note about who this invitation was sent to',
+  `user` bigint(10) unsigned default NULL COMMENT 'User name',
+  PRIMARY KEY  (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `u_users`
+--
+
+DROP TABLE IF EXISTS `u_users`;
+CREATE TABLE `u_users` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `regtime` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Time of registration',
+  `name` text NOT NULL,
+  `username` varchar(25) default NULL,
+  `email` varchar(320) default NULL,
+  `pass` varchar(40) NOT NULL COMMENT 'Password digest',
+  `salt` varchar(13) NOT NULL COMMENT 'Salt',
+  `temppass` varchar(13) default NULL COMMENT 'Temporary password used for password recovery',
+  `temppasstime` timestamp NULL default NULL COMMENT 'Temporary password generation time',
+  `requirespassreset` tinyint(1) NOT NULL default '0' COMMENT 'Flag indicating that user must reset their password before using the site',
+  `fb_id` bigint(20) unsigned default NULL COMMENT 'Facebook user ID',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `fb_id` (`fb_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `urls`
@@ -121,12 +173,23 @@ DROP TABLE IF EXISTS `urls`;
 CREATE TABLE `urls` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'id to reference',
   `url` blob NOT NULL COMMENT 'url',
-  `last_update` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `last_update` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
   `last_event_update` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Last time events were updated for this URL',
   `yslow2_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for YSlow beacon',
   `pagespeed_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for PageSpeed beacon',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
+) ENGINE=MyISAM AUTO_INCREMENT=19176 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `user_urls`
+--
+
+DROP TABLE IF EXISTS `user_urls`;
+CREATE TABLE `user_urls` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID to measure',
+  PRIMARY KEY  (`user_id`,`url_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -170,7 +233,8 @@ CREATE TABLE `yslow2` (
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=352607 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -180,3 +244,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- Dump completed on 2010-04-18 23:58:53

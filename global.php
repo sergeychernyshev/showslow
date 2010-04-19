@@ -49,6 +49,20 @@ $enableHARBeacon = false;
 # HAR Viewer base URL
 $HARViewerBase = 'http://www.softwareishard.com/har/viewer/';
 
+# Enable user URL monitoring
+$enableMyURLs = false;
+
+# Maximum URLs each user can add to the system to be monitored (false means no limit)
+$maxURLsPerUser = false;
+
+# how long should monitoring scripts wait between measurements (in hours).
+$monitoringPeriod = 24;
+
+# Facebook connect properties, configure them here:
+# http://www.facebook.com/developers/createapp.php
+$facebookAPIKey = null;
+$facebookSecret = null;
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 

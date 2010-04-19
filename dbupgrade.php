@@ -7,6 +7,53 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 6
+ *
+ * Adding userbase instance
+*/
+$versions[6]['up'][] = "CREATE TABLE `u_users` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `regtime` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Time of registration',
+  `name` text NOT NULL,
+  `username` varchar(25) default NULL,
+  `email` varchar(320) default NULL,
+  `pass` varchar(40) NOT NULL COMMENT 'Password digest',
+  `salt` varchar(13) NOT NULL COMMENT 'Salt',
+  `temppass` varchar(13) default NULL COMMENT 'Temporary password used for password recovery',
+  `temppasstime` timestamp NULL default NULL COMMENT 'Temporary password generation time',
+  `requirespassreset` tinyint(1) NOT NULL default '0' COMMENT 'Flag indicating that user must reset their password before using the site',
+  `fb_id` bigint(20) unsigned default NULL COMMENT 'Facebook user ID',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `fb_id` (`fb_id`)
+) ENGINE=InnoDB;";
+$versions[6]['up'][] = "CREATE TABLE `u_googlefriendconnect` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `google_id` varchar(255) NOT NULL COMMENT 'Google Friend Connect ID',
+  `userpic` text NOT NULL COMMENT 'Google Friend Connect User picture',
+  PRIMARY KEY  (`user_id`,`google_id`),
+  CONSTRAINT `gfc_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;";
+$versions[6]['up'][] = "CREATE TABLE `u_invitation` (
+  `code` char(10) NOT NULL COMMENT 'Code',
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'When invitation was created',
+  `issuedby` bigint(10) unsigned NOT NULL default '1' COMMENT 'User who issued the invitation. Default is Sergey.',
+  `sentto` text COMMENT 'Note about who this invitation was sent to',
+  `user` bigint(10) unsigned default NULL COMMENT 'User name',
+  PRIMARY KEY  (`code`)
+) ENGINE=InnoDB;";
+$versions[6]['up'][] = "CREATE TABLE `user_urls` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID to measure',
+  PRIMARY KEY  (`user_id`,`url_id`)
+) ENGINE=MyISAM;";
+
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `user_urls`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_googlefriendconnect`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_invitation`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_users`";
+
 /* version 5
  *
  * Making last_update NULL unless actually updated
