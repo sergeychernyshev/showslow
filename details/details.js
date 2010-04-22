@@ -66,7 +66,7 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "pageload",
 			label: "Page Load Time (Page Speed)",
 			dataSource: new Timeplot.Processor(
-				new Timeplot.ColumnSource(pagespeed,2),
+				new Timeplot.ColumnSource(pagespeed,3),
 				Timeplot.Operator.average, { size: 6 }
 			),
 			timeGeometry: timeGeometry,
