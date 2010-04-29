@@ -55,6 +55,9 @@ $enableMyURLs = false;
 # Maximum URLs each user can add to the system to be monitored (false means no limit)
 $maxURLsPerUser = false;
 
+# Privileged users who has no limit on URLs
+$noMaxURLsForUsers = array();
+
 # how long should monitoring scripts wait between measurements (in hours).
 $monitoringPeriod = 24;
 

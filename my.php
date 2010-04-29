@@ -61,7 +61,7 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)
 	header('Location: '.$showslow_base.'my.php');
 }
 
-if ($current_user->getID() == 1) {
+if (in_array($current_user->getID(), $noMaxURLsForUsers)) {
 	$maxURLsPerUser = false;
 }
 
