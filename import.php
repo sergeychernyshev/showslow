@@ -18,7 +18,26 @@ foreach ($sites as $site) {
 
 	$site = trim($site);
 
-	$url = filter_var('http://www.'.$site.'/', FILTER_VALIDATE_URL);
+	$url = filter_var($site, FILTER_VALIDATE_URL);
+
+	# let's try to beautify the URL by appending http://www.
+	if ($url === false) {
+		if (substr($site, 0, 3) == 'www') {
+			$url = filter_var('http://'.$site.'/', FILTER_VALIDATE_URL);
+		}
+		else
+		{
+			$url = filter_var('http://www.'.$site.'/', FILTER_VALIDATE_URL);
+		}
+	}
+	else
+	{
+		# skipping non-http URLs
+		if (substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://') {
+			echo "Skipping non-http URL: $url\n";
+			continue;
+		}
+	}
 
 	echo "Importing URL: $url ...";
 	if ($url === false) {
