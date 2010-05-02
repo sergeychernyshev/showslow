@@ -28,9 +28,11 @@ font-size: small;
 }
 </style>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
-<script type="text/javascript" src="<?php echo $TimePlotBase?>timeplot-api.js"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>ajax/simile-ajax-api.js?bundle=true"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js?v=4" type="text/javascript"></script>
+<script src="details.js?v=5" type="text/javascript"></script>
 <script>
 <?php
 echo 'var metrics = '.json_encode($metrics);

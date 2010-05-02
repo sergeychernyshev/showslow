@@ -46,8 +46,10 @@ padding:1em;
 </style>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
 <?php if (!$badinput) { ?>
-<script type="text/javascript" src="<?php echo $TimePlotBase?>timeplot-api.js"></script>
-<script src="compare.js?v=2" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>ajax/simile-ajax-api.js?bundle=true"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
+<script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
+<script src="compare.js?v=3" type="text/javascript"></script>
 <?php } ?>
 
 <?php if ($showFeedbackButton) {?>

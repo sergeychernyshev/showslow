@@ -21,10 +21,11 @@ function onLoad(data) {
 		plotInfo[plotInfo.length] = Timeplot.createPlotInfo({
 			id: url,
 			label: url,
-			dataSource: new Timeplot.Processor(
-				new Timeplot.ColumnSource(data[url].eventsource,2),
-				Timeplot.Operator.average, { size: 6 }
-			),
+			dataSource: new Timeplot.ColumnSource(data[url].eventsource,2),
+//			dataSource: new Timeplot.Processor(
+//				new Timeplot.ColumnSource(data[url].eventsource,2),
+//				Timeplot.Operator.average, { size: 6 }
+//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: data[url].color,

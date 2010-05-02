@@ -11,9 +11,6 @@ $dropQueryStrings = false;
 # Custom metrics array
 $metrics = array();
 
-# URL of timeplot installation
-$TimePlotBase = 'http://api.simile-widgets.org/timeplot/1.1/';
-
 # to see if your users are visiting the tool, enable Google Analytics
 # (for publicly hosted instances)
 $googleAnalyticsProfile = '';
