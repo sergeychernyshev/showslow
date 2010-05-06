@@ -1,4 +1,4 @@
-all:
+all:	assets
 	svn update
 	php dbupgrade.php
 
@@ -30,3 +30,16 @@ endif
 
 timeplot-patch:
 	patch -p0 <timeplot.patch
+
+# from svn-assets project
+clean: noassets
+
+assets:
+	svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php
+
+# uncomment next line when we'll have any CSS files to process
+#find ./ -name '*.css' -not -wholename "./timeplot/*" -not -wholename "./timeline/*" -not -wholename "./ajax/*" -not -wholename "./users/*" | xargs -n1 php svn-assets/cssurlrewrite.php
+
+noassets:
+	cp svn-assets/no-assets.php asset_versions.php
+	find ./ -name '*_deploy.css' | xargs -n10 rm -f

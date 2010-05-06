@@ -109,7 +109,7 @@ document.documentElement.firstChild.appendChild(ga);
 </style>
 </head>
 <body class="yui-skin-sam"<?php if (!$badinput) { ?> onload="onLoad(data);" onresize="onResize();"<?php } ?>>
-<a href="http://www.showslow.org/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<a href="http://www.showslow.org/"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a></h1>
 

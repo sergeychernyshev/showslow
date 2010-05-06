@@ -32,7 +32,7 @@ font-size: small;
 <script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
 <script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js?v=6" type="text/javascript"></script>
+<script src="<?php echo assetURL('details/details.js')?>" type="text/javascript"></script>
 <script>
 <?php
 echo 'var metrics = '.json_encode($metrics);
@@ -95,7 +95,7 @@ document.documentElement.firstChild.appendChild(ga);
 </style>
 </head>
 <body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($url) ?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
-<a href="http://www.showslow.org/"><img src="../showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<a href="http://www.showslow.org/"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
 <h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($url)?>"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php 

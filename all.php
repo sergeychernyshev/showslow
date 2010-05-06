@@ -87,7 +87,7 @@ document.documentElement.firstChild.appendChild(ga);
 <?php }?>
 </head>
 <body class="yui-skin-sam">
-<a href="http://www.showslow.org/"><img src="showslow_icon.png" style="float: right; margin-left: 1em; border: 0"/></a>
+<a href="http://www.showslow.org/"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; margin-left: 1em; border: 0"/></a>
 <div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
 <h1>Show Slow</h1>
 <?php
@@ -107,10 +107,10 @@ echo $ShowSlowIntro;
     </ul> 
     <div class="yui-content">
         <?php if ($enableMyURLs) { ?><div id="my">
-		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+		<div class="progress">Loading...<br/><img src="<?php echo assetURL('progressbar.gif')?>"/></div>
 	</div><?php } ?>
         <div id="last100">
-		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+		<div class="progress">Loading...<br/><img src="<?php echo assetURL('progressbar.gif')?>"/></div>
 	</div>
         <div id="urls">
 		<table>
@@ -148,13 +148,13 @@ echo $ShowSlowIntro;
 		</table>
 	</div>
         <div id="compare">
-		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+		<div class="progress">Loading...<br/><img src="<?php echo assetURL('progressbar.gif')?>"/></div>
 	</div>
 	<div id="configure">
-		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+		<div class="progress">Loading...<br/><img src="<?php echo assetURL('progressbar.gif')?>"/></div>
 	</div>
 	<div id="download">
-		<div class="progress">Loading...<br/><img src="progressbar.gif"/></div>
+		<div class="progress">Loading...<br/><img src="<?php echo assetURL('progressbar.gif')?>"/></div>
 	</div>
     </div>
 </div>

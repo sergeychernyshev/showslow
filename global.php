@@ -66,6 +66,9 @@ $facebookSecret = null;
 # Smoothing distance (averaging window will be from x-distance to x+distance)
 $smoothDistance = 5;
 
+require_once(dirname(__FILE__).'/asset_versions.php');
+require_once(dirname(__FILE__).'/svn-assets/asset_functions.php');
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 
