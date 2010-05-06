@@ -139,21 +139,23 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	    timeout: 10000,
 	    combine: true,
 	    onSuccess: function() {
-		for (name in details) {
-			if (details.hasOwnProperty(name)) {
-				var el = YAHOO.util.Dom.get('details_'+name);
+		if (typeof(details) !== 'undefined' ) {
+			for (name in details) {
+				if (details.hasOwnProperty(name)) {
+					var el = YAHOO.util.Dom.get('details_'+name);
 
-				if (!el) {
-					continue;
+					if (!el) {
+						continue;
+					}
+
+					el.innerHTML='+';
+
+					new YAHOO.widget.Tooltip("tt_"+name,  
+					{
+						context:	el,
+						text:		details[name].join('<br/>')
+					});
 				}
-
-				el.innerHTML='+';
-
-				new YAHOO.widget.Tooltip("tt_"+name,  
-				{
-					context:	el,
-					text:		details[name].join('<br/>')
-				});
 			}
 		}
 
