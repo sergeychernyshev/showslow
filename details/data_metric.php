@@ -50,6 +50,7 @@ if (array_key_exists('ver', $_GET)) {
 }
 echo '# Timestamp, '.$metrics[$_GET['metric']]['title'].' for '.$_GET['url']."\n";
 
+$rows = array();
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 }
