@@ -42,10 +42,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "yslowgrade2",
 			label: "YSlow2 Grade",
 			dataSource: new Timeplot.ColumnSource(eventSource2,2),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(eventSource2,2),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#2175D9",
@@ -55,10 +51,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "pagespeed",
 			label: "Page Speed Grade",
 			dataSource: new Timeplot.ColumnSource(pagespeed,2),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(pagespeed,2),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#6F4428",
@@ -68,10 +60,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "pageload",
 			label: "Page Load Time (Page Speed)",
 			dataSource: new Timeplot.ColumnSource(pagespeed,3),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(pagespeed,3),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryTime,
 			lineColor: "#EE4F00",
@@ -81,10 +69,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "lt",
 			label: "Page Load Time (YSlow)",
 			dataSource: new Timeplot.ColumnSource(eventSource2,4),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(eventSource2,4),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryTime,
 			lineColor: "purple",
@@ -94,10 +78,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "pageweight2",
 			label: "Page Size (bytes)",
 			dataSource: new Timeplot.ColumnSource(eventSource2,1),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(eventSource2,1),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryWeight,
 			lineColor: "#D0A825",
@@ -107,10 +87,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "requests2",
 			label: "Total Requests",
 			dataSource: new Timeplot.ColumnSource(eventSource2,3),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(eventSource2,3),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryRequests,
 			lineColor: "#75CF74",
@@ -141,10 +117,6 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			id: "showslowmetric"+name,
 			label: metric.title,
 			dataSource: new Timeplot.ColumnSource(metric.source,1),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(metric.source,1),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: new Timeplot.DefaultValueGeometry(config),
 			lineColor:  metric.color,
@@ -154,11 +126,11 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
 	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
-	timeplot.loadText('data.php?profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
-	timeplot.loadText('data_pagespeed.php?url=' + url + '&ver=' + psdataversion, ",", pagespeed);
+	timeplot.loadText('data.php?smooth=yes&subset=graph&profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
+	timeplot.loadText('data_pagespeed.php?smooth=yes&subset=graph&url=' + url + '&ver=' + psdataversion, ",", pagespeed);
 
 	for (var name in metrics) {
-		timeplot.loadText('data_metric.php?metric=' + name + '&url=' + url, ",", metrics[name].source);
+		timeplot.loadText('data_metric.php?smooth=yes&metric=' + name + '&url=' + url, ",", metrics[name].source);
 	}
 
 	var loader = new YAHOO.util.YUILoader({
@@ -201,31 +173,22 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 			{key:"l", label:"Load Time (ms)", sortable:true}
 		];
 
-		var yDataSource = new YAHOO.util.DataSource("data.php?");
+		var yDataSource = new YAHOO.util.DataSource("data.php?subset=graph&");
 		yDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		yDataSource.responseSchema = {
 			recordDelim : "\n", 
 			fieldDelim : "," ,
 			resultsList: "records",
-			fields: ["timestamp", "w", "o", "r", "lt",
-			'ynumreq','ycdn','yexpires','ycompress','ycsstop',
-			'yjsbottom','yjsbottom','yexternal','ydns','yminify',
-			'yredirects','ydupes','yetags','yxhr','yxhrmethod',
-			'ymindom','yno404','ymincookie','ycookiefree','ynofilter',
-	                'yimgnoscale','yfavicon', "profile"]
+			fields: ["timestamp", "w", "o", "r", "lt", "profile"]
 		};
 
-		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?");
+		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?subset=graph&");
 		psDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		psDataSource.responseSchema = {
 			recordDelim : "\n", 
 			fieldDelim : "," ,
 			resultsList: "records",
-			fields: ["timestamp", "w", "o", "l", "r", "t", "v",
-			"pMinifyCSS", "pMinifyJS", "pOptImgs", "pImgDims", "pCombineJS", "pCombineCSS",
-			"pPutCssInTheDocumentHead", "pBrowserCache", "pProxyCache", "pNoCookie", "pMinimizeRequestSize",
-			"pParallelDl", "pCssSelect", "pOptimizeTheOrderOfStylesAndScripts", "pDeferJS", "pGzip",
-			"pMinRedirect", "pCssExpr", "pUnusedCSS", "pMinDns", "p.pDupeRsrc"]
+			fields: ["timestamp", "w", "o", "l", "r"]
 		};
 
 		var yDataTable = new YAHOO.widget.ScrollingDataTable("measurementstable", yColumnDefs, yDataSource,

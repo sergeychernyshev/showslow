@@ -22,10 +22,6 @@ function onLoad(data) {
 			id: url,
 			label: url,
 			dataSource: new Timeplot.ColumnSource(data[url].eventsource,2),
-//			dataSource: new Timeplot.Processor(
-//				new Timeplot.ColumnSource(data[url].eventsource,2),
-//				Timeplot.Operator.average, { size: 6 }
-//			),
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: data[url].color,
@@ -37,9 +33,9 @@ function onLoad(data) {
 
 	for (var url in data) {
 		if (data[url].ranker == 'pagespeed') {
-			timeplot.loadText('data_pagespeed.php?url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data_pagespeed.php?smooth&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else {
-			timeplot.loadText('data.php?profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data.php?smooth&subset=graph&profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		}
 	}
 

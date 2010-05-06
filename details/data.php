@@ -65,50 +65,94 @@ if (!$result) {
 
 $data = array();
 
-header('Content-type: text/plain');
+header('Content-type: text/csv');
 if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
 	header('Cache-control: max-age=315569260');
 }
-/*
-echo '# Measurement time, ';
-echo 'Page size (in bytes), ';
-echo 'YSlow grade, ';
-echo 'Total # requests, ';
-echo 'Page Load Time, ';
-echo 'Make fewer HTTP requests, ';
-echo 'Use a Content Delivery Network (CDN), ';
-echo 'Add Expires headers, ';
-echo 'Compress components with gzip, ';
-echo 'Put CSS at top, ';
-echo 'Put JavaScript at bottom, ';
-echo 'Avoid CSS expressions, ';
-echo 'Make JavaScript and CSS external, ';
-echo 'Reduce DNS lookups, ';
-echo 'Minify JavaScript and CSS, ';
-echo 'Avoid URL redirects, ';
-echo 'Remove duplicate JavaScript and CSS, ';
-echo 'Configure entity tags (ETags), ';
-echo 'Make AJAX cacheable, ';
-echo 'Use GET for AJAX requests, ';
-echo 'Reduce the number of DOM elements, ';
-echo 'Avoid HTTP 404 (Not Found) error, ';
-echo 'Reduce cookie size, ';
-echo 'Use cookie-free domains, ';
-echo 'Avoid AlphaImageLoader filter, ';
-echo 'Do not scale images in HTML, ';
-echo 'Make favicon small and cacheable, ';
-echo "YSlow profile used\n";
-*/
+
+$rows = array();
 while ($row = mysql_fetch_assoc($result)) {
-        echo date('c', $row['t']).','.
-		($row['i'] == 'yslow1' ? $row['w'] * 1024 : $row['w']).','.$row['o'].','.$row['r'].','.$row['lt'].','.
-                $row['ynumreq'].','.$row['ycdn'].','.$row['yexpires'].','.$row['ycompress'].','.$row['ycsstop'].','.
-                $row['yjsbottom'].','.$row['yexpressions'].','.$row['yexternal'].','.$row['ydns'].','.$row['yminify'].','.
-                $row['yredirects'].','.$row['ydupes'].','.$row['yetags'].','.$row['yxhr'].','.$row['yxhrmethod'].','.
-                $row['ymindom'].','.$row['yno404'].','.$row['ymincookie'].','.$row['ycookiefree'].','.$row['ynofilter'].','.
-                $row['yimgnoscale'].','.$row['yfavicon'].($all ? ','.$row['i'] : '').
-		"\n";
+	$rows[] = $row;
 }
+
 mysql_free_result($result);
+
+if (array_key_exists('smooth', $_REQUEST)) {
+	require_once(dirname(__FILE__).'/smooth.php');
+	smooth($rows, array('w', 'o', 'r', 'lt'));
+}
+
+if (!array_key_exists('subset', $_REQUEST) || !$_REQUEST['subset'] == 'graph')
+{
+	header('Content-disposition: attachment;filename=yslow.csv');
+
+	echo '# Measurement time, ';
+	echo 'Page size (in bytes), ';
+	echo 'YSlow grade, ';
+	echo 'Total number requests, ';
+	echo 'Page Load Time, ';
+	echo "YSlow profile used, ";
+	echo 'Make fewer HTTP requests, ';
+	echo 'Use a Content Delivery Network (CDN), ';
+	echo 'Add Expires headers, ';
+	echo 'Compress components with gzip, ';
+	echo 'Put CSS at top, ';
+	echo 'Put JavaScript at bottom, ';
+	echo 'Avoid CSS expressions, ';
+	echo 'Make JavaScript and CSS external, ';
+	echo 'Reduce DNS lookups, ';
+	echo 'Minify JavaScript and CSS, ';
+	echo 'Avoid URL redirects, ';
+	echo 'Remove duplicate JavaScript and CSS, ';
+	echo 'Configure entity tags (ETags), ';
+	echo 'Make AJAX cacheable, ';
+	echo 'Use GET for AJAX requests, ';
+	echo 'Reduce the number of DOM elements, ';
+	echo 'Avoid HTTP 404 (Not Found) error, ';
+	echo 'Reduce cookie size, ';
+	echo 'Use cookie-free domains, ';
+	echo 'Avoid AlphaImageLoader filter, ';
+	echo 'Do not scale images in HTML, ';
+	echo 'Make favicon small and cacheable';
+	echo "\n";
+}
+
+foreach ($rows as $row) {
+        echo date('c', $row['t']).','.
+		($row['i'] == 'yslow1' ? $row['w'] * 1024 : $row['w']).','.
+		$row['o'].','.
+		$row['r'].','.
+		$row['lt'].','.
+		$row['i'];
+
+	if (array_key_exists('subset', $_REQUEST) && $_REQUEST['subset'] == 'graph')
+	{
+		echo "\n";
+	} else {
+		echo ','.$row['ynumreq'].','.
+			$row['ycdn'].','.
+			$row['yexpires'].','.
+			$row['ycompress'].','.
+			$row['ycsstop'].','.
+			$row['yjsbottom'].','.
+			$row['yexpressions'].','.
+			$row['yexternal'].','.
+			$row['ydns'].','.
+			$row['yminify'].','.
+			$row['yredirects'].','.
+			$row['ydupes'].','.
+			$row['yetags'].','.
+			$row['yxhr'].','.
+			$row['yxhrmethod'].','.
+			$row['ymindom'].','.
+			$row['yno404'].','.
+			$row['ymincookie'].','.
+			$row['ycookiefree'].','.
+			$row['ynofilter'].','.
+			$row['yimgnoscale'].','.
+			$row['yfavicon'].
+			"\n";
+	}
+}
 

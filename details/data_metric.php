@@ -48,10 +48,19 @@ if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
 	header('Cache-control: max-age=315569260');
 }
-echo '# '.$metrics[$_GET['metric']]['title'].' for '.$_GET['url']."\n";
+echo '# Timestamp, '.$metrics[$_GET['metric']]['title'].' for '.$_GET['url']."\n";
 
 while ($row = mysql_fetch_assoc($result)) {
-        echo date('c', $row['t']).','.$row['value']."\n";
+	$rows[] = $row;
 }
 mysql_free_result($result);
+
+if (array_key_exists('smooth', $_REQUEST)) {
+	require_once(dirname(__FILE__).'/smooth.php');
+	smooth($rows, array('value'));
+}
+
+foreach ($rows as $row) {
+        echo date('c', $row['t']).','.$row['value']."\n";
+}
 

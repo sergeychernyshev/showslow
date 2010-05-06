@@ -63,6 +63,9 @@ $monitoringPeriod = 24;
 $facebookAPIKey = null;
 $facebookSecret = null;
 
+# Smoothing distance (averaging window will be from x-distance to x+distance)
+$smoothDistance = 5;
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 

@@ -32,7 +32,7 @@ font-size: small;
 <script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
 <script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
 <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="details.js?v=5" type="text/javascript"></script>
+<script src="details.js?v=6" type="text/javascript"></script>
 <script>
 <?php
 echo 'var metrics = '.json_encode($metrics);

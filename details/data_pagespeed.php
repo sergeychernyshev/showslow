@@ -53,14 +53,37 @@ if (array_key_exists('ver', $_GET)) {
 }
 echo '# Measurements gathered for '.$_GET['url']."\n";
 
+$rows = array();
 while ($row = mysql_fetch_assoc($result)) {
-        echo date('c', $row['time']).','.
-		$row['w'].','.$row['o'].','.$row['l'].','.$row['r'].','.$row['t'].','.$row['v'].','.
-		$row['pMinifyCSS'].','.$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
-		$row['pPutCssInTheDocumentHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pMinimizeRequestSize'].','.
-		$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pMinimizeRequestSize'].','.$row['pDeferJS'].','.$row['pGzip'].','.
-		$row['pMinRedirect'].','.$row['pCssExpr'].','.$row['pUnusedCSS'].','.$row['pMinDns'].','.$row['pDupeRsrc'].
-		"\n";
+	$rows[] = $row;
 }
+
 mysql_free_result($result);
+
+if (array_key_exists('smooth', $_REQUEST)) {
+	require_once(dirname(__FILE__).'/smooth.php');
+	smooth($rows, array('w', 'o', 'r', 'l'));
+}
+
+if (!array_key_exists('subset', $_REQUEST) || !$_REQUEST['subset'] == 'graph')
+{
+	header('Content-disposition: attachment;filename=pagespeed.csv');
+}
+
+foreach ($rows as $row) {
+
+        echo date('c', $row['time']).','.
+		$row['w'].','.$row['o'].','.$row['l'].','.$row['r'];
+
+		if (array_key_exists('subset', $_REQUEST) && $_REQUEST['subset'] == 'graph')
+		{
+			echo "\n";
+		} else {
+			echo ','.$row['t'].','.$row['v'].','.$row['pMinifyCSS'].','.$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
+			$row['pPutCssInTheDocumentHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pMinimizeRequestSize'].','.
+			$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pMinimizeRequestSize'].','.$row['pDeferJS'].','.$row['pGzip'].','.
+			$row['pMinRedirect'].','.$row['pCssExpr'].','.$row['pUnusedCSS'].','.$row['pMinDns'].','.$row['pDupeRsrc'].
+			"\n";
+		}
+}
 
