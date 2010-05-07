@@ -108,7 +108,7 @@ if ($noMoreURLs)
 <tr style="font-size: smaller; font-weight: bold">
 <td style="text-align: right; padding-right: 0.7em">Timestamp</td>
 <td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
-<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed grade</td>
+<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed score</td>
 <td style="text-align: center">Remove</td>
 <td style="padding-left: 1em">URL</td>
 </tr>
@@ -126,7 +126,7 @@ foreach ($rows as $row) {
 		<?php } ?>
 		<?php if (!is_null($row['ps_o'])) {?>
 			<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+			<td><div style="background-color: silver; width: 101px" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
 		<?php } else { ?>
 			<td colspan="2"/>
 		<?php } ?>

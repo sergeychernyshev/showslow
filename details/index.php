@@ -196,13 +196,13 @@ if ($row || $ps_row)
 	<?php 
 	}
 
-	// YSlow grade indicator
+	// Page Speed score indicator
 	if ($ps_row) {
 	?>
 		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
-		<h2>Current <a href="http://code.google.com/speed/page-speed/">Page Speed</a> grade: <?php echo yslowPrettyScore($ps_row['o'])?> (<i><?php echo htmlentities($ps_row['o'])?></i>)</h2>
+		<h2>Current <a href="http://code.google.com/speed/page-speed/">Page Speed</a> score: <?php echo yslowPrettyScore($ps_row['o'])?> (<i><?php echo htmlentities($ps_row['o'])?></i>)</h2>
 
-		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($ps_row['o'])?>&chl=<?php echo urlencode(yslowPrettyScore($ps_row['o']).' ('.$ps_row['o'].')')?>" alt="<?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" title="Current Page Speed grade: <?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($ps_row['o'])?>&chl=<?php echo urlencode(yslowPrettyScore($ps_row['o']).' ('.$ps_row['o'].')')?>" alt="<?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" title="Current Page Speed score: <?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
 		</td>
 	<?php 
 	}
@@ -355,7 +355,7 @@ if ($row || $ps_row)
 
 		if ($value >= 0) {?>
 		<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
-		<td><div style="background-color: silver; width: 103px" title="Current Page Speed grade: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
+		<td><div style="background-color: silver; width: 103px" title="Current Page Speed score: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
 		<?php } else { ?>
 		<td><i>N/A</i></td>
 		<td></td>
