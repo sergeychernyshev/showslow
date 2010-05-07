@@ -139,13 +139,13 @@ if (array_key_exists('v', $_GET)
 
 	?><html>
 <head>
-<title>Bad Request: PageSpeed beacon</title>
+<title>Bad Request: Page Speed beacon</title>
 </head>
 <body>
-<h1>Bad Request: PageSpeed beacon</h1>
-<p>This is <a href="http://code.google.com/speed/page-speed/">PageSpeed</a> beacon entry point.</p>
+<h1>Bad Request: Page Speed beacon</h1>
+<p>This is <a href="http://code.google.com/speed/page-speed/">Page Speed</a> beacon entry point.</p>
 
-<h1>Configure your PageSpeed</h1>
+<h1>Configure your Page Speed</h1>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your Page Speed data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 Set these two Firefox parameters on <b>about:config</b> page:</p>

@@ -37,7 +37,7 @@ if (count($urls) < 2) {
 ?><html>
 <head>
 <title>Show Slow: Compare <?php if (array_key_exists('ranker', $_GET) && $_GET['ranker'] = 'pagespeed') {
-?>PageSpeed<?php } else {?>YSlow<?php } ?> rankings<?php if (!$badinput) { ?> for: <?php echo implode(', ', $urls);?><?php } ?></title>
+?>Page Speed<?php } else {?>YSlow<?php } ?> rankings<?php if (!$badinput) { ?> for: <?php echo implode(', ', $urls);?><?php } ?></title>
 <style type="text/css">
 body {
 margin:0;
@@ -186,16 +186,16 @@ foreach ($urls as $url) {
 
 if ($pagespeed) {
 ?>
-	<h2>Compare PageSpeed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h2>
+	<h2>Compare Page Speed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h2>
 <?php } else {?>
-	<h2>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to PageSpeed</a>)</h2>
+	<h2>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to Page Speed</a>)</h2>
 <?php }?>
 <ul>
 <?php foreach ($urls as $url) { ?>
 	<li>
 	<a href="./?url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
 	if (!array_key_exists($url, $data)) {
-		?> (no <?php echo $pagespeed ? 'PageSpeed' : 'YSlow' ?> data)<?php
+		?> (no <?php echo $pagespeed ? 'Page Speed' : 'YSlow' ?> data)<?php
 	}
 	?></li>
 <?php } ?>

@@ -102,7 +102,7 @@ echo $ShowSlowIntro;
         <li><a href="./"><em>Last 100 measurements</em></a></li>
         <li class="selected"><a href="#urls"><em>URLs measured</em></a></li>
         <li><a href="details/compare.php<?php echo $compareParams?>"><em>Compare rankings</em></a></li>
-        <li><a href="configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li><a href="configure.php"><em>Configuring YSlow / Page Speed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
@@ -114,7 +114,7 @@ echo $ShowSlowIntro;
 	</div>
         <div id="urls">
 		<table>
-		<tr><th colspan="2">YSlow grade</th><th colspan="2">PageSpeed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
+		<tr><th colspan="2">YSlow grade</th><th colspan="2">Page Speed grade</th><th style="padding-left:10px; text-align: left">URL</th></tr>
 		<?php 
 		$query = sprintf("SELECT DISTINCT url, yslow2.o as o, pagespeed.o as ps_o FROM urls LEFT JOIN yslow2 on urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed on urls.pagespeed_last_id = pagespeed.id WHERE last_update IS NOT NULL");
 		$result = mysql_query($query);
@@ -137,7 +137,7 @@ echo $ShowSlowIntro;
 			<td></td><td></td>
 		<?php }else{?>
 			<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+			<td><div style="background-color: silver; width: 101px" title="Current Page Speed grade: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
 		<?php }?>
 			<td style="padding-left:10px; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		</tr><?php 

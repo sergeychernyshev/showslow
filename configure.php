@@ -22,7 +22,7 @@ if (is_array($defaultURLsToCompare)) {
 }
 ?><html>
 <head>
-<title>Show Slow: Configuring YSlow / PageSpeed</title>
+<title>Show Slow: Configuring YSlow / Page Speed</title>
 <style type="text/css">
 /*margin and padding on body element
   can introduce errors in determining
@@ -97,7 +97,7 @@ document.documentElement.firstChild.appendChild(ga);
         <li><a href="./"><em>Last 100 measurements</em></a></li>
         <li><a href="all.php"><em>URLs measured</em></a></li>
         <li><a href="details/compare.php<?php echo $compareParams?>"><em>Compare rankings</em></a></li>
-        <li class="selected"><a href="configure.php"><em>Configuring YSlow / PageSpeed</em></a></li>
+        <li class="selected"><a href="configure.php"><em>Configuring YSlow / Page Speed</em></a></li>
         <li><a href="http://code.google.com/p/showslow/source/checkout"><em>Download ShowSlow</em></a></li>
     </ul> 
     <div class="yui-content">
@@ -124,8 +124,8 @@ document.documentElement.firstChild.appendChild(ga);
 		<li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
 		<li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 		</ul>
-		<h2>PageSpeed</h2>
-		<p>PageSpeed is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
+		<h2>Page Speed</h2>
+		<p>Page Speed is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
 		<p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox parameters:</p>
 		<ul>
 		<li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>

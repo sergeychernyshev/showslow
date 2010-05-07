@@ -108,7 +108,7 @@ if ($noMoreURLs)
 <tr style="font-size: smaller; font-weight: bold">
 <td style="text-align: right; padding-right: 0.7em">Timestamp</td>
 <td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
-<td colspan="2" style="text-align: right; padding-right: 0.7em">PageSpeed grade</td>
+<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed grade</td>
 <td style="text-align: center">Remove</td>
 <td style="padding-left: 1em">URL</td>
 </tr>
