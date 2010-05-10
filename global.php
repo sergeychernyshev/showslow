@@ -31,7 +31,14 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 <p>If you want to make your measurements publicly available on this page, see the instructions in <a href="configure.php">Configuring YSlow / Page Speed</a>. If you want to keep your measurements private, <b><a href="http://code.google.com/p/showslow/source/checkout">download Show Slow</a></b> from the SVN repository and install it on your own server.</p>
 
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
-';
+
+<p><span id="follow"></span></p>
+<script src="http://platform.twitter.com/anywhere.js?id=SwP8WQ89xtOEYXTAubxAYQ&v=1"></script>
+<script type="text/javascript">
+twttr.anywhere(function(T){
+	T("#follow").followButton("showslow");
+});
+</script>';
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
