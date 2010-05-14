@@ -2,7 +2,7 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-function onLoad(data) {
+YAHOO.util.Event.onDOMReady(function() { 
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
 		gridColor: "#000000",
 		axisLabelsPlacement: "bottom"
@@ -39,14 +39,15 @@ function onLoad(data) {
 		}
 	}
 
-}
+});
 
 var resizeTimerID = null;
-function onResize() {
+
+YAHOO.util.Event.addListener(document, 'resize', function() {
 	if (resizeTimerID === null) {
 		resizeTimerID = window.setTimeout(function() {
 			resizeTimerID = null;
 			timeplot.repaint();
 		}, 100);
 	}
-}
+});

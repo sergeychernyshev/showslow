@@ -84,7 +84,8 @@ while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 }
 
-
+$TITLE = 'My URLs';
+$SECTION = 'my';
 require_once(dirname(__FILE__).'/header.php');
 ?>
 <h1 style="margin-bottom: 0">Add URLs to monitor</h1>
@@ -130,12 +131,12 @@ foreach ($rows as $row) {
 		<?php } else { ?>
 			<td colspan="2"/>
 		<?php } ?>
-		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 	<?php } else { ?>
 		<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
 		<td colspan="4"/>
-		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
 	<?php } ?>
 </tr><?php

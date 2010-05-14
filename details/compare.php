@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(dirname(__FILE__)).'/global.php');
+require_once(dirname(dirname(__FILE__)).'/users/users.php');
 
 $pagespeed = false;
 if (array_key_exists('ranker', $_GET) && $_GET['ranker'] == 'pagespeed')
@@ -34,66 +35,27 @@ if (count($urls) < 2) {
 	$badinput = true;
 }
 
-?><html>
-<head>
-<title>Show Slow: Compare <?php if (array_key_exists('ranker', $_GET) && $_GET['ranker'] = 'pagespeed') {
-?>Page Speed<?php } else {?>YSlow<?php } ?> rankings<?php if (!$badinput) { ?> for: <?php echo implode(', ', $urls);?><?php } ?></title>
-<style type="text/css">
-body {
-margin:0;
-padding:1em;
+if (array_key_exists('ranker', $_GET) && $_GET['ranker'] == 'pagespeed')
+{
+	$TITLE = 'Compare Page Speed rankings';
+} else {
+	$TITLE = 'Compare YSlow rankings';
 }
-</style>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
-<?php if (!$badinput) { ?>
-<script type="text/javascript" src="<?php echo $showslow_base?>ajax/simile-ajax-api.js?bundle=true"></script>
-<script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
-<script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
-<script src="compare.js?v=4" type="text/javascript"></script>
-<?php } ?>
+if (!$badinput) {
+	$TITLE .= ' for: '.implode(', ', $urls);
 
-<?php if ($showFeedbackButton) {?>
-<script type="text/javascript">
-var uservoiceOptions = {
-  /* required */
-  key: 'showslow',
-  host: 'showslow.uservoice.com', 
-  forum: '18807',
-  showTab: true,  
-  /* optional */
-  alignment: 'right',
-  background_color:'#f00', 
-  text_color: 'white',
-  hover_color: '#06C',
-  lang: 'en'
-};
-
-function _loadUserVoice() {
-  var s = document.createElement('script');
-  s.setAttribute('type', 'text/javascript');
-  s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
-  document.getElementsByTagName('head')[0].appendChild(s);
+	$SCRIPTS = array(
+		'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js',
+		$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
+		$showslow_base.'timeline/timeline-api.js?bundle=true',
+		$showslow_base.'timeplot/timeplot-api.js?bundle=true',
+		$showslow_base.'details/compare.js?v=5'
+	);
 }
-_loadSuper = window.onload;
-window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
-</script>
-<?php } ?>
-<?php if ($googleAnalyticsProfile) {?>
-<script type="text/javascript">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
-_gaq.push(['_trackPageview']);
 
-(function() {
-var ga = document.createElement('script');
-ga.src = ('https:' == document.location.protocol ?
-    'https://ssl' : 'http://www') +
-    '.google-analytics.com/ga.js';
-ga.setAttribute('async', 'true');
-document.documentElement.firstChild.appendChild(ga);
-})();
-</script>
-<?php }?>
+$SECTION = 'compare';
+require_once(dirname(dirname(__FILE__)).'/header.php');
+?>
 <style>
 .yslow1 {
 	color: #55009D;
@@ -107,12 +69,6 @@ document.documentElement.firstChild.appendChild(ga);
 	cursor: help;
 }
 </style>
-</head>
-<body class="yui-skin-sam"<?php if (!$badinput) { ?> onload="onLoad(data);" onresize="onResize();"<?php } ?>>
-<a href="http://www.showslow.org/"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; margin-left: 1em; border: 0"/></a>
-<div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
-<h1><a title="Click here to go to home page" href="../">Show Slow</a></h1>
-
 <?php 
 $data = array();
 if (count($urls) > 0) {
@@ -186,9 +142,9 @@ foreach ($urls as $url) {
 
 if ($pagespeed) {
 ?>
-	<h2>Compare Page Speed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h2>
+	<h1>Compare Page Speed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h1>
 <?php } else {?>
-	<h2>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to Page Speed</a>)</h2>
+	<h1>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to Page Speed</a>)</h1>
 <?php }?>
 <ul>
 <?php foreach ($urls as $url) { ?>
@@ -240,17 +196,5 @@ for ($i =0 ; $i < $inputs; $i++ ) { ?>
 ?>
 <input type="submit" value="compare"/>
 </form>
-<?php if ($badinput) {
-?>
-<script type="text/javascript">
-(function(urls) {
-	for (var i = 0; i < urls.length; i++) {
-		var s = document.createElement('script');
-		s.setAttribute('type', 'text/javascript');
-		s.setAttribute('src', urls[i]);
-		document.getElementsByTagName('head')[0].appendChild(s);
-	}
-})(['<?php echo $TimePlotBase?>timeplot-api.js', 'compare.js']);
-</script>
-<?php } ?>
-</body></html>
+<?php
+require_once(dirname(dirname(__FILE__)).'/footer.php');
