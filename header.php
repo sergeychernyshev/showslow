@@ -1,6 +1,6 @@
 <html>
 <head>
-<title><?php if (!is_null($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
+<title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/fonts/fonts-min.css">
 <style type="text/css">
 body {
@@ -72,14 +72,16 @@ body {
 }
 </style>
 <?php
-foreach ($STYLES as $_style) {
-	?><link rel="stylesheet" type="text/css" href="<?php echo $_style; ?>"/>
-<?php
+if (isset($STYLES)) {
+	foreach ($STYLES as $_style) {
+		?><link rel="stylesheet" type="text/css" href="<?php echo $_style; ?>"/><?php
+	}
 }
 
-foreach ($SCRIPTS as $_script) {
-	?><script type="text/javascript" src="<?php echo $_script; ?>"></script>
-<?php
+if (isset($SCRIPTS)) {
+	foreach ($SCRIPTS as $_script) {
+		?><script type="text/javascript" src="<?php echo $_script; ?>"></script><?php
+	}
 }
 
 if ($showFeedbackButton) {?>
