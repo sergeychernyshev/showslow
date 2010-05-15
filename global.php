@@ -39,9 +39,6 @@ twttr.anywhere(function(T){
 	T("#follow").followButton("showslow");
 });
 </script>
-<span property="og:title" content="Show Slow"/>
-<span property="og:site_name" content="ShowSlow.com"/>
-<span property="og:image" content="http://www.showslow.com/dev/showslow_icon.png"/>
 ';
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
