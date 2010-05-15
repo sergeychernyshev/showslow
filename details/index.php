@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(dirname(__FILE__)).'/global.php');
+require_once(dirname(dirname(__FILE__)).'/users/users.php');
 
 if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_VALIDATE_URL)) === false) {
 ?><html>
@@ -14,72 +15,23 @@ if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_V
 return;
 }
 
-?><html>
-<head>
-<title>Show Slow: Details for <?php echo htmlentities($url)?></title>
-<style type="text/css">
-body {
-margin:0;
-padding:1em;
-}
+$TITLE = 'Details for '.htmlentities($url);
+$SCRIPTS = array(
+	$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
+	$showslow_base.'timeline/timeline-api.js?bundle=true',
+	$showslow_base.'timeplot/timeplot-api.js?bundle=true',
+	'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js',
+	assetURL('details/details.js')
+);
 
-.yui-dt-paginator {
-font-size: small;
-}
-</style>
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/fonts/fonts-min.css&2.7.0/build/tabview/assets/skins/sam/tabview.css">
-<script type="text/javascript" src="<?php echo $showslow_base?>ajax/simile-ajax-api.js?bundle=true"></script>
-<script type="text/javascript" src="<?php echo $showslow_base?>timeline/timeline-api.js?bundle=true"></script>
-<script type="text/javascript" src="<?php echo $showslow_base?>timeplot/timeplot-api.js?bundle=true"></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/yuiloader/yuiloader-min.js"></script>
-<script src="<?php echo assetURL('details/details.js')?>" type="text/javascript"></script>
+$SECTION = 'all';
+require_once(dirname(dirname(__FILE__)).'/header.php');
+?>
 <script>
 <?php
 echo 'var metrics = '.json_encode($metrics);
 ?>
 </script>
-<?php if ($showFeedbackButton) {?>
-<script type="text/javascript">
-var uservoiceOptions = {
-  /* required */
-  key: 'showslow',
-  host: 'showslow.uservoice.com', 
-  forum: '18807',
-  showTab: true,  
-  /* optional */
-  alignment: 'right',
-  background_color:'#f00', 
-  text_color: 'white',
-  hover_color: '#06C',
-  lang: 'en'
-};
-
-function _loadUserVoice() {
-  var s = document.createElement('script');
-  s.setAttribute('type', 'text/javascript');
-  s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
-  document.getElementsByTagName('head')[0].appendChild(s);
-}
-_loadSuper = window.onload;
-window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
-</script>
-<?php } ?>
-<?php if ($googleAnalyticsProfile) {?>
-<script type="text/javascript">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
-_gaq.push(['_trackPageview']);
-
-(function() {
-var ga = document.createElement('script');
-ga.src = ('https:' == document.location.protocol ?
-    'https://ssl' : 'http://www') +
-    '.google-analytics.com/ga.js';
-ga.setAttribute('async', 'true');
-document.documentElement.firstChild.appendChild(ga);
-})();
-</script>
-<?php }?>
 <style>
 .yslow1 {
 	color: #55009D;
@@ -93,11 +45,7 @@ document.documentElement.firstChild.appendChild(ga);
 	cursor: help;
 }
 </style>
-</head>
-<body class="yui-skin-sam" onload="onLoad('<?php echo urlencode($url) ?>', ydataversion, psdataversion, eventversion);" onresize="onResize();">
-<a href="http://www.showslow.org/"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; margin-left: 1em; border: 0"/></a>
-<div style="float: right">powered by <a href="http://www.showslow.org/">showslow</a></div>
-<h1><a title="Click here to go to home page" href="../">Show Slow</a>: Details for <a href="<?php echo htmlentities($url)?>"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
+<h1>Details for <a href="<?php echo htmlentities($url)?>"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp
 $query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($url));
@@ -213,6 +161,7 @@ if ($row || $ps_row)
 	// Graph
 	?>
 	<script>
+	url = '<?php echo htmlentities($url)?>';
 	ydataversion = '<?php echo urlencode($row['timestamp'])?>';
 	psdataversion = '<?php echo urlencode($ps_row['timestamp'])?>';
 	eventversion = '<?php echo urlencode($eventupdate)?>';
@@ -457,5 +406,5 @@ if (count($har) > 0) {
 	</table>
 <?php
 }
-?>
-</body></html>
+
+require_once(dirname(dirname(__FILE__)).'/footer.php');

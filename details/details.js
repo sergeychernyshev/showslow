@@ -2,7 +2,7 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-function onLoad(url, ydataversion, psdataversion, eventversion) {
+YAHOO.util.Event.onDOMReady(function() { 
 	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
 	var pagespeed = new Timeplot.DefaultEventSource(); // YSlow2 measurements
 	var showslowevents = new Timeplot.DefaultEventSource(); // ShowSlow Events
@@ -207,14 +207,14 @@ function onLoad(url, ydataversion, psdataversion, eventversion) {
 	    }
 	});
 	loader.insert();
-}
+})
 
 var resizeTimerID = null;
-function onResize() {
+YAHOO.util.Event.addListener(document, 'resize', function() {
 	if (resizeTimerID === null) {
 		resizeTimerID = window.setTimeout(function() {
 			resizeTimerID = null;
 			timeplot.repaint();
 		}, 100);
 	}
-}
+});
