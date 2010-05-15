@@ -49,7 +49,7 @@ if (!$badinput) {
 		$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
 		$showslow_base.'timeline/timeline-api.js?bundle=true',
 		$showslow_base.'timeplot/timeplot-api.js?bundle=true',
-		$showslow_base.'details/compare.js?v=5'
+		assetURL('details/compare.js')
 	);
 }
 

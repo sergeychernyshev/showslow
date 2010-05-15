@@ -25,6 +25,7 @@ RewriteRule ^(.*)\.(\d+)(_m_\d+)?\.([^\.]+)$	$1.$4	[L,QSA]
 <IfModule mod_expires.c>
 ExpiresActive On
 ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
 ExpiresByType image/jpeg "access plus 1 year"
 ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
 ExpiresByType text/css "access plus 1 year"
