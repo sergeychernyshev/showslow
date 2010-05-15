@@ -168,14 +168,14 @@ if (is_array($defaultURLsToCompare)) {
 	}
 
 	$first = true;
-	foreach ($defaultURLsToCompare as $url) {
+	foreach ($defaultURLsToCompare as $_url) {
 		if ($first) {
 			$first = false;	
 		}
 		else {
 			$compareParams.= '&';
 		}
-		$compareParams.='url[]='.urlencode($url);
+		$compareParams.='url[]='.urlencode($_url);
 	}
 }
 ?>
