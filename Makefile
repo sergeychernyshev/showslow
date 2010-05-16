@@ -3,7 +3,7 @@ all:	assets
 	php dbupgrade.php
 
 rel:	release
-release:
+release: assets
 ifndef v
 	# Must specify version as 'v' param
 	#
