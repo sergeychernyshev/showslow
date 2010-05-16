@@ -54,6 +54,8 @@ $webPageTestLocations = array(
 	'NZ' => 'Wellington, New Zealand (IE7, DSL)',
 	'UK' => 'Gloucester, UK (IE7, DSL)'
 );
+$webPageTestPrivateByDefault = false;
+$webPageTestFirstRunOnlyByDefault = false;
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
