@@ -43,6 +43,18 @@ twttr.anywhere(function(T){
 
 $homePageMetaTags = '';
 
+# this enables a form to run a test on WebPageTest.org
+$webPageTestBase = 'http://www.webpagetest.org/';
+$webPageTestLocations = array(
+	'DSL' => 'Dulles, VA (IE7, DSL)',
+	'FIOS' => 'Dulles, VA (IE7, FIOS)',
+	'Dial' => 'Dulles, VA (IE7, 56Kbps dial-up)',
+	'IE8' => 'Dulles, VA (IE8, DSL)',
+	'SanJose' => 'San Jose, CA (IE8, Ethernet)',
+	'NZ' => 'Wellington, New Zealand (IE7, DSL)',
+	'UK' => 'Gloucester, UK (IE7, DSL)'
+);
+
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
 $defaultURLsToCompare = NULL;

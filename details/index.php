@@ -156,6 +156,17 @@ if ($row || $ps_row)
 	}
 	?>
 	</tr></table>
+	<?php if (!is_null($webPageTestBase)) { ?>
+	<h2>Run a test using <a href="http://www.webpagetest.org/" target="_blank">WebPageTest</a></h2>
+	<form action="<?php echo htmlentities($webPageTestBase)?>runtest.php" method="GET" target="_blank">
+	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
+	Location: <select name="location">
+	<?php foreach ($webPageTestLocations as $code => $label) { ?>
+	<option value="<?php echo htmlentities($code)?>"><?php echo htmlentities($label)?></option>
+	<?php } ?></select>
+	<input type="submit" value="run test">
+	</form>
+	<?php } ?>
 
 	<?php 
 	// Graph
