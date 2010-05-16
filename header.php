@@ -1,18 +1,7 @@
 <html xmlns:og="http://opengraphprotocol.org/schema/">
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
-
-<?php if ($SECTION == 'home') {?>
-<meta property="og:title" content="Show Slow"/>
-<meta property="og:url" content="http://www.showslow.com/"/>
-<meta property="og:image" content="http://www.showslow.com/showslow_110.png"/>
-<meta property="og:description" content="Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of YSlow and Page Speed rankings and graphs them, to help you understand how various changes to your site affect its performance."/>
-
-<meta name="title" content="Show Slow" />
-<meta name="description" content="Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of YSlow and Page Speed rankings and graphs them, to help you understand how various changes to your site affect its performance." />
-<link rel="image_src" href="http://www.showslow.com/showslow_110.png" />
-<?php } ?>
-
+<?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/fonts/fonts-min.css">
 <style type="text/css">
 body {
