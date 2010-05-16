@@ -210,7 +210,7 @@ YAHOO.util.Event.onDOMReady(function() {
 })
 
 var resizeTimerID = null;
-YAHOO.util.Event.addListener(document, 'resize', function() {
+YAHOO.util.Event.addListener(window, 'resize', function() {
 	if (resizeTimerID === null) {
 		resizeTimerID = window.setTimeout(function() {
 			resizeTimerID = null;
