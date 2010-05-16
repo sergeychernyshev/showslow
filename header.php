@@ -168,7 +168,7 @@ document.documentElement.firstChild.appendChild(ga);
 <div id="menu">
 <table><tr>
 <?php if ($enableMyURLs) { ?><td><a <?php if ($SECTION == 'my') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>my.php">+ add URL</a></td><?php } ?>
-<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last 100 measurements</a></td>
+<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last 100 measurements</td>
 <td><a <?php if ($SECTION == 'all') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>all.php">URLs measured</a></td>
 <?php
 $compareParams = '';
@@ -193,7 +193,7 @@ if (is_array($defaultURLsToCompare)) {
 ?>
 <td><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></td>
 <td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring YSlow / Page Speed</a></td>
-<td><a href="http://code.google.com/p/showslow/source/checkout">Download ShowSlow</a></td>
+<td><a href="http://code.google.com/p/showslow/downloads/list">Download ShowSlow</a></td>
 </tr></table>
 </div>
 <div id="main">
