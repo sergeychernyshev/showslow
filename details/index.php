@@ -45,7 +45,7 @@ echo 'var metrics = '.json_encode($metrics);
 	cursor: help;
 }
 </style>
-<h1>Details for <a href="<?php echo htmlentities($url)?>"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
+<h1>Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php 
 // last event timestamp
 $query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($url));
