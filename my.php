@@ -91,60 +91,66 @@ require_once(dirname(__FILE__).'/header.php');
 <h1 style="margin-bottom: 0">Add URLs to monitor</h1>
 <div style="font-size: small; margin-bottom: 1em">User: <a href="users/edit.php"><?php echo $current_user->getName(); ?></a></div>
 
+<p>If you don't want to <a href="<?php echo $showslow_base; ?>configure.php">run YSlow and Page Speed on your desktop</a>, you can add a URL to the list below and it'll be measured automatically every <?php echo $monitoringPeriod ?> hours.</p>
+
 <form action="" method="POST">
-<table border="0">
-<tr><td colspan="8" style="padding-bottom: 1em">
 <?php
 if ($noMoreURLs)
 {
 ?>
-<div title="URLs tracked are limited because of load constraints"><input type="text" size="80" name="url" disabled="disabled"/><input type="submit" name="add" value="add" disabled="disabled"/></div>
+<p><?php echo $maxURLsMessage; ?></p>
+<div title="<?php echo htmlentities(strip_tags($maxURLsMessage)); ?>">Add URL: <input type="text" size="80" name="url" disabled="disabled"/><input type="submit" name="add" value="add" disabled="disabled"/></div>
 <?php } else { ?>
-<input type="text" size="80" name="url"/><input type="submit" name="add" value="add" title="add URL to be measured"/>
+Add URL: <input type="text" size="80" name="url"/><input type="submit" name="add" value="add" title="add URL to be measured"/>
 <?php
 }
+
+if (count($rows))
+{
 ?>
-</td></tr>
+	<table border="0" style="margin-top: 1em">
+	<tr style="font-size: smaller; font-weight: bold">
+	<td style="text-align: right; padding-right: 0.7em">Timestamp</td>
+	<td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
+	<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed score</td>
+	<td style="text-align: center">Remove</td>
+	<td style="padding-left: 1em">URL</td>
+	</tr>
 
-<tr style="font-size: smaller; font-weight: bold">
-<td style="text-align: right; padding-right: 0.7em">Timestamp</td>
-<td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
-<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed score</td>
-<td style="text-align: center">Remove</td>
-<td style="padding-left: 1em">URL</td>
-</tr>
+	<?php
+	foreach ($rows as $row) {
+	?><tr>
+		<?php if ($row['last_update']) { ?>
+			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
+			<?php if (!is_null($row['o'])) {?>
+				<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
+				<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
+			<?php } else { ?>
+				<td colspan="2"/>
+			<?php } ?>
+			<?php if (!is_null($row['ps_o'])) {?>
+				<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
+				<td><div style="background-color: silver; width: 101px" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+			<?php } else { ?>
+				<td colspan="2"/>
+			<?php } ?>
+			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+		<?php } else { ?>
+			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
+			<td colspan="4"/>
+			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
+		<?php } ?>
+	</tr><?php
+	}
 
-<?php
-foreach ($rows as $row) {
-?><tr>
-	<?php if ($row['last_update']) { ?>
-		<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
-		<?php if (!is_null($row['o'])) {?>
-			<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
-		<?php } else { ?>
-			<td colspan="2"/>
-		<?php } ?>
-		<?php if (!is_null($row['ps_o'])) {?>
-			<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-			<td><div style="background-color: silver; width: 101px" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
-		<?php } else { ?>
-			<td colspan="2"/>
-		<?php } ?>
-		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
-		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
-	<?php } else { ?>
-		<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
-		<td colspan="4"/>
-		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
-		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
-	<?php } ?>
-</tr><?php
+	mysql_free_result($result);
+	?>
+	</table>
+<?php 
 }
-
-mysql_free_result($result);
 ?>
-</table>
 </form>
 <?php
 require_once(dirname(__FILE__).'/footer.php');

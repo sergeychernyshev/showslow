@@ -76,6 +76,9 @@ $enableMyURLs = false;
 # Maximum URLs each user can add to the system to be monitored (false means no limit)
 $maxURLsPerUser = false;
 
+# Message to show the user when he riches the maximum
+$maxURLsMessage = 'The number of URLs tracked is limited because of load constraints.';
+
 # Privileged users who has no limit on URLs
 $noMaxURLsForUsers = array();
 
