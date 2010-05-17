@@ -165,7 +165,7 @@ if (count($data) >= 2) {
 	</script>
 
 	<div id="my-timeplot" style="height: 250px;"></div>
-	<div style="fint-size: 0.2em">YSlow grades for:
+	<div style="fint-size: 0.2em"><?php echo $pagespeed ? 'Page Speed scores' : 'YSlow grades' ?> for:
 	<?php foreach ($urls as $url) {
 		if (!array_key_exists($url, $data)) {
 			continue;

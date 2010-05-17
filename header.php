@@ -1,18 +1,7 @@
-<html xmlns:og="http://opengraphprotocol.org/schema/">
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
-
-<?php if ($SECTION == 'home') {?>
-<meta property="og:title" content="Show Slow"/>
-<meta property="og:url" content="http://www.showslow.com/"/>
-<meta property="og:image" content="http://www.showslow.com/showslow_110.png"/>
-<meta property="og:description" content="Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of YSlow and Page Speed rankings and graphs them, to help you understand how various changes to your site affect its performance."/>
-
-<meta name="title" content="Show Slow" />
-<meta name="description" content="Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of YSlow and Page Speed rankings and graphs them, to help you understand how various changes to your site affect its performance." />
-<link rel="image_src" href="http://www.showslow.com/showslow_110.png" />
-<?php } ?>
-
+<?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/fonts/fonts-min.css">
 <style type="text/css">
 body {
@@ -168,7 +157,7 @@ document.documentElement.firstChild.appendChild(ga);
 <div id="menu">
 <table><tr>
 <?php if ($enableMyURLs) { ?><td><a <?php if ($SECTION == 'my') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>my.php">+ add URL</a></td><?php } ?>
-<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last 100 measurements</a></td>
+<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last 100 measurements</td>
 <td><a <?php if ($SECTION == 'all') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>all.php">URLs measured</a></td>
 <?php
 $compareParams = '';
@@ -193,7 +182,7 @@ if (is_array($defaultURLsToCompare)) {
 ?>
 <td><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></td>
 <td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring YSlow / Page Speed</a></td>
-<td><a href="http://code.google.com/p/showslow/source/checkout">Download ShowSlow</a></td>
+<td><a href="http://code.google.com/p/showslow/downloads/list">Download ShowSlow</a></td>
 </tr></table>
 </div>
 <div id="main">

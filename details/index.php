@@ -156,6 +156,19 @@ if ($row || $ps_row)
 	}
 	?>
 	</tr></table>
+	<?php if (!is_null($webPageTestBase)) { ?>
+	<h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a></h2>
+	<form action="<?php echo htmlentities($webPageTestBase)?>runtest.php" method="GET" target="_blank">
+	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
+	Location: <select name="location">
+	<?php foreach ($webPageTestLocations as $code => $label) { ?>
+	<option value="<?php echo htmlentities($code)?>"><?php echo htmlentities($label)?></option>
+	<?php } ?></select>
+	<input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/><label for="wpt_private">Private</label>
+	<input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/><label for="wpt_fvonly">First View Only</label>
+	<input type="submit" value="run test &gt;&gt;"/>
+	</form>
+	<?php } ?>
 
 	<?php 
 	// Graph

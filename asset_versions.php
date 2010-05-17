@@ -1,7 +1,8 @@
 <?php $assetVersions = array (
   'showslow_icon.png' => '7',
-  'details/details.js' => '177',
-  'details/compare.js' => '175',
+  'details/details.js' => '193',
+  'details/compare.js' => '183',
+  'showslow_110.png' => '190',
   'progressbar.gif' => '159',
   'screenshots/showslow_home.png' => '34',
   'screenshots/showslow_details_small.png' => '34',
