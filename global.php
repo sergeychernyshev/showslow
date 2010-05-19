@@ -32,14 +32,25 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
 
-<table><tr><td valign="top"><span id="follow"></span></td><td valign="top"><iframe src="http://www.facebook.com/plugins/like.php?href=http%253A%252F%252Fwww.showslow.com%252F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe></td></tr></table>
-<script src="http://platform.twitter.com/anywhere.js?id=SwP8WQ89xtOEYXTAubxAYQ&v=1"></script>
-<script type="text/javascript">
-twttr.anywhere(function(T){
-	T("#follow").followButton("showslow");
-});
-</script>
-';
+<table><tr>
+<td valign="top"><style>
+#twitterbutton {
+	margin-right: 0.4em;
+	width: 64px;
+	height: 23px;
+	display: block;
+	margin-right: 0.4em;
+	background-image: url('.$showslow_base.'/follow.png);
+	background-position: 0px 0px;
+}
+#twitterbutton:hover {
+	background-position: 0px -46px;
+}
+</style><a id="twitterbutton" href="http://twitter.com/showslow" target="_blank" title="follow @showslow on twitter"/></a></td>
+<td valign="top">
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%253A%252F%252Fwww.showslow.com%252F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:23px;" allowTransparency="true"></iframe>
+</td>
+</tr></table>';
 
 $homePageMetaTags = '';
 
