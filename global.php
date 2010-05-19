@@ -32,15 +32,14 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 
 <p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
 
-<table><tr>
+<table cellpadding="0" cellspacing="0" border="0"><tr>
 <td valign="top"><style>
 #twitterbutton {
-	margin-right: 0.4em;
-	width: 64px;
+	margin-right: 7px;
+	width: 58px;
 	height: 23px;
 	display: block;
-	margin-right: 0.4em;
-	background-image: url('.$showslow_base.'/follow.png);
+	background-image: url('.assetURL('follow.png').');
 	background-position: 0px 0px;
 }
 #twitterbutton:hover {
