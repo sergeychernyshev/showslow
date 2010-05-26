@@ -110,7 +110,7 @@ if (count($rows))
 ?>
 	<table border="0" style="margin-top: 1em">
 	<tr style="font-size: smaller; font-weight: bold">
-	<td style="text-align: right; padding-right: 0.7em">Timestamp</td>
+	<td style="text-align: left; padding-right: 0.7em">Timestamp</td>
 	<td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
 	<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed score</td>
 	<td style="text-align: center">Remove</td>

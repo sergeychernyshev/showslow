@@ -106,6 +106,9 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 </td>
 </tr></table>';
 
+# configuring tabs
+$customLists = array();
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 

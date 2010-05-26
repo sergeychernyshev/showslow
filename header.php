@@ -1,4 +1,4 @@
-<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
+<?php require_once(dirname(__FILE__).'/users/users.php'); ?><html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
@@ -27,9 +27,10 @@ body {
 
 #menu a {
 	color: #FFDE4C;
-	padding: 0.8em;
+	padding: 0.6em;
 	text-decoration: none;
 	font-weight: bold;
+	white-space: nowrap;
 }
 
 #menu a:hover {
@@ -43,7 +44,7 @@ body {
 }
 
 #menu td {
-	padding: 0.3em 0.1em;
+	padding: 0.1em 0.1em;
 }
 
 #footer {
@@ -157,7 +158,7 @@ document.documentElement.firstChild.appendChild(ga);
 <div id="menu">
 <table><tr>
 <?php if ($enableMyURLs) { ?><td><a <?php if ($SECTION == 'my') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>my.php">+ add URL</a></td><?php } ?>
-<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last 100 measurements</td>
+<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last measurements</td>
 <td><a <?php if ($SECTION == 'all') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>all.php">URLs measured</a></td>
 <?php
 $compareParams = '';
@@ -181,6 +182,11 @@ if (is_array($defaultURLsToCompare)) {
 }
 ?>
 <td><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></td>
+<?php 
+foreach ($customLists as $list_id => $list) {
+	?><td><a <?php if ($SECTION == 'custom_list_'.$list_id) {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>list.php?id=<?php echo $list_id; ?>"><?php echo $list['title'] ?></td><?php
+}
+?>
 <td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring YSlow / Page Speed</a></td>
 <td><a href="http://code.google.com/p/showslow/downloads/list">Download ShowSlow</a></td>
 </tr></table>
