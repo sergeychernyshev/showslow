@@ -1,4 +1,13 @@
-<?php require_once(dirname(__FILE__).'/users/users.php'); ?><html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
+<?php require_once(dirname(__FILE__).'/users/users.php');
+
+if (!isset($TITLE)) {
+	$TITLE = null;
+}
+if (!isset($SECTION)) {
+	$SECTION = null;
+}
+
+?><html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
