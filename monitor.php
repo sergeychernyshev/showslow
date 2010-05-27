@@ -11,7 +11,7 @@ if (array_key_exists('new', $_GET)) {
 }
 
 if ($new) {
-	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE last_update IS NULL";
+	$query = sprintf("SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE DATE_ADD(added, INTERVAL %d HOUR) > NOW() AND last_update IS NULL", $monitoringPeriod);
 } else {
 	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id";
 }

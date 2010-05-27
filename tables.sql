@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '6',
+  `version` int(10) unsigned NOT NULL default '7',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -54,7 +54,7 @@ CREATE TABLE `har` (
   `har` longblob NOT NULL COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL default '0' COMMENT 'Indicates that HAR data is stored compressed',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=127 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=159 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `metric`
@@ -68,7 +68,7 @@ CREATE TABLE `metric` (
   `metric_id` mediumint(8) unsigned NOT NULL default '0',
   `value` float NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=359 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=438 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `pagespeed`
@@ -113,7 +113,7 @@ CREATE TABLE `pagespeed` (
   `pSpecifyCharsetEarly` float unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6828 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=11139 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `u_googlefriendconnect`
@@ -163,7 +163,7 @@ CREATE TABLE `u_users` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `fb_id` (`fb_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `urls`
@@ -173,13 +173,14 @@ DROP TABLE IF EXISTS `urls`;
 CREATE TABLE `urls` (
   `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'id to reference',
   `url` blob NOT NULL COMMENT 'url',
-  `last_update` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `added` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Time when URL was added to the table',
+  `last_update` timestamp NULL default NULL,
   `last_event_update` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Last time events were updated for this URL',
   `yslow2_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for YSlow beacon',
   `pagespeed_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for PageSpeed beacon',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=19176 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=22264 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user_urls`
@@ -233,7 +234,7 @@ CREATE TABLE `yslow2` (
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=352607 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=373309 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -244,4 +245,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-04-18 23:58:53
+-- Dump completed on 2010-05-27 14:38:26

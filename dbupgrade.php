@@ -7,6 +7,17 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 7
+ *
+ * Adding URL creation time to be able to monitor new URLs quickly
+*/
+$versions[7]['up'][] = "ALTER TABLE urls MODIFY last_update TIMESTAMP NULL DEFAULT NULL";
+$versions[7]['up'][] = "ALTER TABLE urls ADD added TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Time when URL was added to the table' AFTER  `url`";
+
+$versions[7]['down'][] = "ALTER TABLE urls DROP added";
+$versions[7]['down'][] = "ALTER TABLE urls MODIFY last_update TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NULL DEFAULT NULL";
+
+
 /* version 6
  *
  * Adding userbase instance
