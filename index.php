@@ -62,5 +62,47 @@ mysql_free_result($result);
 </table>
 </div>
 
+<div style="display: none" id="preloader"></div>
+<script>
+(function(urls) {
+	var html = '';
+	for (var i = 0; i < urls.length; i++) {
+		html = html + '<iframe src="'+urls[i]+'" width="0" height="0"></iframe>\n';
+	}
+	document.getElementById('preloader').innerHTML = html;
+})([
+	'<?php echo $showslow_base; ?>ajax/simile-ajax-api.js?bundle=true',
+	'<?php echo $showslow_base; ?>timeline/timeline-api.js?bundle=true',
+	'<?php echo $showslow_base; ?>timeplot/timeplot-api.js?bundle=true',
+	'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js',
+	'<?php echo assetURL('details/compare.js'); ?>',
+	'<?php echo assetURL('details/details.js'); ?>',
+	'<?php echo $showslow_base; ?>ajax/simile-ajax-bundle.js',
+	'<?php echo $showslow_base; ?>ajax/scripts/signal.js?1',
+	'<?php echo $showslow_base; ?>ajax/styles/graphics.css',
+	'<?php echo $showslow_base; ?>timeline/timeline-bundle.js',
+	'<?php echo $showslow_base; ?>timeline/timeline-bundle.css',
+	'<?php echo $showslow_base; ?>timeline/scripts/l10n/en/timeline.js',
+	'<?php echo $showslow_base; ?>timeline/scripts/l10n/en/labellers.js',
+	'<?php echo $showslow_base; ?>ajax/scripts/signal.js?2',
+	'<?php echo $showslow_base; ?>timeplot/timeplot-bundle.js',
+	'<?php echo $showslow_base; ?>details/__history__.html?0',
+	'<?php echo $showslow_base; ?>timeplot/timeplot-bundle.js',
+	'<?php echo $showslow_base; ?>timeplot/timeplot-bundle.css',
+	'<?php echo $showslow_base; ?>timeplot/images/copyright.png',
+	'<?php echo $showslow_base; ?>timeplot/images/line_left.png',
+	'<?php echo $showslow_base; ?>timeplot/images/line_right.png',
+	'<?php echo $showslow_base; ?>timeplot/images/progress-running.gif',
+	'<?php echo $showslow_base; ?>ajax/images/message-top-left.png',
+	'<?php echo $showslow_base; ?>ajax/images/message-top-right.png',
+	'<?php echo $showslow_base; ?>ajax/images/message-left.png',
+	'<?php echo $showslow_base; ?>ajax/images/message-right.png',
+	'<?php echo $showslow_base; ?>ajax/images/message-bottom-left.png',
+	'<?php echo $showslow_base; ?>ajax/images/message-bottom-right.png',
+	'http://yui.yahooapis.com/combo?2.8.1/build/assets/skins/sam/skin.css&',
+	'http://yui.yahooapis.com/2.8.1/build/assets/skins/sam/sprite.png',
+	'http://yui.yahooapis.com/combo?2.8.1/build/dom/dom-min.js&2.8.1/build/dragdrop/dragdrop-min.js&2.8.1/build/animation/animation-min.js&2.8.1/build/connection/connection-min.js&2.8.1/build/container/container-min.js&2.8.1/build/datasource/datasource-min.js&2.8.1/build/event-mouseenter/event-mouseenter-min.js&2.8.1/build/selector/selector-min.js&2.8.1/build/event-delegate/event-delegate-min.js&2.8.1/build/element/element-min.js&2.8.1/build/calendar/calendar-min.js&2.8.1/build/paginator/paginator-min.js&2.8.1/build/datatable/datatable-min.js&'
+]);
+</script>
 <?php
 require_once(dirname(__FILE__).'/footer.php');

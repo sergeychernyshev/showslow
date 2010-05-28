@@ -45,7 +45,7 @@ if (!$badinput) {
 	$TITLE .= ' for: '.implode(', ', $urls);
 
 	$SCRIPTS = array(
-		'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js',
+		'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js',
 		$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
 		$showslow_base.'timeline/timeline-api.js?bundle=true',
 		$showslow_base.'timeplot/timeplot-api.js?bundle=true',
