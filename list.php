@@ -15,9 +15,10 @@ if (!array_key_exists('id', $_GET) || !array_key_exists($_GET['id'], $customList
 	exit;
 }
 
+$list_items = $customLists[$_GET['id']]['urls'];
 $list = '';
 $first = true;
-foreach ($customLists[$_GET['id']]['urls'] as $url) {
+foreach ($list_items as $url) {
 	if ($first) {
 		$first = false;
 	} else {
@@ -39,7 +40,7 @@ if (!$result) {
 
 $rows = array();
 while ($row = mysql_fetch_assoc($result)) {
-	$rows[] = $row;
+	$rows[$row['url']] = $row;
 }
 
 $TITLE = $customLists[$_GET['id']]['title'];
@@ -63,7 +64,12 @@ if (count($rows))
 	</tr>
 
 	<?php
-	foreach ($rows as $row) {
+	foreach ($list_items as $url) {
+		$row = $rows[$url];
+
+		if (is_null($row) || (is_null($row['o']) && is_null($row['ps_o']))) {
+			continue;
+		}
 	?><tr>
 		<?php if ($row['last_update']) { ?>
 			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
