@@ -30,8 +30,6 @@ if (array_key_exists('delete', $_POST) && is_array($_POST['delete'])) {
 			$deleteids
 		);
 
-		error_log($query);
-
 		$result = mysql_query($query);
 
 		if (!$result) {

@@ -7,6 +7,38 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 8
+ *
+ * Adding dynaTrace beacon
+*/
+$versions[8]['up'][] = "ALTER TABLE urls ADD dynatrace_last_id BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Last measurement ID for dynaTrace beacon'";
+$versions[8]['up'][] = "CREATE TABLE `dynatrace` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Measurement ID',
+  `version` varchar(255) default NULL COMMENT 'Version of the format used',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement time',
+  `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID',
+  `rank` smallint(5) unsigned NOT NULL COMMENT 'verall Page Rank (1-100)',
+  `cache` smallint(5) unsigned default NULL COMMENT 'Page Rank on Caching Best Practices (1-100)',
+  `net` smallint(5) unsigned default NULL COMMENT 'Page Rank on Network Requests (1-100)',
+  `server` smallint(5) unsigned default NULL COMMENT 'Page Rank on Server-Side Execution Time (1-100)',
+  `js` smallint(5) unsigned default NULL COMMENT 'Page Rank on JavaScript executions (1-100)',
+  `timetoimpression` bigint(20) unsigned default NULL COMMENT 'Time to First Impression [ms]',
+  `timetoonload` bigint(20) unsigned default NULL COMMENT 'Time to onLoad [ms]',
+  `timetofullload` bigint(20) unsigned default NULL COMMENT 'Time to Full Page Load [ms]',
+  `reqnumber` smallint(6) unsigned default NULL COMMENT '# of Requests [Count]',
+  `xhrnumber` smallint(6) unsigned default NULL COMMENT '# of XHR Requests [Count]',
+  `pagesize` bigint(20) unsigned default NULL COMMENT 'Total Page Size [bytes]',
+  `cachablesize` bigint(20) unsigned default NULL COMMENT 'Total Cachable Size [bytes]',
+  `noncachablesize` bigint(20) unsigned default NULL COMMENT 'Total Non-Cachable Size [bytes]',
+  `timeonnetwork` bigint(20) unsigned default NULL COMMENT 'Total Time on Network [ms]',
+  `timeinjs` bigint(20) unsigned default NULL COMMENT 'Total Time in JavaScript [ms]',
+  `timeinrendering` bigint(20) unsigned default NULL COMMENT 'Total Time in Rendering [ms]',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM";
+
+$versions[8]['down'][] = "ALTER TABLE urls DROP dynatrace_last_id";
+$versions[8]['down'][] = "DROP TABLE `dynatrace`;";
+
 /* version 7
  *
  * Adding URL creation time to be able to monitor new URLs quickly

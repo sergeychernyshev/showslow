@@ -1,6 +1,6 @@
 -- MySQL dump 10.11
 --
--- Host: localhost    Database: showslow
+-- Host: localhost    Database: showslow_dev
 -- ------------------------------------------------------
 -- Server version	5.0.45
 
@@ -21,9 +21,38 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '7',
+  `version` int(10) unsigned NOT NULL default '8',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `dynatrace`
+--
+
+DROP TABLE IF EXISTS `dynatrace`;
+CREATE TABLE `dynatrace` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Measurement ID',
+  `version` varchar(255) default NULL COMMENT 'Version of the format used',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement time',
+  `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID',
+  `rank` smallint(5) unsigned NOT NULL COMMENT 'verall Page Rank (1-100)',
+  `cache` smallint(5) unsigned default NULL COMMENT 'Page Rank on Caching Best Practices (1-100)',
+  `net` smallint(5) unsigned default NULL COMMENT 'Page Rank on Network Requests (1-100)',
+  `server` smallint(5) unsigned default NULL COMMENT 'Page Rank on Server-Side Execution Time (1-100)',
+  `js` smallint(5) unsigned default NULL COMMENT 'Page Rank on JavaScript executions (1-100)',
+  `timetoimpression` bigint(20) unsigned default NULL COMMENT 'Time to First Impression [ms]',
+  `timetoonload` bigint(20) unsigned default NULL COMMENT 'Time to onLoad [ms]',
+  `timetofullload` bigint(20) unsigned default NULL COMMENT 'Time to Full Page Load [ms]',
+  `reqnumber` smallint(6) unsigned default NULL COMMENT '# of Requests [Count]',
+  `xhrnumber` smallint(6) unsigned default NULL COMMENT '# of XHR Requests [Count]',
+  `pagesize` bigint(20) unsigned default NULL COMMENT 'Total Page Size [bytes]',
+  `cachablesize` bigint(20) unsigned default NULL COMMENT 'Total Cachable Size [bytes]',
+  `noncachablesize` bigint(20) unsigned default NULL COMMENT 'Total Non-Cachable Size [bytes]',
+  `timeonnetwork` bigint(20) unsigned default NULL COMMENT 'Total Time on Network [ms]',
+  `timeinjs` bigint(20) unsigned default NULL COMMENT 'Total Time in JavaScript [ms]',
+  `timeinrendering` bigint(20) unsigned default NULL COMMENT 'Total Time in Rendering [ms]',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event`
@@ -178,9 +207,10 @@ CREATE TABLE `urls` (
   `last_event_update` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Last time events were updated for this URL',
   `yslow2_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for YSlow beacon',
   `pagespeed_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for PageSpeed beacon',
+  `dynatrace_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for dynaTrace beacon',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=22264 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=22275 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user_urls`
@@ -234,7 +264,7 @@ CREATE TABLE `yslow2` (
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=373309 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=373381 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -245,4 +275,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-05-27 14:38:26
+-- Dump completed on 2010-05-30  1:39:33

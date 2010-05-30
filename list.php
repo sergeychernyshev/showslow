@@ -28,8 +28,6 @@ foreach ($list_items as $url) {
 	$list .= "'".mysql_real_escape_string($url)."'"; 
 }
 
-error_log($list);
-
 $query = "SELECT urls.id, urls.url, yslow2.o, pagespeed.o as ps_o, last_update FROM urls LEFT JOIN yslow2 ON urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id WHERE urls.url IN ($list)";
 
 $result = mysql_query($query);

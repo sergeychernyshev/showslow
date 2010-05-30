@@ -29,6 +29,7 @@ This instance of ShowSlow supports following beacons:
 <li><a href="events/">Custom events beacon</a></li>
 <li><a href="metric/">Custom metrics beacon</a></li>
 <li><a href="har/">HAR beacon</a></li>
+<li><a href="dynatrace/">dynaTrace AJAX Edition beacon</a></li>
 </ul>
 
 </body></html>

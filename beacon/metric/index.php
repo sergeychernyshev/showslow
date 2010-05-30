@@ -26,8 +26,6 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 		);
 	}
 
-#	error_log($query);
-
 	if (!mysql_query($query))
 	{
 		beaconError(mysql_error());

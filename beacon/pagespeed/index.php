@@ -126,8 +126,6 @@ if (array_key_exists('v', $_GET)
 		mysql_real_escape_string($_GET['pSpecifyCharsetEarly'] > 0 ? $_GET['pSpecifyCharsetEarly'] : 0)
 	);
 
-#	error_log($query);
-
 	if (!mysql_query($query))
 	{
 		beaconError(mysql_error());

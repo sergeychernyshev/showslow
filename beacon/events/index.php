@@ -59,8 +59,6 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 		mysql_real_escape_string($resource_url)
 	);
 
-	error_log($query);
-
 	if (!mysql_query($query))
 	{
 		beaconError(mysql_error());
