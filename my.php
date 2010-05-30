@@ -63,7 +63,15 @@ if (in_array($current_user->getID(), $noMaxURLsForUsers)) {
 	$maxURLsPerUser = false;
 }
 
-$query = sprintf("SELECT urls.id, urls.url, yslow2.o, pagespeed.o as ps_o, last_update FROM urls INNER JOIN user_urls ON urls.id = user_urls.url_id LEFT JOIN yslow2 on urls.yslow2_last_id = yslow2.id LEFT JOIN pagespeed on urls.pagespeed_last_id = pagespeed.id WHERE user_urls.user_id = %d ORDER BY url", $current_user->getID());
+$query = sprintf("SELECT url, last_update,
+		yslow2.o as o,
+		pagespeed.o as ps_o,
+		dynatrace.rank as dt_o
+	FROM urls INNER JOIN user_urls ON urls.id = user_urls.url_id
+		LEFT JOIN yslow2 ON urls.yslow2_last_id = yslow2.id
+		LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id
+		LEFT JOIN dynatrace ON urls.dynatrace_last_id = dynatrace.id
+	WHERE user_urls.user_id = %d ORDER BY url", $current_user->getID());
 
 $result = mysql_query($query);
 
@@ -77,15 +85,46 @@ if ($maxURLsPerUser && mysql_num_rows($result) >= $maxURLsPerUser)
 	$noMoreURLs = true;
 }
 
+$yslow = false;
+$pagespeed = false;
+$dynatrace = false;
+
 $rows = array();
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
+
+	if (!$yslow && !is_null($row['o'])) {
+		$yslow = true;
+	}
+	if (!$pagespeed && !is_null($row['ps_o'])) {
+		$pagespeed = true;
+	}
+	if (!$dynatrace && !is_null($row['dt_o'])) {
+		$dynatrace = true;
+	}
 }
 
 $TITLE = 'My URLs';
 $SECTION = 'my';
 require_once(dirname(__FILE__).'/header.php');
 ?>
+<style>
+td, th { white-space: nowrap; }
+
+.score {
+	text-align: right;
+	padding: 0 10px 0 10px;
+}
+
+.gbox {
+	background-color: silver;
+	width: 101px;	
+}
+
+.url {
+	padding-left:10px;
+}
+</style>
 <h1 style="margin-bottom: 0">Add URLs to monitor</h1>
 <div style="font-size: small; margin-bottom: 1em">User: <a href="users/edit.php"><?php echo $current_user->getName(); ?></a></div>
 
@@ -106,11 +145,13 @@ Add URL: <input type="text" size="80" name="url"/><input type="submit" name="add
 if (count($rows))
 {
 ?>
+<div style="width: 100%; overflow: hidden">
 	<table border="0" style="margin-top: 1em">
 	<tr style="font-size: smaller; font-weight: bold">
 	<td style="text-align: left; padding-right: 0.7em">Timestamp</td>
-	<td colspan="2" style="text-align: right; padding-right: 0.7em">YSlow grade</td>
-	<td colspan="2" style="text-align: right; padding-right: 0.7em">Page Speed score</td>
+	<?php if ($yslow) { ?><th colspan="2">YSlow grade</th><?php } ?>
+	<?php if ($pagespeed) { ?><th colspan="2">Page Speed score</th><?php } ?>
+	<?php if ($dynatrace) { ?><th colspan="2">dynaTrace rank</th><?php } ?>
 	<td style="text-align: center">Remove</td>
 	<td style="padding-left: 1em">URL</td>
 	</tr>
@@ -121,22 +162,30 @@ if (count($rows))
 		<?php if ($row['last_update']) { ?>
 			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 			<?php if (!is_null($row['o'])) {?>
-				<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
-				<td><div style="background-color: silver; width: 101px" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
+				<td class="score"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
+				<td><div class="gbox" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
 			<?php } else { ?>
 				<td colspan="2"/>
 			<?php } ?>
+
 			<?php if (!is_null($row['ps_o'])) {?>
-				<td style="text-align: right; padding:0 10px 0 10px; white-space: nowrap;"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-				<td><div style="background-color: silver; width: 101px" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+				<td class="score"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
+				<td><div class="gbox" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
 			<?php } else { ?>
 				<td colspan="2"/>
 			<?php } ?>
+
+			<?php if (is_null($row['dt_o'])) {?>
+				<td></td><td></td>
+			<?php }else{?>
+				<td class="score"><?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)</td>
+				<td><div class="gbox" title="Current dynaTrace score: <?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div style="width: <?php echo $row['dt_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['dt_o'])?>"/></div></td>
+			<?php }?>
+
 			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
-			<td colspan="4"/>
 			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
 		<?php } ?>
@@ -146,6 +195,7 @@ if (count($rows))
 	mysql_free_result($result);
 	?>
 	</table>
+	</div>
 <?php 
 }
 ?>

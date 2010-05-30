@@ -9,7 +9,7 @@ echo $ShowSlowIntro;
 ?>
 <hr size="1"/>
 <style>
-td { white-space: nowrap; }
+td, th { white-space: nowrap; }
 
 .score {
 	text-align: right;
@@ -46,6 +46,7 @@ $yslow = false;
 $pagespeed = false;
 $dynatrace = false;
 
+$rows = array();
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 
