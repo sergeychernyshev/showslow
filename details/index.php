@@ -15,6 +15,33 @@ if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_V
 return;
 }
 
+// last timestamps
+$query = sprintf("SELECT id, UNIX_TIMESTAMP(last_update) as t, last_event_update,
+		yslow2_last_id, pagespeed_last_id, dynatrace_last_id
+	FROM urls
+	WHERE urls.url = '%s'", mysql_real_escape_string($url));
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$row = mysql_fetch_assoc($result);
+$lastupdate = $row['t'];
+$eventupdate = $row['last_event_update'];
+$urlid = $row['id'];
+$yslow2_last_id = $row['yslow2_last_id'];
+$pagespeed_last_id = $row['pagespeed_last_id'];
+$dynatrace_last_id = $row['dynatrace_last_id'];
+mysql_free_result($result);
+
+header('Last-modified: '.date(DATE_RFC2822, $lastupdate));
+
+if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) && ($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))) {
+	header('HTTP/1.0 304 Not Modified');
+	exit;
+}
+
 $TITLE = 'Details for '.htmlentities($url);
 $SCRIPTS = array(
 	$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
@@ -47,21 +74,6 @@ echo 'var metrics = '.json_encode($metrics);
 </style>
 <h1>Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php 
-// last event timestamp
-$query = sprintf("SELECT id, yslow2_last_id, pagespeed_last_id, last_event_update FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($url));
-$result = mysql_query($query);
-
-if (!$result) {
-	error_log(mysql_error());
-}
-
-$row = mysql_fetch_assoc($result);
-$eventupdate = $row['last_event_update'];
-$urlid = $row['id'];
-$yslow2_last_id = $row['yslow2_last_id'];
-$pagespeed_last_id = $row['pagespeed_last_id'];
-mysql_free_result($result);
-
 // latest YSlow result
 $query = sprintf("SELECT timestamp, w, o, i, lt,
 		ynumreq,	ycdn,		yexpires,	ycompress,	ycsstop,

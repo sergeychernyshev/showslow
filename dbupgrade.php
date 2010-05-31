@@ -7,6 +7,15 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 9
+ *
+ * Adding dynaTrace beacon's details
+*/
+$versions[9]['up'][] = "ALTER TABLE dynatrace ADD details TEXT DEFAULT NULL COMMENT 'Beacon details'";
+$versions[9]['down'][] = "ALTER TABLE dynatrace DROP details";
+
+// Add new migrations on top, right below this line.
+
 /* version 8
  *
  * Adding dynaTrace beacon

@@ -49,14 +49,16 @@ if (!is_null($post)
 		rank, cache, net, server, js,
 		timetoimpression, timetoonload, timetofullload,
 		reqnumber, xhrnumber, pagesize, cachablesize, noncachablesize,
-		timeonnetwork, timeinjs, timeinrendering
+		timeonnetwork, timeinjs, timeinrendering,
+		details
 	)
 	VALUES (
 		'%s', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
-		'%d', '%d', '%d'
+		'%d', '%d', '%d',
+		'%s'
 	)",
 		mysql_real_escape_string(array_key_exists('version', $post) ? $post['version'] : null),
 		mysql_real_escape_string($url_id),
@@ -75,7 +77,8 @@ if (!is_null($post)
 		mysql_real_escape_string(array_key_exists('noncachablesize', $post) ? $post['noncachablesize'] : null),
 		mysql_real_escape_string(array_key_exists('timeonnetwork', $post) ? $post['timeonnetwork'] : null),
 		mysql_real_escape_string(array_key_exists('timeinjs', $post) ? $post['timeinjs'] : null),
-		mysql_real_escape_string(array_key_exists('timeinrendering', $post) ? $post['timeinrendering'] : null)
+		mysql_real_escape_string(array_key_exists('timeinrendering', $post) ? $post['timeinrendering'] : null),
+		mysql_real_escape_string($post_data)
 	);
 
 	if (!mysql_query($query))
