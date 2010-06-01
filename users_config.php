@@ -10,6 +10,9 @@ if ($facebookAPIKey) {
 require_once(dirname(__FILE__).'/users/modules/usernamepass/index.php');
 UserConfig::$modules[] = new UsernamePasswordAuthenticationModule();
 
+// TODO - implement accounts and then switch it to true.
+UserConfig::$useAccounts = false;
+
 UserConfig::$SESSION_SECRET = $sessionSecret;
 
 UserConfig::$header = dirname(__FILE__).'/header.php';
