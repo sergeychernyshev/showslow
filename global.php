@@ -72,6 +72,11 @@ $monitoringPeriod = 24;
 $facebookAPIKey = null;
 $facebookSecret = null;
 
+# Google Friend connect site ID
+# get it from the URL's "id" parameter on Google Friend Connect admin page for the site:
+# http://www.google.com/friendconnect/admin/
+$googleFriendConnectSiteID = null;
+
 # Smoothing distance (averaging window will be from x-distance to x+distance)
 $smoothDistance = 5;
 

@@ -7,6 +7,11 @@ if ($facebookAPIKey) {
 	UserConfig::$modules[] = new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
 }
 
+if ($googleFriendConnectSiteID) {
+	require_once(dirname(__FILE__).'/users/modules/google/index.php');
+	UserConfig::$modules[] = new GoogleAuthenticationModule($googleFriendConnectSiteID);
+}
+
 require_once(dirname(__FILE__).'/users/modules/usernamepass/index.php');
 UserConfig::$modules[] = new UsernamePasswordAuthenticationModule();
 
