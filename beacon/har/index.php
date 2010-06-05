@@ -113,7 +113,7 @@ Can't parse JSON data from HAR
 	exit;
 }
 
-if (array_key_exists('url', $_REQUEST) && filter_var(urldecode($_REQUEST['url']), FILTER_VALIDATE_URL) !== false)
+if (array_key_exists('url', $_REQUEST))
 {
 	$url_id = getUrlId(urldecode($_REQUEST['url']));
 

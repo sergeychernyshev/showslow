@@ -5,31 +5,7 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 	&& array_key_exists('url_prefix', $_GET) && filter_var($_GET['url_prefix'], FILTER_VALIDATE_URL) !== false
 	)
 {
-	if ($limitURLs !== false && is_array($limitURLs)) {
-		$matched = false;
-
-		foreach ($limitURLs as $prefix) {
-			if (substr($_GET['url_prefix'], 0, strlen($prefix)) == $prefix) {
-				$matched = true;
-				break;
-			}
-		}
-
-		if (!$matched) {
-			header('HTTP/1.0 400 Bad Request');
-
-			?><html>
-<head>
-<title>Bad Request: YSlow beacon</title>
-</head>
-<body>
-<h1>Bad Request: YSlow beacon</h1>
-<p>Event URL prefix doesn't match any of the prefixes configured.</p>
-</body></html>
-<?php 
-			exit;
-		}
-	}
+	$url = validateURL($_GET['url_prefix'], $outputerror);
 
 	$type = array_key_exists('type', $_GET) && $_GET['type'] != '' ? $_GET['type'] : FALSE;
 	$start = array_key_exists('start', $_GET) && $_GET['start'] != '' ? $_GET['start'] : FALSE;
@@ -51,7 +27,7 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 			.($end !== FALSE ? ", '%s'" : '')
 			.($resource_url !== FALSE ? ", '%s'" : '')
 		.')',
-		mysql_real_escape_string($_GET['url_prefix']),
+		mysql_real_escape_string($url),
 		mysql_real_escape_string($_GET['title']),
 		mysql_real_escape_string($start),
 		mysql_real_escape_string($type),
@@ -66,7 +42,7 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 
 	# updating last_event_update for the matching URLs
 	$query = sprintf("UPDATE urls SET last_event_update = NOW() WHERE INSTR(url, '%s') = 1",
-		mysql_real_escape_string(mysql_real_escape_string($_GET['url_prefix']))
+		mysql_real_escape_string($url)
 	);
 	$result = mysql_query($query);
 

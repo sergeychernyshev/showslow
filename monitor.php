@@ -22,8 +22,18 @@ if (!$result) {
 	error_log(mysql_error());
 }
 
+$urls = array();
+
 while ($row = mysql_fetch_assoc($result)) {
-	echo $row['url']."\n";
+	$url = validateURL($row['url'], false);
+
+	if (is_null($url)) {
+		continue;
+	}
+
+	$urls[] = $url;
 }
 mysql_free_result($result);
+
+echo implode("\n", $urls);
 

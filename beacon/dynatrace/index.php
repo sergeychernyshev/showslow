@@ -23,10 +23,8 @@ $post = json_decode($post_data, true);
 /*
 	Only URL and rank will be mandatory - the rest will be optional
 */
-if (!is_null($post)
-	&& array_key_exists('rank', $post) && filter_var($post['rank'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('url', $post) && filter_var(urldecode($post['url']), FILTER_VALIDATE_URL) !== false
-	)
+if (!is_null($post) && array_key_exists('url', $post)
+	&& array_key_exists('rank', $post) && filter_var($post['rank'], FILTER_VALIDATE_INT) !== false)
 {
 	$url_id = getUrlId(urldecode($post['url']));
 

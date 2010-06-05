@@ -19,11 +19,10 @@ function updateUrlAggregates($url_id, $measurement_id)
 $post_data = file_get_contents("php://input");
 $post = json_decode($post_data, true);
 
-if (!is_null($post) && array_key_exists('g', $post)
+if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $post)
 	&& array_key_exists('i', $post) && in_array($post['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $post) && filter_var($post['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $post) && filter_var($post['o'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('u', $post) && filter_var(urldecode($post['u']), FILTER_VALIDATE_URL) !== false
 	&& array_key_exists('r', $post) && filter_var($post['r'], FILTER_VALIDATE_INT) !== false
 	)
 {
@@ -112,10 +111,9 @@ if (!is_null($post) && array_key_exists('g', $post)
 
 	updateUrlAggregates($url_id, mysql_insert_id());
 
-} else if (array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
+} else if (array_key_exists('u', $_GET) && array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
 	&& array_key_exists('r', $_GET) && filter_var($_GET['r'], FILTER_VALIDATE_INT) !== false
 	)
 {

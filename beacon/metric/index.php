@@ -4,7 +4,7 @@ require_once(dirname(dirname(__FILE__)).'/beacon_functions.php');
 
 if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'], $metrics)
 	&& array_key_exists('value', $_REQUEST) && is_numeric($_REQUEST['value']) !== false
-	&& array_key_exists('u', $_REQUEST) && filter_var($_REQUEST['u'], FILTER_VALIDATE_URL) !== false
+	&& array_key_exists('u', $_REQUEST)
 	)
 {
 	$url_id = getUrlId($_REQUEST['u']);

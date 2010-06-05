@@ -8,6 +8,7 @@ if (array_key_exists('delete', $_POST) && is_array($_POST['delete'])) {
 	$delete = array_keys($_POST['delete']);
 
 	$first = true;
+	$deleteids = '';
 	foreach ($delete as $id) {
 		if (!is_numeric($id)) {
 			next;
@@ -24,7 +25,7 @@ if (array_key_exists('delete', $_POST) && is_array($_POST['delete'])) {
 		$deleteids.=$id;
 	}
 
-	if (!$first) {
+	if (!$first && $deleteids != '') {
 		$query = sprintf("DELETE FROM user_urls WHERE user_id = %d AND url_id IN (%s)",
 			$current_user->getID(),
 			$deleteids
@@ -39,11 +40,38 @@ if (array_key_exists('delete', $_POST) && is_array($_POST['delete'])) {
 	header('Location: '.$showslow_base.'my.php');
 }
 
-if (!$noMoreURLs && array_key_exists('url', $_REQUEST)
-	&& ($url = filter_var($_REQUEST['url'], FILTER_VALIDATE_URL)) !== false) {
+if (in_array($current_user->getID(), $noMaxURLsForUsers)) {
+	$maxURLsPerUser = false;
+}
+
+$noMoreURLs = false;
+if ($maxURLsPerUser)
+{
+	$query = sprintf('SELECT count(*) AS cnt FROM urls INNER JOIN user_urls ON urls.id = user_urls.url_id
+		WHERE user_urls.user_id = %d', $current_user->getID());
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	if ($cnt = mysql_fetch_row($result) && $cnt[0] >= $maxURLsPerUser)
+	{
+		$noMoreURLs = true;
+	}
+	mysql_free_result($result);
+}
+
+if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 	require_once(dirname(__FILE__).'/beacon/beacon_functions.php');
 
-	$url_id = getUrlId($url);
+	$url_id = getUrlId($_REQUEST['url'], false);
+
+	if (is_null($url_id)) {
+		header('Location: '.$showslow_base.'my.php#invalid');
+		exit;
+	}
 
 	$query = sprintf("INSERT IGNORE INTO user_urls (user_id, url_id) VALUES (%d, %d)",
 		$current_user->getID(),
@@ -59,11 +87,7 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)
 	header('Location: '.$showslow_base.'my.php');
 }
 
-if (in_array($current_user->getID(), $noMaxURLsForUsers)) {
-	$maxURLsPerUser = false;
-}
-
-$query = sprintf("SELECT url, last_update,
+$query = sprintf("SELECT urls.id as id, url, last_update,
 		yslow2.o as o,
 		pagespeed.o as ps_o,
 		dynatrace.rank as dt_o
@@ -79,28 +103,26 @@ if (!$result) {
 	error_log(mysql_error());
 }
 
-$noMoreURLs = false;
-if ($maxURLsPerUser && mysql_num_rows($result) >= $maxURLsPerUser)
-{
-	$noMoreURLs = true;
-}
-
 $yslow = false;
 $pagespeed = false;
 $dynatrace = false;
 
 $rows = array();
+$colspan = 0;
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 
 	if (!$yslow && !is_null($row['o'])) {
 		$yslow = true;
+		$colspan += 2;
 	}
 	if (!$pagespeed && !is_null($row['ps_o'])) {
 		$pagespeed = true;
+		$colspan += 2;
 	}
 	if (!$dynatrace && !is_null($row['dt_o'])) {
 		$dynatrace = true;
+		$colspan += 2;
 	}
 }
 
@@ -159,7 +181,16 @@ if (count($rows))
 	<?php
 	foreach ($rows as $row) {
 	?><tr>
-		<?php if ($row['last_update']) { ?>
+		<?php if (shouldBeIgnoredAsNonHTTP($row['url'])) { ?>
+			<td style="color: red; text-align: right; padding-right: 1em"><i title="This instance of Show Slow only allows HTTP(S) URLs">non-HTTP(s) URL</i></td>
+			<td colspan="<?php echo $colspan ?>"/>
+		<?php } else if (!isURLAllowed($row['url'])) { ?>
+			<td style="color: red; text-align: right; padding-right: 1em"><i title="URL is not allowed to be reported to this instance of Show Slow">not allowed</i></td>
+			<td colspan="<?php echo $colspan ?>"/>
+		<?php } else if (isURLIgnored($row['url'])) { ?>
+			<td style="color: red; text-align: right; padding-right: 1em"><i title="This URL is ignored by this instance of Show Slow">ignored</i></td>
+			<td colspan="<?php echo $colspan ?>"/>
+		<?php } else if ($row['last_update']) { ?>
 			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 			<?php if (!$yslow) {?>
 			<?php } else if (!is_null($row['o'])) {?>
@@ -184,14 +215,12 @@ if (count($rows))
 			<?php }else{?>
 				<td colspan="2"/>
 			<?php }?>
-
-			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
-			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
-			<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
-			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
+			<td colspan="<?php echo $colspan ?>"/>
 		<?php } ?>
+		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
 	</tr><?php
 	}
 

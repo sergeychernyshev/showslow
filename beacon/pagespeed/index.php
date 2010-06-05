@@ -16,13 +16,12 @@ function updateUrlAggregates($url_id, $measurement_id)
 	}
 }
 
-if (array_key_exists('v', $_GET)
+if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_FLOAT) !== false
 	&& array_key_exists('l', $_GET) && filter_var($_GET['l'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('r', $_GET) && filter_var($_GET['r'], FILTER_VALIDATE_INT) !== false
 	&& array_key_exists('t', $_GET) && filter_var($_GET['t'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('u', $_GET) && filter_var($_GET['u'], FILTER_VALIDATE_URL) !== false
 	)
 {
 	$url_id = getUrlId($_GET['u']);

@@ -5,6 +5,33 @@ $YSlow2AllowedProfiles = array('ydefault');
 # If not false, then should be an array of prefix matches - if one of them matches, URL will be accepted
 $limitURLs = false;
 
+# Track non-http(s) URLs. Disabled by default
+$enableNonHTTPURLs = false;
+
+# Ignore URLs matching the prefix or a regext. If one of them matches, URLs is going to be ignored
+# You might want to remove 10.x, 192.168.x and 172.16-32.x if you're testing web sites on a private network.
+$ignoreURLs = array(
+	'http://127.0.0.',
+	'http://10.',
+	'http://192.168.',
+	'http://172.16.',
+	'http://172.17.',
+	'http://172.18.',
+	'http://172.19.',
+	'http://172.20.',
+	'http://172.21.',
+	'http://172.22.',
+	'http://172.23.',
+	'http://172.24.',
+	'http://172.25.',
+	'http://172.26.',
+	'http://172.27.',
+	'http://172.28.',
+	'http://172.29.',
+	'http://172.30.',
+	'http://172.31.'
+);
+
 # If set to true, drop all query strings. If array, then match prefixes.
 $dropQueryStrings = false;
 
@@ -158,6 +185,214 @@ function scoreColor($num) {
 			return '#'.$colorSteps[$i-1];
 		} 
 	}
+}
+
+# returns true if URL should be ignored
+function isURLIgnored($url) {
+	global $ignoreURLs;
+
+	if ($ignoreURLs !== false && is_array($ignoreURLs)) {
+		$matched = false;
+
+		foreach ($ignoreURLs as $ignoreString) {
+			// checking if string is a regex or just a prefix
+			if (preg_match('/^[^a-zA-Z\\\s]/', $ignoreString))
+			{
+				if (preg_match($ignoreString, $url)) {
+					$matched = true;
+				}
+			} else if (substr($url, 0, strlen($ignoreString)) == $ignoreString) {
+				$matched = true;
+				break;
+			}
+		}
+
+		return $matched;
+	}
+
+	return false;
+}
+
+# returns true if URL is in the limitedURLs array or all URLs are allowed
+function isURLAllowed($url) {
+	global $limitURLs;
+
+	if ($limitURLs !== false && is_array($limitURLs)) {
+		$matched = false;
+
+		foreach ($limitURLs as $limitString) {
+			// checking if string is a regex or just a prefix
+			if (preg_match('/^[^a-zA-Z\\\s]/', $limitString))
+			{
+				if (preg_match($limitString, $url)) {
+					$matched = true;
+				}
+			} else if (substr($url, 0, strlen($limitString)) == $limitString) {
+				$matched = true;
+				break;
+			}
+		}
+
+		return !$matched;
+	}
+	return true;
+}
+
+# returns true if this URLS is not an HTTP URL and should be ignored
+function shouldBeIgnoredAsNonHTTP($url) {
+	global $enableNonHTTPURLs;
+
+	return (
+		!$enableNonHTTPURLs &&
+		(substr(strtolower($url), 0, 7) != 'http://' &&	substr(strtolower($url), 0, 8) != 'https://')
+	);
+}
+
+# returns URL if it's valid and passes all checks or null if not.
+# if second parameter is true (default), then 404 error page is shown
+#
+# used in getUrlId and event beacon (which tests prefix, not URL)
+#
+# TODO rewrite to use exceptions instead of $outputerror contraption
+function validateURL($url, $outputerror = true) {
+	$url = filter_var(urldecode(trim($url)), FILTER_VALIDATE_URL);
+
+	if ($url === FALSE) {
+		if (!$outputerror) {
+			return null;
+		}
+
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+<head>
+<title>Bad Request: ShowSlow beacon</title>
+</head>
+<body>
+<h1>Bad Request: ShowSlow beacon</h1>
+<p>Invalid URL submitted.</p>
+</body></html>
+<?php 
+		exit;
+	}
+
+	if (shouldBeIgnoredAsNonHTTP($url)) {
+		if (!$outputerror) {
+			return null;
+		}
+
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+<head>
+<title>Bad Request: ShowSlow beacon</title>
+</head>
+<body>
+<h1>Bad Request: ShowSlow beacon</h1>
+<p>This instance of Show Slow only tracks HTTP(S) URLs.</p>
+</body></html>
+<?php 
+		exit;
+	}
+
+	if (isURLIgnored($url)) {
+		if (!$outputerror) {
+			return null;
+		}
+
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+<head>
+<title>Bad Request: ShowSlow beacon</title>
+</head>
+<body>
+<h1>Bad Request: ShowSlow beacon</h1>
+<p>This URL matched ignore list for this instance of Show Slow.</p>
+</body></html>
+<?php 
+		exit;
+	}
+
+	if (!isURLAllowed($url)) {
+		if (!$outputerror) {
+			return null;
+		}
+
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+<head>
+<title>Bad Request: ShowSlow beacon</title>
+</head>
+<body>
+<h1>Bad Request: ShowSlow beacon</h1>
+<p>URL doesn't match any URLs allowed allowed to this instance.</p>
+</body></html>
+<?php 
+		exit;
+	}
+
+	return $url;
+}
+
+function getUrlId($url, $outputerror = true)
+{
+	global $dropQueryStrings;
+
+	$url = validateURL($url, $outputerror);
+
+	if (is_null($url)) {
+		return null;
+	}
+
+	if ($dropQueryStrings) {
+		$drop = false;
+
+		if (is_array($dropQueryStrings)) {
+			foreach ($dropQueryStrings as $prefix) {
+				if (substr($url, 0, strlen($prefix)) == $prefix) {
+					$drop = true;
+					break;
+				}
+			}
+		} else {
+			$drop = true;
+		}
+
+		if ($drop) {
+			$querypos = strpos($url, '?');
+
+			if ($querypos !== false) {
+				$url = substr($url, 0, $querypos);
+			}
+		}
+	}
+
+	# get URL id
+	$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
+	$result = mysql_query($query);
+
+	if (!$result) {
+		beaconError(mysql_error());
+	}
+
+	if (mysql_num_rows($result) == 1) {
+		$row = mysql_fetch_assoc($result);
+		return $row['id'];
+	} else if (mysql_num_rows($result) == 0) {
+		$query = sprintf("INSERT INTO urls (url) VALUES ('%s')", mysql_real_escape_string($url));
+		$result = mysql_query($query);
+
+		if (!$result) {
+			beaconError(mysql_error());
+		}
+
+		return mysql_insert_id();
+	} else {
+		beaconError('more then one entry found for the URL');
+	}
+
 }
 
 mysql_connect($host, $user, $pass);
