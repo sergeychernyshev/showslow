@@ -12,6 +12,8 @@ $enableNonHTTPURLs = false;
 # You might want to remove 10.x, 192.168.x and 172.16-32.x if you're testing web sites on a private network.
 $ignoreURLs = array(
 	'http://127.0.0.',
+	'http://localhost/',
+	'http://localhost:',
 	'http://10.',
 	'http://192.168.',
 	'http://172.16.',
