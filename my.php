@@ -180,14 +180,21 @@ if (count($rows))
 
 	<?php
 	foreach ($rows as $row) {
+		$link = true;
 	?><tr>
-		<?php if (shouldBeIgnoredAsNonHTTP($row['url'])) { ?>
+		<?php if (shouldBeIgnoredAsNonHTTP($row['url'])) {
+			$link = false;
+		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This instance of Show Slow only allows HTTP(S) URLs">non-HTTP(s) URL</i></td>
 			<td colspan="<?php echo $colspan ?>"/>
-		<?php } else if (!isURLAllowed($row['url'])) { ?>
+		<?php } else if (!isURLAllowed($row['url'])) {
+			$link = false;
+		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="URL is not allowed to be reported to this instance of Show Slow">not allowed</i></td>
 			<td colspan="<?php echo $colspan ?>"/>
-		<?php } else if (isURLIgnored($row['url'])) { ?>
+		<?php } else if (isURLIgnored($row['url'])) {
+			$link = false;
+		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This URL is ignored by this instance of Show Slow">ignored</i></td>
 			<td colspan="<?php echo $colspan ?>"/>
 		<?php } else if ($row['last_update']) { ?>
@@ -214,13 +221,20 @@ if (count($rows))
 				<td><div class="gbox" title="Current dynaTrace score: <?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div style="width: <?php echo $row['dt_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['dt_o'])?>"/></div></td>
 			<?php }else{?>
 				<td colspan="2"/>
-			<?php }?>
-		<?php } else { ?>
+			<?php } ?>
+		<?php } else {
+			$link = false;
+		?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
 			<td colspan="<?php echo $colspan ?>"/>
 		<?php } ?>
 		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+
+		<?php if ($link) {?>
+		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+		<?php } else { ?>
 		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
+		<?php } ?>
 	</tr><?php
 	}
 
