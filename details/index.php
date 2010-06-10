@@ -115,6 +115,21 @@ if (!$result) {
 $ps_row = mysql_fetch_assoc($result);
 mysql_free_result($result);
 
+// Latest dynatrace result
+$query = sprintf("SELECT timestamp, rank, cache, net, server, js
+		FROM dynatrace
+		WHERE id = %d",
+	mysql_real_escape_string($dynatrace_last_id)
+);
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$dt_row = mysql_fetch_assoc($result);
+mysql_free_result($result);
+
 // checking if there is har data
 $query = sprintf("SELECT har.timestamp as t, har.id as id FROM har, urls WHERE urls.url = '%s' AND har.url_id = urls.id ORDER BY timestamp DESC",
 	mysql_real_escape_string($url)
@@ -133,14 +148,14 @@ while ($har_row = mysql_fetch_assoc($result)) {
 
 mysql_free_result($result);
 
-if (!$row && !$ps_row && $har === false) {
+if (!$row && !$ps_row && !$dt_row && $har === false) {
 	?>No data is available yet
 </body></html>
 <?php 
 	exit;
 }
 
-if ($row || $ps_row)
+if ($row || $ps_row || $dt_row)
 {
 	?>
 	<table cellpadding="15" cellspacing="5"><tr>
@@ -163,6 +178,17 @@ if ($row || $ps_row)
 		<h2>Current <a href="http://code.google.com/speed/page-speed/">Page Speed</a> score: <?php echo yslowPrettyScore($ps_row['o'])?> (<i><?php echo htmlentities($ps_row['o'])?></i>)</h2>
 
 		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($ps_row['o'])?>&chl=<?php echo urlencode(yslowPrettyScore($ps_row['o']).' ('.$ps_row['o'].')')?>" alt="<?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" title="Current Page Speed score: <?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+		</td>
+	<?php 
+	}
+
+	// dynaTrace rank indicator
+	if ($dt_row) {
+	?>
+		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
+		<h2>Current <a href="http://ajax.dynatrace.com/">dunaTrace rank</a> score: <?php echo yslowPrettyScore($dt_row['rank'])?> (<i><?php echo htmlentities($dt_row['rank'])?></i>)</h2>
+
+		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($dt_row['rank'])?>&chl=<?php echo urlencode(yslowPrettyScore($dt_row['rank']).' ('.$dt_row['rank'].')')?>" alt="<?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" title="Current dynaTrace  rank: <?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
 		</td>
 	<?php 
 	}
@@ -189,6 +215,7 @@ if ($row || $ps_row)
 	url = '<?php echo htmlentities($url)?>';
 	ydataversion = '<?php echo urlencode($row['timestamp'])?>';
 	psdataversion = '<?php echo urlencode($ps_row['timestamp'])?>';
+	dtdataversion = '<?php echo urlencode($dt_row['timestamp'])?>';
 	eventversion = '<?php echo urlencode($eventupdate)?>';
 	</script>
 
@@ -214,6 +241,13 @@ if ($row || $ps_row)
 	<?php
 	}
 
+	if ($dt_row)
+	{
+	?>
+	<span style="color: #AB0617">dynaTrace rank</span> (0-100);
+	<?php
+	}
+
 	foreach ($metrics as $name => $metric)
 	{
 		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>)</span>;<?php
@@ -225,14 +259,12 @@ if ($row || $ps_row)
 
 	// YSlow breakdown
 	if ($row) {
+		function printYSlowGradeBreakdown($name, $anchor, $slug) {
+			global $row;
 
-	function printYSlowGradeBreakdown($name, $anchor, $slug) {
-		global $row;
+			$value = $row[$slug];
 
-		$value = $row[$slug];
-
-	?>
-			<td><a href="http://developer.yahoo.com/performance/rules.html#<?php echo $anchor?>"><?php echo $name?></a></td>
+			?><td><a href="http://developer.yahoo.com/performance/rules.html#<?php echo $anchor?>"><?php echo $name?></a></td>
 			<?php if ($value >= 0) {?>
 			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
 			<td><span id="details_<?php echo $slug ?>" class="details"></span></td>
@@ -241,8 +273,7 @@ if ($row || $ps_row)
 			<td><i>N/A</i></td>
 			<td></td>
 			<?php } ?>
-			<td>&nbsp;&nbsp;</td>
-<?php 
+			<td>&nbsp;&nbsp;</td><?php 
 		}
 
 		if ($row['i'] <> 'yslow1') {
@@ -315,29 +346,24 @@ if ($row || $ps_row)
 
 	// PageSpeed breakdown
 	if ($ps_row) {
-	function printPageSpeedGradeBreakdown($name, $doc, $value) {
-		if ($doc)
-		{
-?>
-		<td><a href="http://code.google.com/speed/page-speed/docs/<?php echo $doc?>"><?php echo $name?></a></td>
-		<?php
-		} else {
-?>
-		<td><?php echo $name?></td>
-		<?php
-		}
+		function printPageSpeedGradeBreakdown($name, $doc, $value) {
+			if ($doc)
+			{
+			?><td><a href="http://code.google.com/speed/page-speed/docs/<?php echo $doc?>"><?php echo $name?></a></td><?php
+			} else {
+			?><td><?php echo $name?></td><?php
+			}
 
-		if ($value >= 0) {?>
-		<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
-		<td><div style="background-color: silver; width: 103px" title="Current Page Speed score: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
-		<?php } else { ?>
-		<td><i>N/A</i></td>
-		<td></td>
-		<?php } ?>
-		<td>&nbsp;&nbsp;</td>
-<?php 
-}
-?>
+			if ($value >= 0) {?>
+			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
+			<td><div style="background-color: silver; width: 103px" title="Current Page Speed score: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
+			<?php } else { ?>
+			<td><i>N/A</i></td>
+			<td></td>
+			<?php } ?>
+			<td>&nbsp;&nbsp;</td><?php 
+		}
+	?>
 	<h2 style="clear: both">Page Speed breakdown</h2>
 	<table>
 	<tr><td colspan="6"><b>Optimize caching</b></td></tr>
@@ -397,19 +423,60 @@ if ($row || $ps_row)
 	</table>	
 <?php 
 	}
+
+	// dynaTrace breakdown
+	if ($dt_row) {
+		function printDynaTraceRankBreakdown($name, $doc, $value) {
+			if ($doc)
+			{
+				// TODO: impelement this
+			?><td><a href="http://ajax.dynatrace.com/som_url_to_docs/<?php echo $doc?>"><?php echo $name?></a></td>	<?php
+			} else {
+			?><td><?php echo $name?></td><?php
+			}
+
+			if ($value >= 0) {?>
+			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
+			<td><div style="background-color: silver; width: 103px" title="Current dynaTrace rank: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
+			<?php } else { ?>
+			<td><i>N/A</i></td>
+			<td></td>
+			<?php } ?>
+			<td>&nbsp;&nbsp;</td><?php 
+		}?>
+	<h2 style="clear: both">dynaTrace breakdown</h2>
+	<table>
+		<tr>
+		<?php echo printDynaTraceRankBreakdown('Caching Rank', false, $dt_row['cache'])?>
+		<?php echo printDynaTraceRankBreakdown('Network Rank', false, $dt_row['net'])?>
+		</tr>
+		<tr>
+		<?php echo printDynaTraceRankBreakdown('Server-side rank', false, $dt_row['server'])?>
+		<?php echo printDynaTraceRankBreakdown('JavaScrip Rank', false, $dt_row['js'])?>
+		</tr>
+	</table>	
+<?php 
+	}
 }
 
 if ($row) {
 ?>
-	<h2>YSlow measurements history (<a href="data.php?url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
 	<?php 
 }
 
 if ($ps_row) {
 ?>
-	<h2>Page Speed measurements history (<a href="data_pagespeed.php?url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($ps_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="ps_measurementstable"></div>
+<?php 
+}
+
+if ($dt_row) {
+?>
+	<h2>Dyna Trace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<div id="dt_measurementstable"></div>
 <?php 
 }
 

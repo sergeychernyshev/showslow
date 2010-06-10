@@ -4,7 +4,8 @@ var timeplot;
 
 YAHOO.util.Event.onDOMReady(function() { 
 	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
-	var pagespeed = new Timeplot.DefaultEventSource(); // YSlow2 measurements
+	var pagespeed = new Timeplot.DefaultEventSource(); // Page Speed measurements
+	var dynatrace = new Timeplot.DefaultEventSource(); // dynaTrace  measurements
 	var showslowevents = new Timeplot.DefaultEventSource(); // ShowSlow Events
 
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
@@ -13,6 +14,7 @@ YAHOO.util.Event.onDOMReady(function() {
 	});
 
 	var valueGeometryGrades = new Timeplot.DefaultValueGeometry({
+		min: 0,
 		max: 100,
 		gridColor: "#000000",
 		axisLabelsPlacement: "left"
@@ -54,6 +56,15 @@ YAHOO.util.Event.onDOMReady(function() {
 			timeGeometry: timeGeometry,
 			valueGeometry: valueGeometryGrades,
 			lineColor: "#6F4428",
+			showValues: true
+		}),
+		Timeplot.createPlotInfo({
+			id: "dynatrace",
+			label: "dynaTrace rank",
+			dataSource: new Timeplot.ColumnSource(dynatrace,1),
+			timeGeometry: timeGeometry,
+			valueGeometry: valueGeometryGrades,
+			lineColor: "#AB0617",
 			showValues: true
 		}),
 		Timeplot.createPlotInfo({
@@ -128,6 +139,7 @@ YAHOO.util.Event.onDOMReady(function() {
 	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
 	timeplot.loadText('data.php?smooth=yes&subset=graph&profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
 	timeplot.loadText('data_pagespeed.php?smooth=yes&subset=graph&url=' + url + '&ver=' + psdataversion, ",", pagespeed);
+	timeplot.loadText('data_dynatrace.php?smooth=yes&subset=graph&url=' + url + '&ver=' + dtdataversion, ",", dynatrace);
 
 	for (var name in metrics) {
 		timeplot.loadText('data_metric.php?smooth=yes&metric=' + name + '&url=' + url, ",", metrics[name].source);
@@ -175,7 +187,14 @@ YAHOO.util.Event.onDOMReady(function() {
 			{key:"l", label:"Load Time (ms)", sortable:true}
 		];
 
-		var yDataSource = new YAHOO.util.DataSource("data.php?subset=graph&");
+		var dtColumnDefs = [
+			{key:"timestamp", label:"Timestamp", sortable:true, formatter:"date"},
+			{key:"size", label:"Page Size (bytes)", sortable:true},
+			{key:"numreq", label:"Total Requests", sortable:true},
+			{key:"rank", label:"Overall Rank (0-100)", sortable:true},
+			{key:"timetoimp", label:"Time to First Impression (ms)", sortable:true},
+		];
+		var yDataSource = new YAHOO.util.DataSource("data.php?subset=table&");
 		yDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		yDataSource.responseSchema = {
 			recordDelim : "\n", 
@@ -184,13 +203,22 @@ YAHOO.util.Event.onDOMReady(function() {
 			fields: ["timestamp", "w", "o", "r", "lt", "profile"]
 		};
 
-		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?subset=graph&");
+		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?subset=table&");
 		psDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		psDataSource.responseSchema = {
 			recordDelim : "\n", 
 			fieldDelim : "," ,
 			resultsList: "records",
 			fields: ["timestamp", "w", "o", "l", "r"]
+		};
+
+		var dtDataSource = new YAHOO.util.DataSource("data_dynatrace.php?subset=table&");
+		dtDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
+		dtDataSource.responseSchema = {
+			recordDelim : "\n", 
+			fieldDelim : "," ,
+			resultsList: "records",
+			fields: ["timestamp", "size", "numreq", "rank", "timetoimp"]
 		};
 
 		var yDataTable = new YAHOO.widget.ScrollingDataTable("measurementstable", yColumnDefs, yDataSource,
@@ -203,6 +231,12 @@ YAHOO.util.Event.onDOMReady(function() {
 		{
 			height: "15em",
 			initialRequest: "url=" + url + "&ver=" + psdataversion
+		});
+
+		var dtDataTable = new YAHOO.widget.ScrollingDataTable("dt_measurementstable", dtColumnDefs, dtDataSource,
+		{
+			height: "15em",
+			initialRequest: "url=" + url + "&ver=" + dtdataversion
 		});
 	    }
 	});

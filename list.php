@@ -105,7 +105,7 @@ td { white-space: nowrap; }
 	foreach ($list_items as $url) {
 		$row = $rows[$url];
 
-		if (is_null($row) || (is_null($row['o']) && is_null($row['ps_o']))) {
+		if (is_null($row) || (is_null($row['o']) && is_null($row['ps_o']) && is_null($row['dt_o']))) {
 			continue;
 		}
 	?><tr>
