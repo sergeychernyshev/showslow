@@ -1,4 +1,6 @@
-all:	assets
+all:	update assets
+
+update:
 	svn update
 	php dbupgrade.php
 

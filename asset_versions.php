@@ -44,7 +44,7 @@
   'ajax/styles/graphics-ie6.css' => '1733',
   'ajax/styles/graphics.css' => '1733',
   'details/compare.js' => '183',
-  'details/details.js' => '193',
+  'details/details.js' => '222',
   'follow.png' => '203',
   'progressbar.gif' => '159',
   'screenshots/showslow_details.png' => '34',
