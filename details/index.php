@@ -250,7 +250,7 @@ if ($row || $ps_row || $dt_row)
 
 	foreach ($metrics as $name => $metric)
 	{
-		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>)</span>;<?php
+		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);<?php
 	}
 	?>
 	</div>
