@@ -103,6 +103,10 @@ td { white-space: nowrap; }
 
 	<?php
 	foreach ($list_items as $url) {
+		if (!array_key_exists($url, $rows)) {
+			continue;
+		}
+
 		$row = $rows[$url];
 
 		if (is_null($row) || (is_null($row['o']) && is_null($row['ps_o']) && is_null($row['dt_o']))) {
