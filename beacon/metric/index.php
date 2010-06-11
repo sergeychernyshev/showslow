@@ -45,8 +45,18 @@ i {
 <body>
 <h1>Bad Request: Custom Metric beacon</h1>
 <p>This is custom metric beacon for ShowSlow.</p>
-<p>You can use automated script to publish events using GET call to this URL:</p>
-<b><pre><?php echo $showslow_base?>beacon/metric/?metric=<i>metricname</i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i>&amp;timestamp=<i>mysql_timestamp</i></pre></b>
+<p>You can use automated script to publish events using GET call to one of these URLs (for specific metric):</p>
+<b><pre>
+<?php
+if (count($metrics) > 0) {
+	foreach ($metrics as $name => $metric) {
+		echo $showslow_base?>beacon/metric/?metric=<i style="color: blue"><?php echo $name ?></i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i>&amp;timestamp=<i>mysql_timestamp</i>
+<?php
+	}
+} else {
+	echo $showslow_base?>beacon/metric/?metric=<i>metricname</i>&amp;u=<i>url</i>&amp;value=<i>integer_value</i>&amp;timestamp=<i>mysql_timestamp</i><?php
+} ?>
+</pre></b>
 or use form below to manually enter metric values.
 <?php
 $nometrics = false;
