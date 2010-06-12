@@ -265,8 +265,11 @@ if (!is_null($ranker)) {
 			if ($ranker == 'pagespeed') { ?><b>Page Speed</b> scores<?php }
 			if ($ranker == 'dynatrace') { ?><b>dynaTrace</b> ranks<?php }
 		?> for:	<?php
-		foreach ($data_to_display as $url => $url_data) {
-			?><span style="font-weight: bold; color: <?php echo $url_data['color'] ?>"><?php echo $url ?></span> (0-100);
+		foreach ($urls as $url) {
+			if (!array_key_exists($url, $data_to_display)) {
+				continue;
+			}
+			?><span style="font-weight: bold; color: <?php echo $data_to_display[$url]['color'] ?>"><?php echo $url ?></span> (0-100);
 		<?php
 		}
 		?></div><?php
