@@ -2,12 +2,6 @@
 require_once(dirname(dirname(__FILE__)).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/users/users.php');
 
-$pagespeed = false;
-if (array_key_exists('ranker', $_GET) && $_GET['ranker'] == 'pagespeed')
-{
-	$pagespeed = true;
-}
-
 $badinput = false;
 $urls = array();
 $noinput = true;
@@ -31,16 +25,121 @@ if (!array_key_exists('url', $_GET) || !is_array($_GET['url'])) {
 	}
 }
 
+$urls = array_unique($urls);
+
 if (count($urls) < 2) {
 	$badinput = true;
 }
 
-if (array_key_exists('ranker', $_GET) && $_GET['ranker'] == 'pagespeed')
-{
-	$TITLE = 'Compare Page Speed rankings';
-} else {
-	$TITLE = 'Compare YSlow rankings';
+$data = array();
+
+// flags indicating if there is data for each of the rankers
+$counters = array(
+	'yslow' => 0,
+	'pagespeed' => 0,
+	'dynatrace' => 0
+);
+
+if (count($urls) > 0) {
+	// last event timestamp
+	$first = true;
+	$urllist = '';
+	foreach ($urls as $url) {
+		if ($first) {
+			$first = false;	
+		}
+		else {
+			$urllist .= ', ';
+		}
+
+		$urllist .= sprintf("'%s'", mysql_real_escape_string($url));
+	}
+
+	$query = "SELECT urls.id, url,
+			y.timestamp as y_version,
+			p.timestamp as p_version,
+			d.timestamp as d_version
+		FROM urls
+			LEFT JOIN yslow2 y ON urls.yslow2_last_id = y.id
+			LEFT JOIN pagespeed p ON urls.pagespeed_last_id = p.id
+			LEFT JOIN dynatrace d ON urls.dynatrace_last_id = d.id
+		WHERE urls.url IN ($urllist)";
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	// loading all data
+	while ($row = mysql_fetch_assoc($result)) {
+		$data[$row['url']] = array(
+			'yslow' => $row['y_version'],
+			'pagespeed' => $row['p_version'],
+			'dynatrace' => $row['d_version']
+		);
+
+		// if at least one value exists for ranker, enable it
+		if (!is_null($row['y_version'])) {
+			$counters['yslow'] += 1;
+		} 
+		if (!is_null($row['p_version'])) {
+			$counters['pagespeed'] += 1;
+		} 
+		if (!is_null($row['d_version'])) {
+			$counters['dynatrace'] += 1;
+		} 
+	}
+	mysql_free_result($result);
 }
+
+// let's see data for which rankers is available and redirect accordingly
+$ranker = null;
+$TITLE = 'Compare rankings';
+
+if (array_key_exists('ranker', $_GET)) {
+	if ($_GET['ranker'] == 'yslow') {
+		$ranker = 'yslow';
+		$TITLE = 'Compare YSlow rankings';
+	} else if ($_GET['ranker'] == 'pagespeed') {
+		$ranker = 'pagespeed';
+		$TITLE = 'Compare Page Speed rankings';
+	} else if ($_GET['ranker'] == 'dynatrace') {
+		$ranker = 'dynatrace';
+		$TITLE = 'Compare dynaTrace rankings';
+	}
+}
+
+error_log("ranker: $ranker");
+
+// calculate query string
+$params = '';
+$first = true;
+foreach ($urls as $url) {
+	if ($first) {
+		$first = false;	
+	}
+	else {
+		$params.= '&';
+	}
+	$params.='url[]='.urlencode($url);
+}
+
+// if ranker is not specified, but there is data for at least one ranker, redirect to that ranker
+if (is_null($ranker)) {
+	$default = null;
+	// in reverse order to override if data for ranker exists
+	if ($counters['dynatrace'] > 0) { $default = 'dynatrace'; }
+	if ($counters['pagespeed'] > 0) { $default = 'pagespeed'; }
+	if ($counters['yslow'] > 0) { $default = 'yslow'; }
+
+	// if there is data for the urls then use default ranker, otherwise display a form
+	if (!is_null($default)) {
+		header('Location: ?ranker='.$default.'&'.$params);
+		exit;
+	}
+}
+
+// if some URLs passed, add them to the title and load javascripts
 if (!$badinput) {
 	$TITLE .= ' for: '.implode(', ', $urls);
 
@@ -57,46 +156,70 @@ $SECTION = 'compare';
 require_once(dirname(dirname(__FILE__)).'/header.php');
 ?>
 <style>
-.yslow1 {
-	color: #55009D;
-}
-
-.yslow2 {
-	color: #2175D9;
-}
-
 .details {
 	cursor: help;
 }
 </style>
-<?php 
-$data = array();
-if (count($urls) > 0) {
-	// last event timestamp
-	$first = true;
-	$urllist = '';
-	foreach ($urls as $url) {
-		if ($first) {
-			$first = false;	
-		}
-		else {
-			$urllist .= ', ';
-		}
 
-		$urllist .= sprintf("'%s'", mysql_real_escape_string($url));
-	}
+<h1 style="margin-bottom: 0">Compare rankings</h1>
+<?php
 
-	if ($pagespeed) {
-		$query = "SELECT url, pagespeed.timestamp as version FROM urls INNER JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id WHERE urls.url IN ($urllist) AND urls.pagespeed_last_id IS NOT NULL";
+// only display menu if user picked the ranker specifically
+// (otherwise either there is no data or we don't reach this point and get redirected to default)
+if (!is_null($ranker)) { ?>
+	<div>Ranker: <b> 
+	<?php
+	// let's see which menus should be displayed and which one is current
+	$menus = array();
+	if ($ranker == 'yslow') {
+		$menus[] = '<span>YSlow</span>'; // current
 	} else {
-		$query = "SELECT url, yslow2.timestamp as version FROM urls INNER JOIN yslow2 ON urls.yslow2_last_id = yslow2.id WHERE urls.url IN ($urllist) AND urls.yslow2_last_id IS NOT NULL";
-	}
-	$result = mysql_query($query);
-
-	if (!$result) {
-		error_log(mysql_error());
+		if ($counters['yslow'] > 1) { // display link only if data for more then one URL is available
+			$menus[] = '<span><a href="?'.$params.'">YSlow</a></span>';
+		}
 	}
 
+	if ($ranker == 'pagespeed') {
+		$menus[] = '<span>Page Speed</span>'; // current
+	} else {
+		if ($counters['pagespeed'] > 1) { // display link only if data for more then one URL is available
+			$menus[] = '<span><a href="?ranker=pagespeed&'.$params.'">Page Speed</a></span>';
+		}
+	}
+
+	if ($ranker == 'dynatrace') {
+		$menus[] = '<span>dynaTrace</span>'; // current
+	} else {
+		if ($counters['dynatrace'] > 1) { // display link only if data for more then one URL is available
+			$menus[] = '<span><a href="?ranker=dynatrace&'.$params.'">dynaTrace</a></span>';
+		}
+	}
+
+	echo implode(' | ', $menus);
+	?>
+	</b></div>
+<?php } ?>
+
+<ul style="margin-top: 1em">
+<?php foreach ($urls as $url) { ?>
+	<li>
+	<a href="./?url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
+
+	if (is_null($data[$url][$ranker])) {
+		?> (no <?php
+		if ($ranker == 'yslow') { echo 'YSlow '; }
+		if ($ranker == 'pagespeed') { echo 'Page Speed '; }
+		if ($ranker == 'dynatrace') { echo 'dynaTrace '; }
+		?>data)<?php
+	}
+	?></li>
+<?php } ?>
+</ul>
+<?php
+
+$enough_data = false;
+
+if (!is_null($ranker)) {
 	$colors = array(
 		'#FD4320',
 		'#3E25FA',
@@ -104,20 +227,20 @@ if (count($urls) > 0) {
 		'#EEB423',
 		'#F514B5'
 	);
-	$colorindex = 0;
 
-	while ($row = mysql_fetch_assoc($result)) {
-		$data[$row['url']] = array(
-			'version' => urlencode($row['version']),
+	// now, let's calculate data to display for this ranker
+	$data_to_display = array();
+	$colorindex = 0;
+	foreach ($data as $url => $versions) {
+		if (is_null($versions[$ranker])) {
+			continue;
+		}
+
+		$data_to_display[$url] = array(
+			'version' => urlencode($versions[$ranker]),
 			'color' => $colors[$colorindex]
 		);
 
-		if ($pagespeed) {
-			$data[$row['url']]['ranker'] = 'pagespeed';
-		} else {
-			$data[$row['url']]['ranker'] = 'yslow';
-		}
-	
 		if ($colorindex == count($colors))
 		{
 			$colorindex = 0;
@@ -125,63 +248,38 @@ if (count($urls) > 0) {
 			$colorindex += 1;
 		}
 	}
-	mysql_free_result($result);
-}
 
-$params = '';
-$first = true;
-foreach ($urls as $url) {
-	if ($first) {
-		$first = false;	
-	}
-	else {
-		$params.= '&';
-	}
-	$params.='url[]='.urlencode($url);
-}
+	if (count($data_to_display) >= 2) {
+		$enough_data = true;
 
-if ($pagespeed) {
-?>
-	<h1>Compare Page Speed rankings (<a href="?<?php echo $params?>">switch to YSlow</a>)</h1>
-<?php } else {?>
-	<h1>Compare YSlow rankings (<a href="?ranker=pagespeed&<?php echo $params?>">switch to Page Speed</a>)</h1>
-<?php }?>
-<ul>
-<?php foreach ($urls as $url) { ?>
-	<li>
-	<a href="./?url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
-	if (!array_key_exists($url, $data)) {
-		?> (no <?php echo $pagespeed ? 'Page Speed' : 'YSlow' ?> data)<?php
-	}
-	?></li>
-<?php } ?>
-</ul>
-<?php
-if (count($data) >= 2) {
-	// Graph
-	?>
-	<script>
-	data = <?php echo json_encode($data)?>;
-	</script>
+		// Graph
+		?>
+		<script>
+		data = <?php echo json_encode($data_to_display)?>;
+		ranker = '<?php echo $ranker ?>';
+		</script>
 
-	<div id="my-timeplot" style="height: 250px;"></div>
-	<div style="fint-size: 0.2em"><?php echo $pagespeed ? 'Page Speed scores' : 'YSlow grades' ?> for:
-	<?php foreach ($urls as $url) {
-		if (!array_key_exists($url, $data)) {
-			continue;
+		<div id="my-timeplot" style="height: 250px;"></div>
+		<div style="fint-size: 0.2em"><?php 
+			if ($ranker == 'yslow') { ?><b>YSlow</b> grades<?php }
+			if ($ranker == 'pagespeed') { ?><b>Page Speed</b> scores<?php }
+			if ($ranker == 'dynatrace') { ?><b>dynaTrace</b> ranks<?php }
+		?> for:	<?php
+		foreach ($data_to_display as $url => $url_data) {
+			?><span style="font-weight: bold; color: <?php echo $url_data['color'] ?>"><?php echo $url ?></span> (0-100);
+		<?php
 		}
-
-		?><span style="font-weight: bold; color: <?php echo $data[$url]['color'] ?>"><?php echo $url ?></span> (0-100);
-	<?php } ?>
-	</div>
-<?php } ?>
+		?></div><?php
+	}
+}
+?>
 
 <form action="" method="GET">
 <h3>Enter URL to compare:</h3>
-<?php if ($noinput) { ?>
+<?php if ($enough_data) { ?>
 <p>Enter up to 5 URLs in the form below:</p>
 <?php
-} else if (count($data) < 2) {
+} else {
 	?><p style="color: red; font-weight: bold">Not enought data to compare</p><?php 
 }
 $inputs = 5;
@@ -194,6 +292,7 @@ for ($i =0 ; $i < $inputs; $i++ ) { ?>
 <?php
 }
 ?>
+<input type="hidden" name="ranker" value="<?php echo $ranker ?>"/>
 <input type="submit" value="compare"/>
 </form>
 <?php
