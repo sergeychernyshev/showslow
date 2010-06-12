@@ -43,7 +43,7 @@
   'ajax/simile-ajax-bundle.js' => '1984',
   'ajax/styles/graphics-ie6.css' => '1733',
   'ajax/styles/graphics.css' => '1733',
-  'details/compare.js' => '183',
+  'details/compare.js' => '227',
   'details/details.js' => '222',
   'follow.png' => '203',
   'progressbar.gif' => '159',
