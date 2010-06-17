@@ -72,8 +72,27 @@ echo 'var metrics = '.json_encode($metrics);
 	cursor: help;
 }
 </style>
-<h1>Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
-<?php 
+<h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
+<?php if (!is_null($addThisProfile)) {?>
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
+<a href="http://www.addthis.com/bookmark.php?v=250&amp;username=<?php echo urlencode($addThisProfile)?>" class="addthis_button_compact">Share</a>
+<span class="addthis_separator">|</span>
+<a class="addthis_button_twitter"></a>
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_google"></a>
+<a class="addthis_button_delicious"></a>
+<a class="addthis_button_stumbleupon"></a>
+<a class="addthis_button_reddit"></a>
+<span class="addthis_separator">|</span>
+<a class="addthis_button_favorites"></a>
+<a class="addthis_button_print"></a>
+<a class="addthis_button_email"></a>
+</div>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=<?php echo urlencode($addThisProfile)?>"></script>
+<!-- AddThis Button END -->
+<?php
+}
 // latest YSlow result
 $query = sprintf("SELECT timestamp, w, o, i, lt,
 		ynumreq,	ycdn,		yexpires,	ycompress,	ycsstop,
@@ -158,7 +177,7 @@ if (!$row && !$ps_row && !$dt_row && $har === false) {
 if ($row || $ps_row || $dt_row)
 {
 	?>
-	<table cellpadding="15" cellspacing="5"><tr>
+	<table cellpadding="15" cellspacing="5" style="margin-top: 1em"><tr>
 	<?php 
 	// YSlow grade indicator
 	if ($row) {

@@ -67,8 +67,27 @@ $SECTION = 'custom_list_'.$_GET['id'];
 require_once(dirname(__FILE__).'/header.php');
 ?>
 <h1 style="margin-bottom: 0"><?php echo htmlentities($customLists[$_GET['id']]['title'])?></h1>
+<p style="margin-top: 0.2em"><?php echo $customLists[$_GET['id']]['description'] ?></p>
 
-<p><?php echo $customLists[$_GET['id']]['description'] ?></p>
+<?php if (!is_null($addThisProfile)) {?>
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
+<a href="http://www.addthis.com/bookmark.php?v=250&amp;username=<?php echo urlencode($addThisProfile)?>" class="addthis_button_compact">Share</a>
+<span class="addthis_separator">|</span>
+<a class="addthis_button_twitter"></a>
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_google"></a>
+<a class="addthis_button_delicious"></a>
+<a class="addthis_button_stumbleupon"></a>
+<a class="addthis_button_reddit"></a>
+<span class="addthis_separator">|</span>
+<a class="addthis_button_favorites"></a>
+<a class="addthis_button_print"></a>
+<a class="addthis_button_email"></a>
+</div>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=<?php echo urlencode($addThisProfile)?>"></script>
+<!-- AddThis Button END -->
+<?php } ?>
 
 <?php
 if (count($rows) && ($yslow || $pagespeed || $dynatrace))

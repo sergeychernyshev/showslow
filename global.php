@@ -47,6 +47,9 @@ $googleAnalyticsProfile = '';
 # show Feedback button
 $showFeedbackButton = true;
 
+# AddThis profile, set it to enable sharing functions
+$addThisProfile = null;
+
 # how old should data be for deletion (in days)
 # anything >0 will delete old data
 # don't forget to add a cron job to run deleteolddata.php

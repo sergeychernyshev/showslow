@@ -258,8 +258,27 @@ if (!is_null($ranker)) {
 		data = <?php echo json_encode($data_to_display)?>;
 		ranker = '<?php echo $ranker ?>';
 		</script>
+		<?php if (!is_null($addThisProfile)) {?>
+		<!-- AddThis Button BEGIN -->
+		<div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
+		<a href="http://www.addthis.com/bookmark.php?v=250&amp;username=<?php echo urlencode($addThisProfile)?>" class="addthis_button_compact">Share</a>
+		<span class="addthis_separator">|</span>
+		<a class="addthis_button_twitter"></a>
+		<a class="addthis_button_facebook"></a>
+		<a class="addthis_button_google"></a>
+		<a class="addthis_button_delicious"></a>
+		<a class="addthis_button_stumbleupon"></a>
+		<a class="addthis_button_reddit"></a>
+		<span class="addthis_separator">|</span>
+		<a class="addthis_button_favorites"></a>
+		<a class="addthis_button_print"></a>
+		<a class="addthis_button_email"></a>
+		</div>
+		<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=<?php echo urlencode($addThisProfile)?>"></script>
+		<!-- AddThis Button END -->
+		<?php } ?>
 
-		<div id="my-timeplot" style="height: 250px;"></div>
+		<div id="my-timeplot" style="height: 250px; margin-top: 0.2em"></div>
 		<div style="fint-size: 0.2em"><?php 
 			if ($ranker == 'yslow') { ?><b>YSlow</b> grades<?php }
 			if ($ranker == 'pagespeed') { ?><b>Page Speed</b> scores<?php }
