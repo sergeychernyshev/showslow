@@ -205,7 +205,7 @@ if ($row || $ps_row || $dt_row)
 	if ($dt_row) {
 	?>
 		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
-		<h2>Current <a href="http://ajax.dynatrace.com/">dunaTrace rank</a> score: <?php echo yslowPrettyScore($dt_row['rank'])?> (<i><?php echo htmlentities($dt_row['rank'])?></i>)</h2>
+		<h2>Current <a href="http://ajax.dynatrace.com/">dynaTrace rank</a> score: <?php echo yslowPrettyScore($dt_row['rank'])?> (<i><?php echo htmlentities($dt_row['rank'])?></i>)</h2>
 
 		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($dt_row['rank'])?>&chl=<?php echo urlencode(yslowPrettyScore($dt_row['rank']).' ('.$dt_row['rank'].')')?>" alt="<?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" title="Current dynaTrace  rank: <?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
 		</td>
@@ -471,7 +471,7 @@ if ($row || $ps_row || $dt_row)
 		</tr>
 		<tr>
 		<?php echo printDynaTraceRankBreakdown('Server-side rank', false, $dt_row['server'])?>
-		<?php echo printDynaTraceRankBreakdown('JavaScrip Rank', false, $dt_row['js'])?>
+		<?php echo printDynaTraceRankBreakdown('JavaScript Rank', false, $dt_row['js'])?>
 		</tr>
 	</table>	
 <?php 
