@@ -165,7 +165,7 @@ YAHOO.util.Event.onDOMReady(function() {
 					new YAHOO.widget.Tooltip("tt_"+name,  
 					{
 						context:	el,
-						text:		details[name].join('<br/>')
+						text:		decodeURIComponent(details[name].join('<br/>'))
 					});
 				}
 			}
