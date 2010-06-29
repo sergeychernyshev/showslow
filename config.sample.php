@@ -21,6 +21,14 @@ $sessionSecret = '...................................................';
 #	'max' => 100
 #);
 
+# URL groups to be displayed on URLs measured tab 
+#$URLGroups['showslow'] = array(
+#	'title' => "ShowSlow.com pages",
+#	'urls' => array(
+#		'http://www.showslow.com/'
+#	)
+#);
+
 # Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
 #$enableHARBeacon = true;
 

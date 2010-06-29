@@ -8,6 +8,9 @@ $limitURLs = false;
 # Track non-http(s) URLs. Disabled by default
 $enableNonHTTPURLs = false;
 
+# URL groups to be displayed on URLs measured tab
+$URLGroups = array();
+
 # Ignore URLs matching the prefix or a regext. If one of them matches, URLs is going to be ignored
 # You might want to remove 10.x, 192.168.x and 172.16-32.x if you're testing web sites on a private network.
 $ignoreURLs = array(
