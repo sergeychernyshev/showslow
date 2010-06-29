@@ -1,6 +1,6 @@
 -- MySQL dump 10.11
 --
--- Host: localhost    Database: showslow_dev
+-- Host: localhost    Database: showslow
 -- ------------------------------------------------------
 -- Server version	5.0.45
 
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL default '8',
+  `version` int(10) unsigned NOT NULL default '9',
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -51,8 +51,9 @@ CREATE TABLE `dynatrace` (
   `timeonnetwork` bigint(20) unsigned default NULL COMMENT 'Total Time on Network [ms]',
   `timeinjs` bigint(20) unsigned default NULL COMMENT 'Total Time in JavaScript [ms]',
   `timeinrendering` bigint(20) unsigned default NULL COMMENT 'Total Time in Rendering [ms]',
+  `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1959 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event`
@@ -83,7 +84,7 @@ CREATE TABLE `har` (
   `har` longblob NOT NULL COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL default '0' COMMENT 'Indicates that HAR data is stored compressed',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=159 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=347 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `metric`
@@ -97,7 +98,7 @@ CREATE TABLE `metric` (
   `metric_id` mediumint(8) unsigned NOT NULL default '0',
   `value` float NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=438 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=656 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `pagespeed`
@@ -142,7 +143,7 @@ CREATE TABLE `pagespeed` (
   `pSpecifyCharsetEarly` float unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11139 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=38732 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `u_googlefriendconnect`
@@ -192,7 +193,7 @@ CREATE TABLE `u_users` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `fb_id` (`fb_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=908 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `urls`
@@ -210,7 +211,7 @@ CREATE TABLE `urls` (
   `dynatrace_last_id` bigint(20) unsigned default NULL COMMENT 'Last measurement ID for dynaTrace beacon',
   PRIMARY KEY  (`id`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=22275 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=31771 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user_urls`
@@ -264,7 +265,7 @@ CREATE TABLE `yslow2` (
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY  (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=373381 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=423069 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -275,4 +276,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-05-30  1:39:33
+-- Dump completed on 2010-06-29  5:38:15
