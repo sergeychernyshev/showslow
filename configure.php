@@ -8,16 +8,18 @@ require_once(dirname(__FILE__).'/header.php');
 ?>
 <p><b style="color: #CC14BE">WARNING! Only use this if you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
-<p>Set these Firefox parameters on <b>about:config</b> page:</p>
-<h2>YSlow 2.x</h2>
+<p>Set these Firefox preferences on <b>about:config</b> page:</p>
+<h2>YSlow</h2>
+<p><a href="http://developer.yahoo.com/yslow/">Yslow</a> has to be configured to send data to a Show Slow instance</p>
+<p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.yslow.beaconUrl = <b style="color: blue"><?php echo $showslow_base?>beacon/yslow/</b></li>
 <li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
 <li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 </ul>
 <h2>Page Speed</h2>
-<p>Page Speed is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
-<p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox parameters:</p>
+<p><a href="http://code.google.com/speed/page-speed/">Page Speed</a> is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
+<p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
