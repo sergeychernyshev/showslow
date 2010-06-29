@@ -449,7 +449,7 @@ if ($row || $ps_row || $dt_row)
 			if ($doc)
 			{
 				// TODO: impelement this
-			?><td><a href="http://ajax.dynatrace.com/som_url_to_docs/<?php echo $doc?>"><?php echo $name?></a></td>	<?php
+			?><td><a href="https://community.dynatrace.com/community/display/PUB/<?php echo $doc?>"><?php echo $name?></a></td>	<?php
 			} else {
 			?><td><?php echo $name?></td><?php
 			}
@@ -466,12 +466,12 @@ if ($row || $ps_row || $dt_row)
 	<h2 style="clear: both">dynaTrace breakdown</h2>
 	<table>
 		<tr>
-		<?php echo printDynaTraceRankBreakdown('Caching Rank', false, $dt_row['cache'])?>
-		<?php echo printDynaTraceRankBreakdown('Network Rank', false, $dt_row['net'])?>
+		<?php echo printDynaTraceRankBreakdown('Caching Rank', 'Best+Practices+on+Browser+Caching', $dt_row['cache'])?>
+		<?php echo printDynaTraceRankBreakdown('Network Rank', 'Best+Practices+on+Network+Requests+and+Roundtrips', $dt_row['net'])?>
 		</tr>
 		<tr>
-		<?php echo printDynaTraceRankBreakdown('Server-side rank', false, $dt_row['server'])?>
-		<?php echo printDynaTraceRankBreakdown('JavaScript Rank', false, $dt_row['js'])?>
+		<?php echo printDynaTraceRankBreakdown('Server-side rank', 'Best+Practices+on+Server-Side+Performance+Optimization', $dt_row['server'])?>
+		<?php echo printDynaTraceRankBreakdown('JavaScript Rank', 'Best+Practices+on+JavaScript+and+AJAX+Performance', $dt_row['js'])?>
 		</tr>
 	</table>	
 <?php 
