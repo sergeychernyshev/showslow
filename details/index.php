@@ -494,7 +494,7 @@ if ($ps_row) {
 
 if ($dt_row) {
 ?>
-	<h2>Dyna Trace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="dt_measurementstable"></div>
 <?php 
 }

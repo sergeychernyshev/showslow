@@ -297,7 +297,7 @@ td, th { white-space: nowrap; }
 <h1 style="margin-bottom: 0">Add URLs to monitor</h1>
 <div style="font-size: small; margin-bottom: 1em">User: <a href="users/edit.php"><?php echo $current_user->getName(); ?></a></div>
 
-<p>If you don't want to <a href="<?php echo $showslow_base; ?>configure.php">run YSlow and Page Speed on your desktop</a>, you can add a URL to the list below and it'll be measured automatically every <?php echo $monitoringPeriod ?> hours.</p>
+<p>If you don't want to <a href="<?php echo $showslow_base; ?>configure.php">run YSlow, Page Speed and dynaTrace on your desktop</a>, you can add a URL to the list below and it'll be measured automatically every <?php echo $monitoringPeriod ?> hours.</p>
 
 <form action="" method="POST">
 <?php
