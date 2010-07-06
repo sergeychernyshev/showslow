@@ -7,7 +7,11 @@ if (!isset($SECTION)) {
 	$SECTION = null;
 }
 
-?><html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/">
+?><!DOCTYPE HTML>
+<html version="HTML+RDFa 1.1" lang="en"
+	xmlns:og="http://opengraphprotocol.org/schema/"
+	xmlns:fb="http://developers.facebook.com/schema/"
+>
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
