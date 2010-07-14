@@ -63,6 +63,30 @@ td, th { white-space: nowrap; }
 .url {
         padding-left:10px;
 }
+
+
+
+.paginator {
+	padding: 1em;
+}
+
+.paginator .paginate {
+	padding: 2px 6px;
+	border: 1px solid silver;
+	text-decoration: none;
+}
+
+.paginator .current {
+	padding: 2px 6px;
+	border: 2px solid #7F6F26;
+	background: #7F6F26;
+	color: white;
+}
+
+.paginator .inactive {
+	color: silver;
+	padding: 2px 6px;
+}
 </style>
 <div style="width: 100%; overflow: hidden">
 <?php
@@ -148,6 +172,12 @@ while ($row = mysql_fetch_assoc($result)) {
 
 if ($yslow || $pagespeed || $dynatrace) {
 ?>
+<div class="paginator">
+<?php
+	$pages->paginate($showslow_base.'all.php');
+	echo $pages->display_pages();
+?>
+</div>
 <table>
 <tr><th>Timestamp</th>
 <?php if ($yslow) { ?><th colspan="2">YSlow grade</th><?php } ?>
@@ -191,10 +221,12 @@ foreach ($rows as $row) {
 mysql_free_result($result);
 ?>
 </table>
+<div class="paginator">
 <?php
-	$pages->paginate();
-	echo $pages->display_jump_menu();
 	echo $pages->display_pages();
+?>
+</div>
+<?php
 } else {
 	?><p>No data is gathered yet</p><?php
 }

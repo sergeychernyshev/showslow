@@ -1,0 +1,2 @@
+1	http://www.showslow.com/sitemap.xml
+1	http://www.sergeychernyshev.com/sitemap.xml
