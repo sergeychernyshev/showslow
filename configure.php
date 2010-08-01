@@ -28,7 +28,7 @@ require_once(dirname(__FILE__).'/header.php');
 <h2>dynaTrace AJAX Edition 2.0 Beta 1</h2>
 <p><a href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> is configured to upload send metrics to <a href="http://www.showslow.com/">showslow.com</a> when clicking on the <b><i>Upload your results to showslow.com</i></b> link in the dynaTrace AJAX Performance Report.</p>
 <p>The uploaded beacon contains information about the dynaTrace AJAX Ranks which includes overall page rank and rankings for Browser Caching, Network, JavaScript and Server-Side Activities.</p>
-<p>As for the Beta 1, the upload URL is not configurable to a different instance than www.showslow.com.</p>
+<p>As for the Beta 1, the upload URL is not configurable to a different instance than www.showslow.com. It is expected to change in Beta 2, which is expected to be released in September, 2010.</p>
 
 <h2>More metrics</h2>
 <p>For more information about different beacons supported by this instance of ShowSlow, see <a href="beacon/">beacons page</a></p>
