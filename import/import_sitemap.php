@@ -6,7 +6,6 @@
 //	1	http://www.sergeychernyshev.com/sitemap.xml
 
 require_once(dirname(dirname(__FILE__)).'/global.php');
-require_once(dirname(dirname(__FILE__)).'/beacon/beacon_functions.php');
 
 $user_id = null; 
 $temp_path = '/tmp/';

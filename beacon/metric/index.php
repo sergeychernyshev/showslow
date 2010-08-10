@@ -1,6 +1,5 @@
 <?php 
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
-require_once(dirname(dirname(__FILE__)).'/beacon_functions.php');
 
 if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'], $metrics)
 	&& array_key_exists('value', $_REQUEST) && is_numeric($_REQUEST['value']) !== false

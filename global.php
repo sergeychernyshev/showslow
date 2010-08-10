@@ -169,30 +169,35 @@ function yslowPrettyScore($num) {
 	return $letter;
 }
 
-function scoreColor($num) {
-	$colorSteps = array(
-		'EE0000',
-		'EE2800',
-		'EE4F00',
-		'EE7700',
-		'EE9F00',
-		'EEC600',
-		'EEEE00',
-		'C6EE00',
-		'9FEE00',
-		'77EE00',
-		'4FEE00',
-		'28EE00',
-		'00EE00'
-	);
-
-	for($i=1; $i<=count($colorSteps); $i++)
+function scoreColorStep($num, $total = 13) {
+	for($i=1; $i<=$total; $i++)
 	{
-		if ($num <= $i*100/count($colorSteps))
+		if ($num <= $i*100/$total)
 		{
-			return '#'.$colorSteps[$i-1];
+			return $i;
 		} 
 	}
+}
+
+$colorSteps = array(
+	'EE0000',
+	'EE2800',
+	'EE4F00',
+	'EE7700',
+	'EE9F00',
+	'EEC600',
+	'EEEE00',
+	'C6EE00',
+	'9FEE00',
+	'77EE00',
+	'4FEE00',
+	'28EE00',
+	'00EE00'
+);
+
+function scoreColor($num) {
+	global $colorSteps;
+	return '#'.$colorSteps[scoreColorStep($num, count($colorSteps))-1];
 }
 
 # returns true if URL should be ignored
@@ -389,18 +394,52 @@ function getUrlId($url, $outputerror = true)
 		$row = mysql_fetch_assoc($result);
 		return $row['id'];
 	} else if (mysql_num_rows($result) == 0) {
-		$query = sprintf("INSERT INTO urls (url) VALUES ('%s')", mysql_real_escape_string($url));
-		$result = mysql_query($query);
+		// Emulating unique index on a blob with unlimited length by locking the table on write
+		// locking only when we're about to insert so we don't block the whole thing on every read
 
+		// locking the table to make sure we pass it only by one concurrent process
+		$result = mysql_query('LOCK TABLES urls WRITE');
 		if (!$result) {
 			beaconError(mysql_error());
 		}
 
-		return mysql_insert_id();
+		// selecting the URL again to make sure there was no concurrent insert for this URL
+		$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
+		$result = mysql_query($query);
+		if (!$result) {
+			$mysql_err = mysql_error();
+			mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
+			beaconError($mysql_err);
+		}
+
+		// repeating the check
+		if (mysql_num_rows($result) == 1) {
+			$row = mysql_fetch_assoc($result);
+			$url_id = $row['id'];
+		} else if (mysql_num_rows($result) == 0) {
+			$query = sprintf("INSERT INTO urls (url) VALUES ('%s')", mysql_real_escape_string($url));
+			$result = mysql_query($query);
+			if (!$result) {
+				$mysql_err = mysql_error();
+				mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
+				beaconError($mysql_err);
+			}
+
+			$url_id = mysql_insert_id();
+		} else if (mysql_num_rows($result) > 1) {
+			mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
+			beaconError('more then one entry found for the URL (when lock is aquired)');
+		}
+
+		$result = mysql_query('UNLOCK TABLES'); // now concurrent thread can try reading again
+		if (!$result) {
+			beaconError(mysql_error());
+		}
+
+		return $url_id;
 	} else {
 		beaconError('more then one entry found for the URL');
 	}
-
 }
 
 // httpd_build_url replacement from http://www.mediafire.com/?zjry3tynkg5
@@ -546,6 +585,21 @@ function resolveRedirects($url) {
 	return $url;
 }
 
+function beaconError($message)
+{
+	error_log($message);
+	header('HTTP/1.0 500 Beacon Error');
+	?>
+<head>
+<title>500 Beacon Error</title>
+</head>
+<body>
+<h1>500 BeaconError</h1>
+<p><?php echo $message?></p>
+</body></html>
+<?php
+	exit;
+}
 
 mysql_connect($host, $user, $pass);
 mysql_select_db($db);

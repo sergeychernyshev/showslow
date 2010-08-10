@@ -1,6 +1,5 @@
 <?php 
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
-require_once(dirname(dirname(__FILE__)).'/beacon_functions.php');
 
 if ($_SERVER["REQUEST_METHOD"] != 'POST')
 {

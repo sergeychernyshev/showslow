@@ -8,23 +8,6 @@ require_once(dirname(__FILE__).'/header.php');
 echo $ShowSlowIntro;
 ?>
 <hr size="1"/>
-<style>
-td, th { white-space: nowrap; }
-
-.score {
-	text-align: right;
-	padding: 0 10px 0 10px;
-}
-
-.gbox {
-	background-color: silver;
-	width: 101px;	
-}
-
-.url {
-	padding-left:10px;
-}
-</style>
 <div style="width: 100%; overflow: hidden">
 <?php 
 $query = sprintf("SELECT url, last_update,
@@ -80,7 +63,7 @@ foreach ($rows as $row) {
 		<td></td><td></td>
 	<?php }else{?>
 		<td class="score"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
-		<td><div class="gbox" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['o'])?>"/></div></td>
+		<td><div class="gbox" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px" class="bar c<?php echo scoreColorStep($row['o'])?>"/></div></td>
 	<?php }?>
 
 	<?php if (!$pagespeed) {?>
@@ -88,7 +71,7 @@ foreach ($rows as $row) {
 		<td></td><td></td>
 	<?php }else{?>
 		<td class="score"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-		<td><div class="gbox" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['ps_o'])?>"/></div></td>
+		<td><div class="gbox" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px" class="bar c<?php echo scoreColorStep($row['ps_o'])?>"/></div></td>
 	<?php }?>
 
 	<?php if (!$dynatrace) {?>
@@ -96,7 +79,7 @@ foreach ($rows as $row) {
 		<td></td><td></td>
 	<?php }else{?>
 		<td class="score"><?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)</td>
-		<td><div class="gbox" title="Current dynaTrace score: <?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div style="width: <?php echo $row['dt_o']+1?>px; height: 0.7em; background-color: <?php echo scoreColor($row['dt_o'])?>"/></div></td>
+		<td><div class="gbox" title="Current dynaTrace score: <?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 	<?php }?>
 
 	<td class="url"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>

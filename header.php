@@ -85,7 +85,32 @@ body {
 	float: right;
 	margin-right: 1em;
 }
+
+td, th { white-space: nowrap; }
+
+.score {
+	text-align: right;
+	padding: 0 10px 0 10px;
+}
+
+.gbox {
+	background-color: silver;
+	width: 101px;	
+}
+
+.url {
+	padding-left:10px;
+}
+
+.bar {
+	height: 0.7em;
+}
+
+<?php for($i=1; $i<=count($colorSteps); $i++) {?>
+.c<?php echo $i; ?> { background-color: #<?php echo $colorSteps[$i-1]; ?>}
+<?php } ?>
 </style>
+
 <?php
 if (isset($STYLES)) {
 	foreach ($STYLES as $_style) {
