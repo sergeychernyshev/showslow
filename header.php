@@ -7,6 +7,10 @@ if (!isset($SECTION)) {
 	$SECTION = null;
 }
 
+if (!isset($current_user)) {
+	$current_user = User::get();
+}
+
 ?><!DOCTYPE HTML>
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns:og="http://opengraphprotocol.org/schema/"
@@ -154,6 +158,7 @@ window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function
 <script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
+_gaq.push(['_setCustomVar', 1, 'User Type', <?php if (is_null($current_user)) { ?>'Anonymous'<?php }else{ ?>'Member'<?php } ?>, 2]);
 _gaq.push(['_trackPageview']);
 
 (function() {
@@ -174,10 +179,6 @@ document.documentElement.firstChild.appendChild(ga);
 
 	<div id="navbox">
 	<?php
-	if (!isset($current_user)) {
-		$current_user = User::get();
-	}
-
 	if (!is_null($current_user))
 	{?>
 		<span id="username"><a href="<?php echo $showslow_base ?>users/edit.php" title="<?php echo htmlentities($current_user->getName())?>'s user information"><?php echo htmlentities($current_user->getName()) ?></a></span> | 
