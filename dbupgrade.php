@@ -7,6 +7,21 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 10
+ *
+ * Adding HAR beacon
+ */
+$versions[10] = array(
+	'up' => "CREATE TABLE `pagetest` (
+ `id` BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique id',
+ `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `url_id` BIGINT( 20 ) UNSIGNED NOT NULL COMMENT 'URL id',
+ `test_id` varchar(255) NOT NULL COMMENT 'PageTest test id',
+ `test_url` BLOB NOT NULL COMMENT 'PageTest result URL to redirect to'
+) ENGINE=MyISAM;",
+	'down' => 'DROP TABLE pagetest',
+);
+
 /* version 9
  *
  * Adding dynaTrace beacon's details
