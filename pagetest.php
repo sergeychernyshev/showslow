@@ -59,6 +59,12 @@ if (array_key_exists('url', $_REQUEST))
 		failWithMessage(mysql_error());
 	}
 
+	# updating modification date for the URL
+	$query = sprintf("UPDATE urls SET last_update = now() WHERE id = %d",
+		mysql_real_escape_string($url_id)
+	);
+	$result = mysql_query($query);
+
 	header('Location: '.$userUrl);
 	exit;
 }
