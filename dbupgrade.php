@@ -7,9 +7,16 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 11
+ *
+ * Storing PageTest locations
+*/
+$versions[11]['up'][] = "ALTER TABLE pagetest ADD location TEXT DEFAULT NULL COMMENT 'Test location'";
+$versions[11]['down'][] = "ALTER TABLE pagetest DROP location";
+
 /* version 10
  *
- * Adding HAR beacon
+ * Adding PageTest history
  */
 $versions[10] = array(
 	'up' => "CREATE TABLE `pagetest` (

@@ -166,7 +166,7 @@ while ($har_row = mysql_fetch_assoc($result)) {
 }
 
 // checking if there were PageTest tests ran
-$query = sprintf("SELECT pagetest.timestamp as t, test_url FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
+$query = sprintf("SELECT pagetest.timestamp as t, test_url, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
 	mysql_real_escape_string($urlid)
 );
 
@@ -522,11 +522,15 @@ if (count($pagetest) > 0) {
 	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
-	<tr><th>Time</th><th>PageTest</th></tr>
+	<tr><th>Time</th><th>PageTest</th><th>Location</th></tr>
 <?php
 	foreach ($pagetest as $pagetestentry) {
 ?>
-	<tr><th><?php echo htmlentities($pagetestentry['t'])?></th><th><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></th></tr>
+	<tr>
+	<td><?php echo htmlentities($pagetestentry['t'])?></td>
+	<td><?php echo htmlentities($pagetestentry['location'])?></td>
+	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
+	</tr>
 <?php
 	}
 ?>
@@ -545,7 +549,7 @@ if (count($har) > 0) {
 <?php
 	foreach ($har as $harentry) {
 ?>
-	<tr><th><?php echo htmlentities($harentry['t'])?></th><th><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></th></tr>
+	<tr><td><?php echo htmlentities($harentry['t'])?></td><td><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></td></tr>
 <?php
 	}
 ?>

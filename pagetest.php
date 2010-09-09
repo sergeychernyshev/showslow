@@ -6,8 +6,11 @@ if (array_key_exists('url', $_REQUEST))
 	$url_id = getUrlId($_REQUEST['url']);
 
 	$runtest = $webPageTestBase.'runtest.php?f=xml&r=yes&url='.urlencode($_REQUEST['url']);
+	$location = null;
+
 	if (array_key_exists('location', $_REQUEST)) {
-		$runtest.='&location='.$_REQUEST['location'];
+		$location = $_REQUEST['location'];
+		$runtest.='&location='.$location;
 	}
 	if (array_key_exists('private', $_REQUEST)) {
 		$runtest.='&private='.$_REQUEST['private'];
@@ -48,10 +51,12 @@ if (array_key_exists('url', $_REQUEST))
 	$userUrl = $xml->data->userUrl;
 
 	# adding new entry
-	$query = sprintf("INSERT INTO pagetest (url_id, test_id, test_url) VALUES ('%d', '%s', '%s')",
+	$query = sprintf("INSERT INTO pagetest (url_id, test_id, test_url, location)
+		VALUES ('%d', '%s', '%s', '%s')",
 		mysql_real_escape_string($url_id),
 		mysql_real_escape_string($testId),
-		mysql_real_escape_string($userUrl)
+		mysql_real_escape_string($userUrl),
+		mysql_real_escape_string($webPageTestLocations[$location])
 	);
 
 	if (!mysql_query($query))
