@@ -65,6 +65,7 @@ $webPageTestBase = 'http://www.webpagetest.org/';
 require_once(dirname(__FILE__).'/pagetestlocations.php');
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
+$keepPrivatePageTests = false;
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
