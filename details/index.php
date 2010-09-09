@@ -522,7 +522,11 @@ if (count($pagetest) > 0) {
 	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
-	<tr><th>Time</th><th>PageTest</th><th>Location</th></tr>
+	<tr>
+	<th>Time</th>
+	<th>Location</th>
+	<th>PageTest</th>
+	</tr>
 <?php
 	foreach ($pagetest as $pagetestentry) {
 ?>
