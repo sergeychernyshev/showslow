@@ -239,7 +239,7 @@ function isURLAllowed($url) {
 			}
 		}
 
-		return !$matched;
+		return $matched;
 	}
 	return true;
 }
