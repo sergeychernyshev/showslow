@@ -7,6 +7,13 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 12
+ *
+ * timestamps don't need to be updatable
+*/
+$versions[12]['up'][] = "ALTER TABLE  `yslow2` CHANGE  `timestamp`  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT  'Measurement timestamp'";
+$versions[12]['down'][] = "ALTER TABLE  `yslow2` CHANGE  `timestamp`  `timestamp` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT  'Measurement timestamp'";
+
 /* version 11
  *
  * Storing PageTest locations
