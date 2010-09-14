@@ -25,7 +25,7 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 {
 	$url_id = getUrlId($_GET['u']);
 
-	if ($_GET['v'] >= 1.6) {
+	if (version_compare($_GET['v'], '1.6', '>=')) {
 		$scaleimgs = $_GET['pSpecifyImageDimensions'];
 		$imgdims = $_GET['pSpecifyImageDimensions'];
 	} else {
