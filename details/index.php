@@ -453,6 +453,9 @@ if ($row || $ps_row || $dt_row)
 		</tr>
 		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Put CSS In The Document Head', 'rendering.html#PutCSSInHead', $ps_row['pPutCssInTheDocumentHead'])?>
+		<?php echo printPageSpeedGradeBreakdown('Specify image dimensions', 'rendering.html#SpecifyImageDimensions', $ps_row['pImgDims'])?>
+		</tr>
+		<tr>
 		<?php echo printPageSpeedGradeBreakdown('Specify Charset Early', 'rendering.html#SpecifyCharsetEarly', $ps_row['pSpecifyCharsetEarly'])?>
 		</tr>
 	</table>	
