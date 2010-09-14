@@ -150,8 +150,8 @@ $dt_row = mysql_fetch_assoc($result);
 mysql_free_result($result);
 
 // checking if there is har data
-$query = sprintf("SELECT har.timestamp as t, har.id as id FROM har, urls WHERE urls.url = '%s' AND har.url_id = urls.id ORDER BY timestamp DESC",
-	mysql_real_escape_string($url)
+$query = sprintf("SELECT har.timestamp as t, har.id as id FROM har WHERE har.url_id = '%d' ORDER BY timestamp DESC",
+	mysql_real_escape_string($urlid)
 );
 
 $result = mysql_query($query);
@@ -165,6 +165,21 @@ while ($har_row = mysql_fetch_assoc($result)) {
 	$har[] = $har_row;
 }
 
+// checking if there were PageTest tests ran
+$query = sprintf("SELECT pagetest.timestamp as t, test_url, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
+	mysql_real_escape_string($urlid)
+);
+
+$result = mysql_query($query);
+
+if (!$result) {
+        error_log(mysql_error());
+}
+
+$pagetest = array();
+while ($pagetest_row = mysql_fetch_assoc($result)) {
+	$pagetest[] = $pagetest_row;
+}
 mysql_free_result($result);
 
 if (!$row && !$ps_row && !$dt_row && $har === false) {
@@ -214,8 +229,8 @@ if ($row || $ps_row || $dt_row)
 	?>
 	</tr></table>
 	<?php if (!is_null($webPageTestBase)) { ?>
-	<h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a></h2>
-	<form action="<?php echo htmlentities($webPageTestBase)?>runtest.php" method="GET" target="_blank">
+	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
+	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
 	Location: <select name="location">
 	<?php foreach ($webPageTestLocations as $code => $label) { ?>
@@ -223,7 +238,8 @@ if ($row || $ps_row || $dt_row)
 	<?php } ?></select>
 	<input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/><label for="wpt_private">Private</label>
 	<input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/><label for="wpt_fvonly">First View Only</label>
-	<input type="submit" value="run test &gt;&gt;"/>
+	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
+	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
 	<?php } ?>
 
@@ -238,7 +254,7 @@ if ($row || $ps_row || $dt_row)
 	eventversion = '<?php echo urlencode($eventupdate)?>';
 	</script>
 
-	<h2 style="clear: both">Measurements over time</h2>
+	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
 	<div style="fint-size: 0.2em">
 	<?php
@@ -312,7 +328,7 @@ if ($row || $ps_row || $dt_row)
 		var details = <?php echo json_encode($comps)?>;
 		</script>
 
-		<h2 style="clear: both">YSlow breakdown</h2>
+		<a name="yslow"/><h2 style="clear: both">YSlow breakdown</h2>
 		<table>
 			<tr>
 			<?php echo printYSlowGradeBreakdown('Make fewer HTTP requests', 'num_http', 'ynumreq')?>
@@ -383,7 +399,7 @@ if ($row || $ps_row || $dt_row)
 			<td>&nbsp;&nbsp;</td><?php 
 		}
 	?>
-	<h2 style="clear: both">Page Speed breakdown</h2>
+	<a name="pagespeed"/><h2 style="clear: both">Page Speed breakdown</h2>
 	<table>
 	<tr><td colspan="6"><b>Optimize caching</b></td></tr>
 		<tr>
@@ -463,7 +479,7 @@ if ($row || $ps_row || $dt_row)
 			<?php } ?>
 			<td>&nbsp;&nbsp;</td><?php 
 		}?>
-	<h2 style="clear: both">dynaTrace breakdown</h2>
+	<a name="dynatrace"/><h2 style="clear: both">dynaTrace breakdown</h2>
 	<table>
 		<tr>
 		<?php echo printDynaTraceRankBreakdown('Caching Rank', 'Best+Practices+on+Browser+Caching', $dt_row['cache'])?>
@@ -480,28 +496,55 @@ if ($row || $ps_row || $dt_row)
 
 if ($row) {
 ?>
-	<h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
 	<?php 
 }
 
 if ($ps_row) {
 ?>
-	<h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($ps_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($ps_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="ps_measurementstable"></div>
 <?php 
 }
 
 if ($dt_row) {
 ?>
-	<h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="dt_measurementstable"></div>
 <?php 
 }
 
+if (count($pagetest) > 0) {
+?>
+	<a name="pagetest-table"/><h2>WebPageTest data collected</h2>
+
+	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
+
+	<table cellpadding="5" cellspacing="0" border="1">
+	<tr>
+	<th>Time</th>
+	<th>Location</th>
+	<th>PageTest</th>
+	</tr>
+<?php
+	foreach ($pagetest as $pagetestentry) {
+?>
+	<tr>
+	<td><?php echo htmlentities($pagetestentry['t'])?></td>
+	<td><?php echo htmlentities($pagetestentry['location'])?></td>
+	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
+	</tr>
+<?php
+	}
+?>
+	</table>
+<?php
+}
+
 if (count($har) > 0) {
 ?>
-	<h2>HAR data collected</h2>
+	<a name="har-table"/><h2>HAR data collected</h2>
 
 	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($har[0]['id']); ?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
 
@@ -510,7 +553,7 @@ if (count($har) > 0) {
 <?php
 	foreach ($har as $harentry) {
 ?>
-	<tr><th><?php echo htmlentities($harentry['t'])?></th><th><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></th></tr>
+	<tr><td><?php echo htmlentities($harentry['t'])?></td><td><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></td></tr>
 <?php
 	}
 ?>

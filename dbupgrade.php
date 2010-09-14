@@ -7,6 +7,35 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 12
+ *
+ * timestamps don't need to be updatable
+*/
+$versions[12]['up'][] = "ALTER TABLE  `yslow2` CHANGE  `timestamp`  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT  'Measurement timestamp'";
+$versions[12]['down'][] = "ALTER TABLE  `yslow2` CHANGE  `timestamp`  `timestamp` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT  'Measurement timestamp'";
+
+/* version 11
+ *
+ * Storing PageTest locations
+*/
+$versions[11]['up'][] = "ALTER TABLE pagetest ADD location TEXT DEFAULT NULL COMMENT 'Test location'";
+$versions[11]['down'][] = "ALTER TABLE pagetest DROP location";
+
+/* version 10
+ *
+ * Adding PageTest history
+ */
+$versions[10] = array(
+	'up' => "CREATE TABLE `pagetest` (
+ `id` BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique id',
+ `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `url_id` BIGINT( 20 ) UNSIGNED NOT NULL COMMENT 'URL id',
+ `test_id` varchar(255) NOT NULL COMMENT 'PageTest test id',
+ `test_url` BLOB NOT NULL COMMENT 'PageTest result URL to redirect to'
+) ENGINE=MyISAM;",
+	'down' => 'DROP TABLE pagetest',
+);
+
 /* version 9
  *
  * Adding dynaTrace beacon's details

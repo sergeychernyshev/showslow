@@ -62,17 +62,10 @@ $homePageMetaTags = '';
 
 # this enables a form to run a test on WebPageTest.org
 $webPageTestBase = 'http://www.webpagetest.org/';
-$webPageTestLocations = array(
-	'DSL' => 'Dulles, VA (IE7, DSL)',
-	'FIOS' => 'Dulles, VA (IE7, FIOS)',
-	'Dial' => 'Dulles, VA (IE7, 56Kbps dial-up)',
-	'IE8' => 'Dulles, VA (IE8, DSL)',
-	'SanJose' => 'San Jose, CA (IE8, Ethernet)',
-	'NZ' => 'Wellington, New Zealand (IE7, DSL)',
-	'UK' => 'Gloucester, UK (IE7, DSL)'
-);
+require_once(dirname(__FILE__).'/pagetestlocations.php');
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
+$keepPrivatePageTests = false;
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
@@ -246,7 +239,7 @@ function isURLAllowed($url) {
 			}
 		}
 
-		return !$matched;
+		return $matched;
 	}
 	return true;
 }
@@ -565,6 +558,9 @@ function resolveRedirects($url) {
 		if (curl_exec($ch)) {
 			$new_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 
+			# TODO also test for success code
+			# TODO maybe, fix www. when it's missing.
+
 			if ($new_url) {
 				$url = $new_url;
 			}
@@ -583,6 +579,23 @@ function resolveRedirects($url) {
 	}
 
 	return $url;
+}
+
+function failWithMessage($message)
+{
+	error_log("[Page Error] ".$message);
+	header('HTTP/1.0 500 ShowSlow Error');
+	?>
+<head>
+<title>500 ShowSlow Error</title>
+</head>
+<body>
+<h1>500 ShowSlow Error</h1>
+<p>Something went wrong. If it persists, please report it to <a href="http://code.google.com/p/showslow/issues/list">issue tracker</a>.</a>
+<p><?php echo $message?></p>
+</body></html>
+<?php
+	exit;
 }
 
 function beaconError($message)
