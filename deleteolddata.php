@@ -3,6 +3,18 @@ require_once('global.php');
 
 if ($oldDataInterval > 0)
 {
+	# deleting old HAR data
+	$query = sprintf("DELETE FROM har WHERE timestamp < DATE_SUB(now(), INTERVAL '%s' DAY)",
+		mysql_real_escape_string($oldDataInterval)
+	);
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+		exit;
+	}
+
 	# deleting old data for custom metrics 
 	$query = sprintf("DELETE FROM metric WHERE timestamp < DATE_SUB(now(), INTERVAL '%s' DAY)",
 		mysql_real_escape_string($oldDataInterval)
