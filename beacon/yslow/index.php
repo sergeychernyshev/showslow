@@ -4,7 +4,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE urls set yslow2_last_id = %d, last_update = now() WHERE id = %d",
+	$query = sprintf("UPDATE urls SET yslow2_last_id = %d, last_update = now() WHERE id = %d",
 		mysql_real_escape_string($measurement_id),
 		mysql_real_escape_string($url_id)
 	);
@@ -13,6 +13,22 @@ function updateUrlAggregates($url_id, $measurement_id)
 	if (!$result) {
 		beaconError(mysql_error());
 	}
+
+	// Clean old details for this URL to conserve space
+	if ($cleanOldYSlowBeaconDetails) {
+		# adding new entry
+		$query = sprintf("/* clean old beacon details */
+			UPDATE yslow2
+			SET details = NULL
+			WHERE url_id = '%d' AND id <> '%d'
+		", mysql_real_escape_string($url_id), mysql_real_escape_string($measurement_id));
+
+		if (!mysql_query($query))
+		{
+			beaconError(mysql_error());
+		}
+	}
+
 }
 
 $post_data = file_get_contents("php://input");
@@ -26,20 +42,6 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	)
 {
 	$url_id = getUrlId(urldecode($post['u']));
-
-	// Clean old details for this URL to conserve space
-	if ($cleanOldYSlowBeaconDetails) {
-		# adding new entry
-		$query = sprintf("/* clean old beacon details */
-			UPDATE yslow2
-			SET details = NULL
-			WHERE url_id = '%d'", mysql_real_escape_string($url_id));
-
-		if (!mysql_query($query))
-		{
-			beaconError(mysql_error());
-		}
-	}
 
 	$grades = $post['g'];
 
