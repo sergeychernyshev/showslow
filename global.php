@@ -58,6 +58,10 @@ $addThisProfile = null;
 # don't forget to add a cron job to run deleteolddata.php
 $oldDataInterval = 60;
 
+# Enable this if you'd like to clean old yslow beacon details to conserve space
+# (beacon details are currently only used for tooltips for latest yslow breakdown)
+$cleanOldYSlowBeaconDetails = false;
+
 $homePageMetaTags = '';
 
 # this enables a form to run a test on WebPageTest.org

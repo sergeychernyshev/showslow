@@ -27,6 +27,20 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 {
 	$url_id = getUrlId(urldecode($post['u']));
 
+	// Clean old details for this URL to conserve space
+	if ($cleanOldYSlowBeaconDetails) {
+		# adding new entry
+		$query = sprintf("/* clean old beacon details */
+			UPDATE yslow2
+			SET details = NULL
+			WHERE url_id = '%d'", mysql_real_escape_string($url_id));
+
+		if (!mysql_query($query))
+		{
+			beaconError(mysql_error());
+		}
+	}
+
 	$grades = $post['g'];
 
 	$ynumreq	= $grades['ynumreq']['score'];
