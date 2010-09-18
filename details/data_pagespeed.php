@@ -29,10 +29,12 @@ mysql_free_result($result);
 
 $query = sprintf("SELECT UNIX_TIMESTAMP(p.timestamp) as time,
 		p.w, p.o, p.l, p.r, p.t, p.v,
-		p.pMinifyCSS, p.pMinifyJS, p.pOptImgs, p.pImgDims, p.pCombineJS, p.pCombineCSS,
-		p.pPutCssInTheDocumentHead, p.pBrowserCache, p.pProxyCache, p.pNoCookie, p.pMinimizeRequestSize,
-		p.pParallelDl, p.pCssSelect, p.pMinimizeRequestSize, p.pDeferJS, p.pGzip,
-		p.pMinRedirect, p.pCssExpr, p.pUnusedCSS, p.pMinDns, p.pDupeRsrc	
+		pBadReqs, pBrowserCache, pCacheValid, pCharsetEarly, pCombineCSS,
+		pCombineJS, pCssImport, pCssInHead, pCssJsOrder, pCssSelect,
+		pDeferJS, pDocWrite, pDupeRsrc, pGzip, pImgDims,
+		pMinDns, pMinifyCSS, pMinifyHTML, pMinifyJS, pMinRedirect,
+		pMinReqSize, pNoCookie, pOptImgs, pParallelDl, pPreferAsync,
+		pRemoveQuery, pScaleImgs, pSprite, pUnusedCSS, pVaryAE
 	FROM pagespeed p WHERE p.url_id = %d AND p.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 ORDER BY p.timestamp DESC",
 mysql_real_escape_string($urlid)
