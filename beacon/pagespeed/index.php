@@ -25,70 +25,93 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 {
 	$url_id = getUrlId($_GET['u']);
 
-	if (version_compare($_GET['v'], '1.6', '>=')) {
-		$scaleimgs = $_GET['pSpecifyImageDimensions'];
-		$imgdims = $_GET['pSpecifyImageDimensions'];
-	} else {
-		$scaleimgs = $_GET['pScaleImgs'];
-		$imgdims = $_GET['pImgDims'];
+	$metrics = array(
+		'pBadReqs',
+		'pBrowserCache',
+		'pCacheValid',
+		'pCharsetEarly',
+		'pCombineCSS',
+		'pCombineJS',
+		'pCssImport',
+		'pCssInHead',
+		'pCssJsOrder',
+		'pCssSelect',
+		'pDeferJS',
+		'pDocWrite',
+		'pDupeRsrc',
+		'pGzip',
+		'pImgDims',
+		'pMinDns',
+		'pMinifyCSS',
+		'pMinifyHTML',
+		'pMinifyJS',
+		'pMinRedirect',
+		'pMinReqSize',
+		'pNoCookie',
+		'pOptImgs',
+		'pParallelDl',
+		'pPreferAsync',
+		'pRemoveQuery',
+		'pScaleImgs',
+		'pSprite',
+		'pUnusedCSS',
+		'pVaryAE'
+	);
+
+	$metric_renames = array(
+		'1.9' => array(
+			'pMinimizeRequestSize'			=> 'pMinReqSize',
+			'pOptimizeTheOrderOfStylesAndScripts'	=> 'pCssJsOrder',
+			'pSpecifyCharsetEarly'			=> 'pCharsetEarly',
+			'pProxyCache'				=> 'pCacheValid',
+			'pPutCssInTheDocumentHead'		=> 'pCssInHead'
+		)
+	);
+
+	$data_version = preg_replace('/[^0-9\.]+.*/', '', $_GET['v']);
+
+	foreach ($metrics as $metric) {
+		$param = $metric;
+
+		foreach (array_reverse($metric_renames) as $version => $map) {
+
+			if (version_compare($data_version, $version, '<')) {
+				foreach ($map as $from => $to) {
+					if ($metric == $to) {
+						$param = $from;
+						break;
+					}
+				}
+			}
+		}
+
+		if (array_key_exists($param, $_GET) && $_GET[$param] > 0) {
+			$value = filter_var($_GET[$param], FILTER_VALIDATE_FLOAT);
+			if ($value !== false) {
+				$beacon[$metric] = $value;
+			}
+		}
+	}
+
+	$names = array();
+	$values = array();
+
+	foreach ($beacon as $metric => $value) {
+		$names[] = $metric;
+		$values[] = "'".mysql_real_escape_string($value)."'";
 	}
 
 	# adding new entry
 	$query = sprintf("INSERT INTO pagespeed (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `l`, `r` , `t`, `v` ,
-		pMinifyJS,
-		pOptImgs,
-		pImgDims,
-		pCombineJS,
-		pCombineCSS,
-		pBrowserCache,
-		pProxyCache,
-		pNoCookie,
-		pParallelDl,
-		pCssSelect,
-		pDeferJS,
-		pGzip,
-		pMinRedirect,
-		pCssExpr,
-		pUnusedCSS,
-		pMinDns,
-		pDupeRsrc,
-		pMinifyCSS,
-		pScaleImgs,
-		pMinifyHTML,
-		pMinimizeRequestSize,
-		pOptimizeTheOrderOfStylesAndScripts,
-		pPutCssInTheDocumentHead,
-		pSpecifyCharsetEarly
+		%s
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%f', '%d', '%d', '%d', '%s',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f',
-		'%3.2f'
+		%s
 	)",
+		implode(', ', $names),
 		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
 		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
 		mysql_real_escape_string($url_id),
@@ -98,31 +121,10 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 		mysql_real_escape_string($_GET['r']),
 		mysql_real_escape_string($_GET['t']),
 		mysql_real_escape_string($_GET['v']),
-		mysql_real_escape_string($_GET['pMinifyJS'] > 0 ? $_GET['pMinifyJS'] : 0),
-		mysql_real_escape_string($_GET['pOptImgs'] > 0 ? $_GET['pOptImgs'] : 0),
-		mysql_real_escape_string($imgdims > 0 ? $imgdims : 0),
-		mysql_real_escape_string($_GET['pCombineJS'] > 0 ? $_GET['pCombineJS'] : 0),
-		mysql_real_escape_string($_GET['pCombineCSS'] > 0 ? $_GET['pCombineCSS'] : 0),
-		mysql_real_escape_string($_GET['pBrowserCache'] > 0 ? $_GET['pBrowserCache'] : 0),
-		mysql_real_escape_string($_GET['pProxyCache'] > 0 ? $_GET['pProxyCache'] : 0),
-		mysql_real_escape_string($_GET['pNoCookie'] > 0 ? $_GET['pNoCookie'] : 0),
-		mysql_real_escape_string($_GET['pParallelDl'] > 0 ? $_GET['pParallelDl'] : 0),
-		mysql_real_escape_string($_GET['pCssSelect'] > 0 ? $_GET['pCssSelect'] : 0),
-		mysql_real_escape_string($_GET['pDeferJS'] > 0 ? $_GET['pDeferJS'] : 0),
-		mysql_real_escape_string($_GET['pGzip'] > 0 ? $_GET['pGzip'] : 0),
-		mysql_real_escape_string($_GET['pMinRedirect'] > 0 ? $_GET['pMinRedirect'] : 0),
-		mysql_real_escape_string($_GET['pCssExpr'] > 0 ? $_GET['pCssExpr'] : 0),
-		mysql_real_escape_string($_GET['pUnusedCSS'] > 0 ? $_GET['pUnusedCSS'] : 0),
-		mysql_real_escape_string($_GET['pMinDns'] > 0 ? $_GET['pMinDns'] : 0),
-		mysql_real_escape_string($_GET['pDupeRsrc'] > 0 ? $_GET['pDupeRsrc'] : 0),
-		mysql_real_escape_string($_GET['pMinifyCSS'] > 0 ? $_GET['pMinifyCSS'] : 0),
-		mysql_real_escape_string($scaleimgs > 0 ? $scaleimgs : 0),
-		mysql_real_escape_string($_GET['pMinifyHTML'] > 0 ? $_GET['pMinifyHTML'] : 0),
-		mysql_real_escape_string($_GET['pMinimizeRequestSize'] > 0 ? $_GET['pMinimizeRequestSize'] : 0),
-		mysql_real_escape_string($_GET['pOptimizeTheOrderOfStylesAndScripts'] > 0 ? $_GET['pOptimizeTheOrderOfStylesAndScripts'] : 0),
-		mysql_real_escape_string($_GET['pPutCssInTheDocumentHead'] > 0 ? $_GET['pPutCssInTheDocumentHead'] : 0),
-		mysql_real_escape_string($_GET['pSpecifyCharsetEarly'] > 0 ? $_GET['pSpecifyCharsetEarly'] : 0)
+		implode(', ', $values)
 	);
+
+	echo $query; exit;
 
 	if (!mysql_query($query))
 	{

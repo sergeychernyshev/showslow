@@ -7,6 +7,41 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* version 13
+ *
+ * PageSpeed 1.9 support
+*/
+
+// up
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` CHANGE `pSpecifyCharsetEarly` `pCharsetEarly` FLOAT UNSIGNED NOT NULL DEFAULT  '0';";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` CHANGE `pProxyCache` `pCacheValid` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` CHANGE `pPutCssInTheDocumentHead` `pCssInHead` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` CHANGE `pOptimizeTheOrderOfStylesAndScripts` `pCssJsOrder` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` CHANGE `pMinimizeRequestSize` `pMinReqSize` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pBadReqs` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pCssImport` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pDocWrite` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pPreferAsync` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pRemoveQuery` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pVaryAE` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['up'][] = "ALTER TABLE `pagespeed` ADD COLUMN `pSprite` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+
+// down
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` CHANGE `pCharsetEarly` `pSpecifyCharsetEarly` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` CHANGE `pCacheValid` `pProxyCache` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` CHANGE `pCssInHead` `pPutCssInTheDocumentHead` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` CHANGE `pCssJsOrder` `pOptimizeTheOrderOfStylesAndScripts` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` CHANGE `pMinReqSize` `pMinimizeRequestSize` FLOAT UNSIGNED NOT NULL DEFAULT  '0'";
+
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pBadReqs`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pCssImport`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pDocWrite`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pPreferAsync`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pRemoveQuery`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pVaryAE`";
+$versions[13]['down'][] = "ALTER TABLE `pagespeed` DROP COLUMN `pSprite`";
+
 /* version 12
  *
  * timestamps don't need to be updatable
