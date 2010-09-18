@@ -59,13 +59,20 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 	);
 
 	$metric_renames = array(
-		'1.9' => array(
-			'pMinimizeRequestSize'			=> 'pMinReqSize',
-			'pOptimizeTheOrderOfStylesAndScripts'	=> 'pCssJsOrder',
-			'pSpecifyCharsetEarly'			=> 'pCharsetEarly',
-			'pProxyCache'				=> 'pCacheValid',
-			'pPutCssInTheDocumentHead'		=> 'pCssInHead'
-		)
+		'pSpecifyCharsetEarly'				=> 'pCharsetEarly',
+		'pProxyCache'					=> 'pCacheValid',
+		'pPutCssInTheDocumentHead'			=> 'pCssInHead',
+		'pOptimizeTheOrderOfStylesAndScripts'		=> 'pCssJsOrder',
+		'pMinimizeRequestSize'				=> 'pMinReqSize',
+		'pParallelizeDownloadsAcrossHostnames'		=> 'pParallelDl',
+		'pServeStaticContentFromACookielessDomain'	=> 'pNoCookie',
+		'pAvoidBadRequests'				=> 'pBadReqs',
+		'pLeverageBrowserCaching'			=> 'pBrowserCache',
+		'pRemoveQueryStringsFromStaticResources'	=> 'pRemoveQuery',
+		'pServeScaledImages'				=> 'pScaleImgs',
+		'pSpecifyACacheValidator'			=> 'pCacheValid',
+		'pSpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE',
+		'pSpecifyImageDimensions' 			=> 'pImgDims'
 	);
 
 	$data_version = preg_replace('/[^0-9\.]+.*/', '', $_GET['v']);
@@ -73,15 +80,12 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 	foreach ($metrics as $metric) {
 		$param = $metric;
 
-		foreach (array_reverse($metric_renames) as $version => $map) {
-
-			if (version_compare($data_version, $version, '<')) {
-				foreach ($map as $from => $to) {
-					if ($metric == $to) {
-						$param = $from;
-						break;
-					}
-				}
+		foreach (array_reverse($metric_renames) as $from => $to) {
+			if ($metric == $to
+				&& !array_key_exists($metric, $_GET)
+				&& array_key_exists($from, $_GET))
+			{
+				$param = $from;
 			}
 		}
 

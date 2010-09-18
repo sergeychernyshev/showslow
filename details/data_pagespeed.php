@@ -82,10 +82,37 @@ foreach ($rows as $row) {
 		{
 			echo "\n";
 		} else {
-			echo ','.$row['t'].','.$row['v'].','.$row['pMinifyCSS'].','.$row['pMinifyJS'].','.$row['pOptImgs'].','.$row['pImgDims'].','.$row['pCombineJS'].','.$row['pCombineCSS'].','.
-			$row['pPutCssInTheDocumentHead'].','.$row['pBrowserCache'].','.$row['pProxyCache'].','.$row['pNoCookie'].','.$row['pMinimizeRequestSize'].','.
-			$row['pParallelDl'].','.$row['pCssSelect'].','.$row['pMinimizeRequestSize'].','.$row['pDeferJS'].','.$row['pGzip'].','.
-			$row['pMinRedirect'].','.$row['pCssExpr'].','.$row['pUnusedCSS'].','.$row['pMinDns'].','.$row['pDupeRsrc'].
+			echo ','.$row['t'].','.$row['v'].','.
+			$row['pBadReqs'].','.
+			$row['pBrowserCache'].','.
+			$row['pCacheValid'].','.
+			$row['pCharsetEarly'].','.
+			$row['pCombineCSS'].','.
+			$row['pCombineJS'].','.
+			$row['pCssImport'].','.
+			$row['pCssInHead'].','.
+			$row['pCssJsOrder'].','.
+			$row['pCssSelect'].','.
+			$row['pDeferJS'].','.
+			$row['pDocWrite'].','.
+			$row['pDupeRsrc'].','.
+			$row['pGzip'].','.
+			$row['pImgDims'].','.
+			$row['pMinDns'].','.
+			$row['pMinifyCSS'].','.
+			$row['pMinifyHTML'].','.
+			$row['pMinifyJS'].','.
+			$row['pMinRedirect'].','.
+			$row['pMinReqSize'].','.
+			$row['pNoCookie'].','.
+			$row['pOptImgs'].','.
+			$row['pParallelDl'].','.
+			$row['pPreferAsync'].','.
+			$row['pRemoveQuery'].','.
+			$row['pScaleImgs'].','.
+			$row['pSprite'].','.
+			$row['pUnusedCSS'].','.
+			$row['pVaryAE'].','.
 			"\n";
 		}
 }
