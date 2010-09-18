@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.49, for pc-linux-gnu (i686)
 --
--- Host: localhost    Database: showslow_dev
+-- Host: localhost    Database: showslow
 -- ------------------------------------------------------
 -- Server version	5.1.49
 
