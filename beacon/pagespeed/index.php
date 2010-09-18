@@ -124,8 +124,6 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 		implode(', ', $values)
 	);
 
-	echo $query; exit;
-
 	if (!mysql_query($query))
 	{
 		beaconError(mysql_error());
