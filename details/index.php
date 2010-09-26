@@ -322,23 +322,23 @@ if ($row)
 	}
 }
 
-if ($row) {
+if (!is_null($row['yslow_timestamp'])) {
 ?>
-	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="measurementstable"></div>
 	<?php 
 }
 
-if ($ps_row) {
+if (!is_null($row['pagespeed_timestamp'])) {
 ?>
-	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($ps_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="ps_measurementstable"></div>
 <?php 
 }
 
-if ($dt_row) {
+if (!is_null($row['dynatrace_timestamp'])) {
 ?>
-	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($dt_row['timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
+	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h3>
 	<div id="dt_measurementstable"></div>
 <?php 
 }
