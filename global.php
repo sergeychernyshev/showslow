@@ -162,7 +162,8 @@ define('NUMBER', 3);
 $metric_types = array(
 	BYTES =>	array( 'legend'	=> 'in bytes',	'units'	=> ' bytes'),
 	MS =>		array( 'legend'	=> 'im ms',	'units'	=> ' ms'),
-	PERCENTS =>	array( 'legend'	=> '0-100',	'units'	=> '%')
+	PERCENTS =>	array( 'legend'	=> '0-100',	'units'	=> '%'),
+	NUMBER =>	array( 'legend'	=> '',		'units'	=> '')
 );
 
 # a list of metrics (excluding custom metrics) available to be displayed on the graph
