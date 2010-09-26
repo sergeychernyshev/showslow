@@ -176,9 +176,10 @@ $all_metrics = array(
 		'score_column' => 'o',
 		'metrics' => array(
 			'Basic measurements' => array( 
-				array( 'Overall rank',		'o',		PERCENTS),
-				array( 'Page Size',		'w',		BYTES),
-				array( 'Page Load time',	'lt',		MS)
+				array( 'Overall rank',					'o',		PERCENTS),
+				array( 'Page Size',					'w',		BYTES),
+				array( 'Amount of requests with empty cache',		'r',		NUMBER),
+				array( 'Page Load time',				'lt',		MS)
 			),
 			'Best practices' => array( 
 				array( 'Make fewer HTTP requests',		'ynumreq',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#num_http'),
