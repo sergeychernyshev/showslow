@@ -149,7 +149,152 @@ $customLists = array();
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 
-function yslowPrettyScore($num) {
+# PUT ALL THINGS THAT SHOULDN'T BE CONFIGURABLE BELOW THIS LINE
+
+# metric type constants
+define('BYTES', 0);
+define('PERCENTS', 1);
+define('MS', 2);
+define('NUMBER', 3);
+
+# used for legend (in parenthesis)
+# if no label needed like for number, just don't insert it here
+$metric_types = array(
+	BYTES =>	array( 'legend'	=> 'in bytes',	'units'	=> ' bytes'),
+	MS =>		array( 'legend'	=> 'im ms',	'units'	=> ' ms'),
+	PERCENTS =>	array( 'legend'	=> '0-100',	'units'	=> '%')
+);
+
+# a list of metrics (excluding custom metrics) available to be displayed on the graph
+$all_metrics = array(
+	'yslow' => array(
+		'title' => 'YSlow',
+		'url' => 'http://developer.yahoo.com/yslow/',
+		'table' => 'yslow2',
+		'score_name' => 'grade',
+		'score_column' => 'o',
+		'metrics' => array(
+			'Basic measurements' => array( 
+				array( 'Overall rank',		'o',		PERCENTS),
+				array( 'Page Size',		'w',		BYTES),
+				array( 'Page Load time',	'lt',		MS)
+			),
+			'Best practices' => array( 
+				array( 'Make fewer HTTP requests',		'ynumreq',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#num_http'),
+				array( 'Use a Content Delivery Network (CDN)',	'ycdn', 	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cdn'),
+				array( 'Add Expires headers',			'yexpires',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#expires'),
+				array( 'Compress components with gzip',		'ycompress',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#gzip'),
+				array( 'Put CSS at top',			'ycsstop',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#css_top'),
+				array( 'Put JavaScript at bottom',		'yjsbottom',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#js_bottom'),
+				array( 'Avoid CSS expressions',			'yexpressions',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#css_expressions'),
+				array( 'Make JavaScript and CSS external',	'yexternal',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#external'),
+				array( 'Reduce DNS lookups',			'ydns',		PERCENTS,	'http://developer.yahoo.com/performance/rules.html#dns_lookups'),
+				array( 'Minify JavaScript and CSS',		'yminify',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#minify'),
+				array( 'Avoid URL redirects',			'yredirects',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#redirects'),
+				array( 'Remove duplicate JavaScript and CSS',	'ydupes',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#js_dupes'),
+				array( 'Configure entity tags (ETags)',		'yetags',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#etags'),
+				array( 'Make AJAX cacheable',			'yxhr',		PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cacheajax'),
+				array( 'Use GET for AJAX requests',		'yxhrmethod',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#ajax_get'),
+				array( 'Reduce the number of DOM elements',	'ymindom',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#min_dom'),
+				array( 'Avoid HTTP 404 (Not Found) error',	'yno404',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#no404'),
+				array( 'Reduce cookie size',			'ymincookie',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cookie_size'),
+				array( 'Use cookie-free domains',		'ycookiefree',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cookie_free'),
+				array( 'Avoid AlphaImageLoader filter',		'ynofilter',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#no_filters'),
+				array( 'Do not scale images in HTML',		'yimgnoscale',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#no_scale'),
+				array( 'Make favicon small and cacheable',	'yfavicon',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#favicon')
+			)
+		)
+	),
+	'pagespeed' => array(
+		'title' => 'Page Speed',
+		'url' => 'http://code.google.com/speed/page-speed/',
+		'table' => 'pagespeed',
+		'score_name' => 'score',
+		'score_column' => 'o',
+		'metrics' => array(
+			'Basic measurements' => array(
+				array( 'Page size',				'w',	BYTES),
+				array( 'Page load time',			'l',	MS),
+				array( 'Total Requests',			'r',	NUMBER),
+				array( 'Transfer size of all resources',	't',	BYTES),
+				array( 'Overall grade',				'o',	PERCENTS)
+			),
+			'Optimize caching' => array(
+				array( 'Leverage browser caching',	'pBrowserCache',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageBrowserCaching'),
+				array( 'Leverage proxy caching',	'pCacheValid',		PERCENTS,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageProxyCaching'),
+			),
+			'Minimize round-trip times' => array(
+				array( 'Minimize DNS lookups',				'pMinDns',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#MinimizeDNSLookups'),
+				array( 'Minimize redirects',				'pMinRedirect',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidRedirects'),
+				array( 'Avoid bad requests',				'pBadReqs',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidBadRequests'),
+				array( 'Combine external JavaScript',			'pCombineJS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#CombineExternalJS'),
+				array( 'Combine external CSS',				'pCombineCSS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#CombineExternalCSS'),
+				array( 'Combine images using CSS sprites',		'pSprite',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#SpriteImages'),
+				array( 'Optimize the order of styles and scripts',	'pCssJsOrder',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts'),
+				array( 'Avoid document.write',				'pDocWrite',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidDocumentWrite'),
+				array( 'Avoid CSS @import',				'pCssImport',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidCssImport'),
+				array( 'Prefer asynchronous resources',			'pPreferAsync',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#PreferAsyncResources'),
+				array( 'Parallelize downloads across hostnames',	'pParallelDl',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rtt.html#ParallelizeDownloads')
+			),
+			'Minimize request overhead' => array(
+				array( 'Minimize request size',				'pMinReqSize',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/request.html#MinimizeRequestSize'),
+				array( 'Serve static content from a cookieless domain',	'pNoCookie',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain')
+			),
+			'Minimize payload size' => array(
+				array( 'Enable compression',			'pGzip',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#GzipCompression'),
+				array( 'Remove unused CSS',			'pUnusedCSS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#RemoveUnusedCSS'),
+				array( 'Minify JavaScript',			'pMinifyJS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#MinifyJS'),
+				array( 'Minify CSS',				'pMinifyCSS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#MinifyCSS'),
+				array( 'Minify HTML',				'pMinifyHTML',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#MinifyHTML'),
+				array( 'Defer loading of JavaScript',		'pDeferJS',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#DeferLoadingJS'),
+				array( 'Optimize images',			'pOptImgs',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#CompressImages'),
+				array( 'Serve scaled images',			'pScaleImgs',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#ScaleImages'),
+				array( 'Serve resources from a consistent URL',	'pDupeRsrc',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/payload.html#duplicate_resources')
+			),
+			'Optimize browser rendering' => array(
+				array( 'Use efficient CSS selectors',	'pCssSelect',		PERCENTS,	'http://code.google.com/speed/page-speed/docs/rendering.html#UseEfficientCSSSelectors'),
+				array( 'Put CSS in the document head',	'pCssInHead',		PERCENTS,	'http://code.google.com/speed/page-speed/docs/rendering.html#PutCSSInHead'),
+				array( 'Specify image dimensions',	'pImgDims',		PERCENTS,	'http://code.google.com/speed/page-speed/docs/rendering.html#SpecifyImageDimensions'),
+				array( 'Specify a character set early',	'pCharsetEarly',	PERCENTS,	'http://code.google.com/speed/page-speed/docs/rendering.html#SpecifyCharsetEarly'),
+			)
+		)
+	),
+	'dynatrace' => array(
+		'title' => 'dynaTrace',
+		'url' => 'http://ajax.dynatrace.com/',
+		'table' => 'dynatrace',
+		'score_name' => 'rank',
+		'score_column' => 'rank',
+		'metrics' => array(
+			'Event times' => array(
+				array( 'Time to first impression',	'timetoimpression',	MS),
+				array( 'Time to onLoad',		'timetoonload',		MS),
+				array( 'Time to full page load',	'timetofullload',	MS)
+			),
+			'Total time breakdown' => array(
+				array( 'Total time on network',		'timeonnetwork',	MS),
+				array( 'Total time in JavaScript',	'timeinjs',		MS),
+				array( 'Total time in rendering',	'timeinrendering',	MS)
+			),
+			'Requests and size' => array(
+				array( 'Number of requests',		'reqnumber',		NUMBER),
+				array( 'Number of XHR requests',	'xhrnumber',		NUMBER),
+				array( 'Total page size',		'pagesize',		BYTES),
+				array( 'Total cachable size',		'cachablesize',		BYTES),
+				array( 'Total non-cachable size',	'noncachablesize',	BYTES)
+			),
+			'Best practices' => array(
+				array( 'Overall rank',			'rank',		PERCENTS),
+				array( 'Cacheing rank',			'cache',	PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Browser+Caching'),
+				array( 'Network rank',			'net',		PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Network+Requests+and+Roundtrips'),
+				array( 'Server rank',			'server',	PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Server-Side+Performance+Optimization'),
+				array( 'JavaScript rank',		'js',		PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+JavaScript+and+AJAX+Performance')
+			)
+		)
+	)
+);
+
+function prettyScore($num) {
 	$letter = 'F';
 
 	if ( 90 <= $num )
@@ -192,9 +337,28 @@ $colorSteps = array(
 	'00EE00'
 );
 
-function scoreColor($num) {
-	global $colorSteps;
-	return '#'.$colorSteps[scoreColorStep($num, count($colorSteps))-1];
+$colorStepShades = array(
+	'CF0000',
+	'CF2200',
+	'CF4400',
+	'CF6600',
+	'CF8800',
+	'CFAA00',
+	'CDCF00',
+	'ABCF00',
+	'89CF00',
+	'67CF00',
+	'45CF00',
+	'23CF00',
+	'01CF00'
+);
+
+function scoreColor($num, $darker = false) {
+	global $colorSteps, $colorStepShades;
+
+	$colors = $darker ? $colorStepShades : $colorSteps;
+	
+	return '#'.$colors[scoreColorStep($num, count($colors))-1];
 }
 
 # returns true if URL should be ignored

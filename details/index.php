@@ -15,11 +15,29 @@ if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_V
 return;
 }
 
-// last timestamps
-$query = sprintf("SELECT id, UNIX_TIMESTAMP(last_update) as t, last_event_update,
-		yslow2_last_id, pagespeed_last_id, dynatrace_last_id
-	FROM urls
-	WHERE urls.url = '%s'", mysql_real_escape_string($url));
+# building a query to select all beacon data in one swoop
+$query = "SELECT urls.id AS url_id, UNIX_TIMESTAMP(last_update) AS t, last_event_update, yslow2.details AS yslow_details";
+
+foreach ($all_metrics as $provider_name => $provider) {
+	$query .= ",\n\t".$provider['table'].'_last_id, UNIX_TIMESTAMP('.$provider['table'].'.timestamp) AS '.$provider_name.'_timestamp';
+
+	foreach ($provider['metrics'] as $section_name => $section) {
+		foreach ($section as $metric) {
+			$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$provider_name.'_'.$metric[1];
+		}
+	}
+}
+
+$query .= "\nFROM urls";
+
+foreach ($all_metrics as $provider_name => $provider) {
+	$query .= "\n\tLEFT JOIN ".$provider['table'].' ON urls.'.$provider['table'].'_last_id = '.$provider['table'].'.id';
+}
+
+$query .= "\nWHERE urls.url = '".mysql_real_escape_string($url)."'";
+
+#echo $query; exit;
+
 $result = mysql_query($query);
 
 if (!$result) {
@@ -29,7 +47,7 @@ if (!$result) {
 $row = mysql_fetch_assoc($result);
 $lastupdate = $row['t'];
 $eventupdate = $row['last_event_update'];
-$urlid = $row['id'];
+$urlid = $row['url_id'];
 $yslow2_last_id = $row['yslow2_last_id'];
 $pagespeed_last_id = $row['pagespeed_last_id'];
 $dynatrace_last_id = $row['dynatrace_last_id'];
@@ -71,6 +89,20 @@ echo 'var metrics = '.json_encode($metrics);
 .details {
 	cursor: help;
 }
+
+.sectionname {
+	padding-top: 1em;
+}
+.breakdowntitle {
+	clear: both;
+	margin-bottom: 0;
+}
+.titlecol {
+	padding: 0 2em;
+}
+.value {
+	font-weight: bold;
+}
 </style>
 <h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
 <?php if (!is_null($addThisProfile)) {?>
@@ -93,62 +125,6 @@ echo 'var metrics = '.json_encode($metrics);
 <!-- AddThis Button END -->
 <?php
 }
-// latest YSlow result
-$query = sprintf("SELECT timestamp, w, o, i, lt,
-		ynumreq,	ycdn,		yexpires,	ycompress,	ycsstop,
-		yjsbottom,	yexpressions,	yexternal,	ydns,		yminify,
-		yredirects,	ydupes,		yetags,		yxhr,		yxhrmethod,
-		ymindom,	yno404,		ymincookie,	ycookiefree,	ynofilter,
-		yimgnoscale,	yfavicon,	details
-		FROM yslow2 y
-		WHERE id = %d",
-	mysql_real_escape_string($yslow2_last_id)
-
-);
-$result = mysql_query($query);
-
-if (!$result) {
-	error_log(mysql_error());
-}
-
-$row = mysql_fetch_assoc($result);
-mysql_free_result($result);
-
-// Latest PageSpeed result
-$query = sprintf("SELECT timestamp, w, o, l, r, t, v,
-			pBadReqs, pBrowserCache, pCacheValid, pCharsetEarly, pCombineCSS,
-			pCombineJS, pCssImport, pCssInHead, pCssJsOrder, pCssSelect,
-			pDeferJS, pDocWrite, pDupeRsrc, pGzip, pImgDims,
-			pMinDns, pMinifyCSS, pMinifyHTML, pMinifyJS, pMinRedirect,
-			pMinReqSize, pNoCookie, pOptImgs, pParallelDl, pPreferAsync,
-			pRemoveQuery, pScaleImgs, pSprite, pUnusedCSS, pVaryAE
-		FROM pagespeed p
-		WHERE id = %d",
-	mysql_real_escape_string($pagespeed_last_id)
-);
-$result = mysql_query($query);
-
-if (!$result) {
-	error_log(mysql_error());
-}
-
-$ps_row = mysql_fetch_assoc($result);
-mysql_free_result($result);
-
-// Latest dynatrace result
-$query = sprintf("SELECT timestamp, rank, cache, net, server, js
-		FROM dynatrace
-		WHERE id = %d",
-	mysql_real_escape_string($dynatrace_last_id)
-);
-$result = mysql_query($query);
-
-if (!$result) {
-	error_log(mysql_error());
-}
-
-$dt_row = mysql_fetch_assoc($result);
-mysql_free_result($result);
 
 // checking if there is har data
 $query = sprintf("SELECT har.timestamp as t, har.id as id FROM har WHERE har.url_id = '%d' ORDER BY timestamp DESC",
@@ -190,45 +166,26 @@ if (!$row && !$ps_row && !$dt_row && $har === false) {
 	exit;
 }
 
-if ($row || $ps_row || $dt_row)
+if ($row)
 {
 	?>
-	<table cellpadding="15" cellspacing="5" style="margin-top: 1em"><tr>
-	<?php 
-	// YSlow grade indicator
-	if ($row) {
-	?>
-		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
-		<h2>Current <a href="http://developer.yahoo.com/yslow/">YSlow</a> grade: <?php echo yslowPrettyScore($row['o'])?> (<i><?php echo htmlentities($row['o'])?></i>)</h2>
-
-		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($row['o'])?>&chl=<?php echo urlencode(yslowPrettyScore($row['o']).' ('.$row['o'].')')?>" alt="<?php echo yslowPrettyScore($row['o'])?> (<?php echo htmlentities($row['o'])?>)" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo htmlentities($row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
+	<table cellpadding="15" cellspacing="5"><tr>
+	<?php
+	foreach ($all_metrics as $provider_name => $provider) {
+		$score = $row[$provider_name.'_'.$provider['score_column']];
+		if (!is_null($score)) {
+			$pretty_score = prettyScore($score);
+		?>
+		<td valign="top" align="center" class="<?php echo $provider_name ?>">
+		<img src="http://chart.apis.google.com/chart?chs=225x108&cht=gom&chd=t:<?php echo urlencode($score)?>&chl=<?php echo urlencode($pretty_score.' ('.$score.')') ?>" alt="<?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)" title="Current <?php echo $provider['title'] ?> <?php echo $provider['score_name'] ?>: <?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)"/>
+		<div>Current <a href="<?php echo $provider['url'] ?>"><?php echo $provider['title'] ?></a> <?php echo $provider['score_name'] ?>: <b><?php echo $pretty_score ?> (<i><?php echo htmlentities($score)?></i>)</b></div>
 		</td>
-	<?php 
-	}
-
-	// Page Speed score indicator
-	if ($ps_row) {
-	?>
-		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
-		<h2>Current <a href="http://code.google.com/speed/page-speed/">Page Speed</a> score: <?php echo yslowPrettyScore($ps_row['o'])?> (<i><?php echo htmlentities($ps_row['o'])?></i>)</h2>
-
-		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($ps_row['o'])?>&chl=<?php echo urlencode(yslowPrettyScore($ps_row['o']).' ('.$ps_row['o'].')')?>" alt="<?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" title="Current Page Speed score: <?php echo yslowPrettyScore($ps_row['o'])?> (<?php echo htmlentities($ps_row['o'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
-		</td>
-	<?php 
-	}
-
-	// dynaTrace rank indicator
-	if ($dt_row) {
-	?>
-		<td valign="top" align="center" style="background: #ddd; border: 1px solid black">
-		<h2>Current <a href="http://ajax.dynatrace.com/">dynaTrace rank</a> score: <?php echo yslowPrettyScore($dt_row['rank'])?> (<i><?php echo htmlentities($dt_row['rank'])?></i>)</h2>
-
-		<img src="http://chart.apis.google.com/chart?chs=225x125&cht=gom&chd=t:<?php echo urlencode($dt_row['rank'])?>&chl=<?php echo urlencode(yslowPrettyScore($dt_row['rank']).' ('.$dt_row['rank'].')')?>" alt="<?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" title="Current dynaTrace  rank: <?php echo yslowPrettyScore($dt_row['rank'])?> (<?php echo htmlentities($dt_row['rank'])?>)" style="padding: 0 0 20px 0; border: 1px solid black; background: white"/>
-		</td>
-	<?php 
+		<?php
+		}
 	}
 	?>
 	</tr></table>
+
 	<?php if (!is_null($webPageTestBase)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
@@ -249,9 +206,9 @@ if ($row || $ps_row || $dt_row)
 	?>
 	<script>
 	url = '<?php echo htmlentities($url)?>';
-	ydataversion = '<?php echo urlencode($row['timestamp'])?>';
-	psdataversion = '<?php echo urlencode($ps_row['timestamp'])?>';
-	dtdataversion = '<?php echo urlencode($dt_row['timestamp'])?>';
+	ydataversion = '<?php echo urlencode($row['yslow_timestamp'])?>';
+	psdataversion = '<?php echo urlencode($row['pagespeed_timestamp'])?>';
+	dtdataversion = '<?php echo urlencode($row['dynatrace_timestamp'])?>';
 	eventversion = '<?php echo urlencode($eventupdate)?>';
 	</script>
 
@@ -259,7 +216,7 @@ if ($row || $ps_row || $dt_row)
 	<div id="my-timeplot" style="height: 250px;"></div>
 	<div style="fint-size: 0.2em">
 	<?php
-	if ($row)
+	if (!is_null($row['yslow_timestamp']))
 	{
 	?>
 	<span style="color: #D0A825">Page Size</span> (in bytes);
@@ -269,7 +226,7 @@ if ($row || $ps_row || $dt_row)
 	<?php
 	}
 
-	if ($ps_row)
+	if (!is_null($row['pagespeed_timestamp']))
 	{
 	?>
 	<span style="color: #6F4428">Page Speed Grade</span> (0-100);
@@ -277,7 +234,7 @@ if ($row || $ps_row || $dt_row)
 	<?php
 	}
 
-	if ($dt_row)
+	if (!is_null($row['dynatrace_timestamp']))
 	{
 	?>
 	<span style="color: #AB0617">dynaTrace rank</span> (0-100);
@@ -286,223 +243,82 @@ if ($row || $ps_row || $dt_row)
 
 	foreach ($metrics as $name => $metric)
 	{
-		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);<?php
+		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);
+<?php
 	}
 	?>
 	</div>
 
+	<?php
+	$details = json_decode($row['yslow_details'], true);
+	?>
+	<script>
+	<?php
+	$comps = array();
+
+	foreach ($details['g'] as $n => $y) {
+		if (is_array($y) && array_key_exists('components', $y)) {
+			$comps['yslow_'.$n] = $y['components'];
+		}
+	}
+	?>
+	var details = <?php echo json_encode($comps)?>;
+	</script>
+
 	<?php 
+	// Breakdowns for each provider
+	foreach ($all_metrics as $provider_name => $provider) {
+		if (!is_null($row[$provider_name.'_timestamp']))
+		{
+		?>
+			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><?php echo $provider['title']?> breakdown</h2>
+			<table>
+			<?php
+			foreach ($provider['metrics'] as $section_name => $metrics)
+			{
+				?><tr><td colspan="6" class="sectionname"><b><?php echo $section_name ?></b></td></tr><?php
 
-	// YSlow breakdown
-	if ($row) {
-		function printYSlowGradeBreakdown($name, $anchor, $slug) {
-			global $row;
+				$odd = true;
+				
+				foreach ($metrics as $metric) {
+					if ($odd) { ?><tr><?php }
 
-			$value = $row[$slug];
+					if (isset($metric[3])) {
+						?><td class="titlecol"><a href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
+					}else{
+						?><td class="titlecol"><?php echo $metric[0]?></td><?php
 
-			?><td><a href="http://developer.yahoo.com/performance/rules.html#<?php echo $anchor?>"><?php echo $name?></a></td>
-			<?php if ($value >= 0) {?>
-			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
-			<td><span id="details_<?php echo $slug ?>" class="details"></span></td>
-			<td><div style="background-color: silver; width: 103px" title="Current YSlow grade: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
-			<?php } else { ?>
-			<td><i>N/A</i></td>
-			<td></td>
-			<?php } ?>
-			<td>&nbsp;&nbsp;</td><?php 
-		}
+					}
 
-		if ($row['i'] <> 'yslow1') {
+					$value = $row[$provider_name.'_'.$metric[1]];
 
-		$details = json_decode($row['details'], true);
-?>
-		<script>
-<?php
-		$comps = array();
+					if ($metric[2] == PERCENTS){
+						if ($value >= 0) {
+							$pretty_score = prettyScore($value);
+						?>
+							<td class="value"><?php echo $pretty_score?> (<i><?php echo htmlentities($value)?></i>%)</td>
+							<td><span id="details_<?php echo $provider_name.'_'.$metric[1] ?>" class="details"></span></td>
+							<td><div class="gbox" title="Current <?php echo $provider['score_name']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td>
+						<?php } else { ?>
+							<td><i>N/A</i></td>
+							<td></td>
+						<?php }
+					} else {
+						?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+					}
 
-		foreach ($details['g'] as $n => $y) {
-			if (is_array($y) && array_key_exists('components', $y)) {
-				$comps[$n] = $y['components'];
+					if (!$odd) { ?></tr><?php }
+
+					$odd = !$odd;
+				}
+				?>
+			</tr>
+			<?php
 			}
-		}
-?>
-		var details = <?php echo json_encode($comps)?>;
-		</script>
-
-		<a name="yslow"/><h2 style="clear: both">YSlow breakdown</h2>
-		<table>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Make fewer HTTP requests', 'num_http', 'ynumreq')?>
-			<?php echo printYSlowGradeBreakdown('Use a Content Delivery Network (CDN)', 'cdn', 'ycdn')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Add Expires headers', 'expires', 'yexpires')?>
-			<?php echo printYSlowGradeBreakdown('Compress components with gzip', 'gzip', 'ycompress')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Put CSS at top', 'css_top', 'ycsstop')?>
-			<?php echo printYSlowGradeBreakdown('Put JavaScript at bottom', 'js_bottom', 'yjsbottom')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Avoid CSS expressions', 'css_expressions', 'yexpressions')?>
-			<?php echo printYSlowGradeBreakdown('Make JavaScript and CSS external', 'external', 'yexternal')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Reduce DNS lookups', 'dns_lookups', 'ydns')?>
-			<?php echo printYSlowGradeBreakdown('Minify JavaScript and CSS', 'minify', 'yminify')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Avoid URL redirects', 'redirects', 'yredirects')?>
-			<?php echo printYSlowGradeBreakdown('Remove duplicate JavaScript and CSS', 'js_dupes', 'ydupes')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Configure entity tags (ETags)', 'etags', 'yetags')?>
-			<?php echo printYSlowGradeBreakdown('Make AJAX cacheable', 'cacheajax', 'yxhr')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Use GET for AJAX requests', 'ajax_get', 'yxhrmethod')?>
-			<?php echo printYSlowGradeBreakdown('Reduce the number of DOM elements', 'min_dom', 'ymindom')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Avoid HTTP 404 (Not Found) error', 'no404', 'yno404')?>
-			<?php echo printYSlowGradeBreakdown('Reduce cookie size', 'cookie_size', 'ymincookie')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Use cookie-free domains', 'cookie_free', 'ycookiefree')?>
-			<?php echo printYSlowGradeBreakdown('Avoid AlphaImageLoader filter', 'no_filters', 'ynofilter')?>
-			</tr>
-			<tr>
-			<?php echo printYSlowGradeBreakdown('Do not scale images in HTML', 'no_scale', 'yimgnoscale')?>
-			<?php echo printYSlowGradeBreakdown('Make favicon small and cacheable', 'favicon', 'yfavicon')?>
-			</tr>
+			?>
 		</table>	
 	<?php 
 		}
-	}
-
-	// PageSpeed breakdown
-	if ($ps_row) {
-		function printPageSpeedGradeBreakdown($name, $doc, $value) {
-			if ($doc)
-			{
-			?><td><a href="http://code.google.com/speed/page-speed/docs/<?php echo $doc?>"><?php echo $name?></a></td><?php
-			} else {
-			?><td><?php echo $name?></td><?php
-			}
-
-			if ($value >= 0) {?>
-			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
-			<td><div style="background-color: silver; width: 103px" title="Current Page Speed score: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
-			<?php } else { ?>
-			<td><i>N/A</i></td>
-			<td></td>
-			<?php } ?>
-			<td>&nbsp;&nbsp;</td><?php 
-		}
-	?>
-	<a name="pagespeed"/><h2 style="clear: both">Page Speed breakdown</h2>
-	<table>
-	<tr><td colspan="6"><b>Optimize caching</b></td></tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Leverage browser caching', 'caching.html#LeverageBrowserCaching', $ps_row['pBrowserCache'])?>
-		<?php echo printPageSpeedGradeBreakdown('Leverage proxy caching', 'caching.html#LeverageProxyCaching', $ps_row['pCacheValid'])?>
-		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize round-trip times</b></td></tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minimize DNS lookups', 'rtt.html#MinimizeDNSLookups', $ps_row['pMinDns'])?>
-		<?php echo printPageSpeedGradeBreakdown('Minimize redirects', 'rtt.html#AvoidRedirects', $ps_row['pMinRedirect'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Avoid bad requests', 'rtt.html#AvoidBadRequests', $ps_row['pBadReqs'])?>
-		<?php echo printPageSpeedGradeBreakdown('Combine external JavaScript', 'rtt.html#CombineExternalJS', $ps_row['pCombineJS'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Combine external CSS', 'rtt.html#CombineExternalCSS', $ps_row['pCombineCSS'])?>
-		<?php echo printPageSpeedGradeBreakdown('Combine images using CSS sprites', 'rtt.html#SpriteImages', $ps_row['pSprite'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Optimize the order of styles and scripts', 'rtt.html#PutStylesBeforeScripts', $ps_row['pCssJsOrder'])?>
-		<?php echo printPageSpeedGradeBreakdown('Avoid document.write', 'rtt.html#AvoidDocumentWrite', $ps_row['pDocWrite'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Avoid CSS @import', 'rtt.html#AvoidCssImport', $ps_row['pCssImport'])?>
-		<?php echo printPageSpeedGradeBreakdown('Prefer asynchronous resources', 'rtt.html#PreferAsyncResources', $ps_row['pPreferAsync'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Parallelize downloads across hostnames', 'rtt.html#ParallelizeDownloads', $ps_row['pParallelDl'])?>
-		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize request overhead</b></td></tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minimize request size', 'request.html#MinimizeRequestSize', $ps_row['pMinReqSize'])?>
-		<?php echo printPageSpeedGradeBreakdown('Serve static content from a cookieless domain', 'request.html#ServeFromCookielessDomain', $ps_row['pNoCookie'])?>
-		</tr>
-		<tr>
-		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Minimize payload size</b></td></tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Enable compression', 'payload.html#GzipCompression', $ps_row['pGzip'])?>
-		<?php echo printPageSpeedGradeBreakdown('Remove unused CSS', 'payload.html#RemoveUnusedCSS', $ps_row['pUnusedCSS'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minify JavaScript', 'payload.html#MinifyJS', $ps_row['pMinifyJS'])?>
-		<?php echo printPageSpeedGradeBreakdown('Minify CSS', 'payload.html#MinifyCSS', $ps_row['pMinifyCSS'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Minify HTML', 'payload.html#MinifyHTML', $ps_row['pMinifyHTML'])?>
-		<?php echo printPageSpeedGradeBreakdown('Defer loading of JavaScript', 'payload.html#DeferLoadingJS', $ps_row['pDeferJS'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Optimize images', 'payload.html#CompressImages', $ps_row['pOptImgs'])?>
-		<?php echo printPageSpeedGradeBreakdown('Serve scaled images', 'payload.html#ScaleImages', $ps_row['pScaleImgs'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Serve resources from a consistent URL', 'payload.html#duplicate_resources', $ps_row['pDupeRsrc'])?>
-		</tr>
-	<tr><td colspan="6" style="padding-top: 1em"><b>Optimize browser rendering</b></td></tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Use efficient CSS selectors', 'rendering.html#UseEfficientCSSSelectors', $ps_row['pCssSelect'])?>
-		<?php echo printPageSpeedGradeBreakdown('Put CSS in the document head', 'rendering.html#PutCSSInHead', $ps_row['pCssInHead'])?>
-		</tr>
-		<tr>
-		<?php echo printPageSpeedGradeBreakdown('Specify image dimensions', 'rendering.html#SpecifyImageDimensions', $ps_row['pImgDims'])?>
-		<?php echo printPageSpeedGradeBreakdown('Specify a character set early', 'rendering.html#SpecifyCharsetEarly', $ps_row['pCharsetEarly'])?>
-		</tr>
-	</table>	
-<?php 
-	}
-
-	// dynaTrace breakdown
-	if ($dt_row) {
-		function printDynaTraceRankBreakdown($name, $doc, $value) {
-			if ($doc)
-			{
-				// TODO: impelement this
-			?><td><a href="https://community.dynatrace.com/community/display/PUB/<?php echo $doc?>"><?php echo $name?></a></td>	<?php
-			} else {
-			?><td><?php echo $name?></td><?php
-			}
-
-			if ($value >= 0) {?>
-			<td><?php echo yslowPrettyScore($value)?> (<i><?php echo htmlentities($value)?></i>)</td>
-			<td><div style="background-color: silver; width: 103px" title="Current dynaTrace rank: <?php echo yslowPrettyScore($value)?> (<?php echo $value?>)"><div style="width: <?php echo $value+3?>px; height: 0.7em; background-color: <?php echo scoreColor($value)?>"/></div></td>
-			<?php } else { ?>
-			<td><i>N/A</i></td>
-			<td></td>
-			<?php } ?>
-			<td>&nbsp;&nbsp;</td><?php 
-		}?>
-	<a name="dynatrace"/><h2 style="clear: both">dynaTrace breakdown</h2>
-	<table>
-		<tr>
-		<?php echo printDynaTraceRankBreakdown('Caching Rank', 'Best+Practices+on+Browser+Caching', $dt_row['cache'])?>
-		<?php echo printDynaTraceRankBreakdown('Network Rank', 'Best+Practices+on+Network+Requests+and+Roundtrips', $dt_row['net'])?>
-		</tr>
-		<tr>
-		<?php echo printDynaTraceRankBreakdown('Server-side rank', 'Best+Practices+on+Server-Side+Performance+Optimization', $dt_row['server'])?>
-		<?php echo printDynaTraceRankBreakdown('JavaScript Rank', 'Best+Practices+on+JavaScript+and+AJAX+Performance', $dt_row['js'])?>
-		</tr>
-	</table>	
-<?php 
 	}
 }
 

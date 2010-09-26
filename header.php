@@ -98,8 +98,19 @@ td, th { white-space: nowrap; }
 }
 
 .gbox {
-	background-color: silver;
+	background-color: #EFEFEF;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EFEFEF), to(#CFCFCF));
+	background: -moz-linear-gradient(top, #EFEFEF, #CFCFCF);
 	width: 101px;	
+}
+
+.moreinfo {
+	width: 14px;
+	height: 14px;
+	background-image: url('<?php echo assetURL('info.png')?>');
+}
+.ccol {
+	background-image: url('<?php echo assetURL('collecting.gif')?>')
 }
 
 .url {
@@ -107,11 +118,15 @@ td, th { white-space: nowrap; }
 }
 
 .bar {
-	height: 0.7em;
+	height: 15px;
 }
 
 <?php for($i=1; $i<=count($colorSteps); $i++) {?>
-.c<?php echo $i; ?> { background-color: #<?php echo $colorSteps[$i-1]; ?>}
+.c<?php echo $i; ?> {
+	background: #<?php echo $colorSteps[$i-1]; ?>;
+	background: -webkit-gradient(linear, left top, left bottom, from(#<?php echo $colorSteps[$i-1]; ?>), to(#<?php echo $colorStepShades[$i-1]; ?>));
+	background: -moz-linear-gradient(top, #<?php echo $colorSteps[$i-1]; ?>, #<?php echo $colorStepShades[$i-1]; ?>);
+}
 <?php } ?>
 </style>
 

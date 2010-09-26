@@ -160,7 +160,7 @@ YAHOO.util.Event.onDOMReady(function() {
 						continue;
 					}
 
-					el.innerHTML='+';
+					el.innerHTML='<div class="moreinfo"></div>';
 
 					new YAHOO.widget.Tooltip("tt_"+name,  
 					{

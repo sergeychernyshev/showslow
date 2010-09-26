@@ -110,21 +110,21 @@ $pagespeed = false;
 $dynatrace = false;
 
 $rows = array();
-$colspan = 0;
+$cols = 0;
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 
 	if (!$yslow && !is_null($row['o'])) {
 		$yslow = true;
-		$colspan += 2;
+		$cols += 1;
 	}
 	if (!$pagespeed && !is_null($row['ps_o'])) {
 		$pagespeed = true;
-		$colspan += 2;
+		$cols += 1;
 	}
 	if (!$dynatrace && !is_null($row['dt_o'])) {
 		$dynatrace = true;
-		$colspan += 2;
+		$cols += 1;
 	}
 }
 
@@ -138,11 +138,6 @@ td, th { white-space: nowrap; }
 .score {
 	text-align: right;
 	padding: 0 10px 0 10px;
-}
-
-.gbox {
-	background-color: silver;
-	width: 101px;	
 }
 
 .url {
@@ -188,47 +183,53 @@ if (count($rows))
 			$link = false;
 		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This instance of Show Slow only allows HTTP(S) URLs">non-HTTP(s) URL</i></td>
-			<td colspan="<?php echo $colspan ?>"/>
+			<td colspan="<?php echo $cols*2 ?>"/>
 		<?php } else if (!isURLAllowed($row['url'])) {
 			$link = false;
 		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="URL is not allowed to be reported to this instance of Show Slow">not allowed</i></td>
-			<td colspan="<?php echo $colspan ?>"/>
+			<td colspan="<?php echo $cols*2 ?>"/>
 		<?php } else if (isURLIgnored($row['url'])) {
 			$link = false;
 		?>
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This URL is ignored by this instance of Show Slow">ignored</i></td>
-			<td colspan="<?php echo $colspan ?>"/>
+			<td colspan="<?php echo $cols*2 ?>"/>
 		<?php } else if ($row['last_update']) { ?>
 			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 			<?php if (!$yslow) {?>
 			<?php } else if (!is_null($row['o'])) {?>
-				<td class="score"><?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
-				<td><div class="gbox" title="Current YSlow grade: <?php echo yslowPrettyScore($row['o'])?> (<?php echo $row['o']?>)"><div style="width: <?php echo $row['o']+1?>px" class="bar c<?php echo scoreColorStep($row['o'])?>"/></div></td>
+				<td class="score" title="Current YSlow grade: <?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)"><?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
+				<td title="Current YSlow grade: <?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)"><div class="gbox"><div style="width: <?php echo $row['o']+1?>px" class="bar c<?php echo scoreColorStep($row['o'])?>"/></div></td>
 			<?php } else { ?>
-				<td colspan="2"/>
+				<td class="score" style="color: silver" title="No data collected">no data</td>
+				<td><div class="gbox" title="No data collected"><div class="bar"/></div></td>
 			<?php } ?>
 
 			<?php if (!$pagespeed) {?>
 			<?php } else if (!is_null($row['ps_o'])) {?>
-				<td class="score"><?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
-				<td><div class="gbox" title="Current Page Speed score: <?php echo yslowPrettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div style="width: <?php echo $row['ps_o']+1?>px" class="bar c<?php echo scoreColorStep($row['ps_o'])?>"/></div></td>
+				<td class="score" title="Current Page Speed score: <?php echo prettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><?php echo prettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)</td>
+				<td title="Current Page Speed score: <?php echo prettyScore($row['ps_o'])?> (<?php echo $row['ps_o']?>)"><div class="gbox"><div style="width: <?php echo $row['ps_o']+1?>px" class="bar c<?php echo scoreColorStep($row['ps_o'])?>"/></div></td>
 			<?php } else { ?>
-				<td colspan="2"/>
+				<td class="score" style="color: silver" title="No data collected">no data</td>
+				<td><div class="gbox" title="No data collected"><div class="bar"/></div></td>
 			<?php } ?>
 
 			<?php if (!$dynatrace) {?>
 			<?php } else if (!is_null($row['dt_o'])) {?>
-				<td class="score"><?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)</td>
-				<td><div class="gbox" title="Current dynaTrace score: <?php echo yslowPrettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
+				<td class="score" title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)</td>
+				<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 			<?php }else{?>
-				<td colspan="2"/>
+				<td class="score" style="color: silver" title="No data collected">no data</td>
+				<td><div class="gbox" title="No data collected"><div class="bar"/></div></td>
 			<?php } ?>
 		<?php } else {
 			$link = false;
 		?>
-			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
-			<td colspan="<?php echo $colspan ?>"/>
+			<td style="text-align: right; padding-right: 1em" title="Data for this URL is being collected"><i>collecting data</i></td>
+			<?php for($i=0; $i<$cols; $i++) {?>
+			<td class="score" style="color: silver" title="Collecting data"><img style="vertical-align: text-bottom" src="<?php echo assetURL('clock.png')?>"/></td>
+			<td title="Collecting data"><div class="gbox"><div class="bar ccol"/></div></td>
+			<?php } ?>
 		<?php } ?>
 		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 
