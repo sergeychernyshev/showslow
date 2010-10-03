@@ -22,3 +22,5 @@ UserConfig::$SESSION_SECRET = $sessionSecret;
 
 UserConfig::$header = dirname(__FILE__).'/header.php';
 UserConfig::$footer = dirname(__FILE__).'/footer.php';
+
+UserConfig::$rememberMeDefault = true;
