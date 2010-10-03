@@ -217,8 +217,8 @@ $all_metrics = array(
 			'Basic measurements' => array(
 				array( 'Page size',				'w',	BYTES),
 				array( 'Page load time',			'l',	MS),
-				array( 'Total Requests',			'r',	NUMBER),
 				array( 'Transfer size of all resources',	't',	BYTES),
+				array( 'Total Requests',			'r',	NUMBER),
 				array( 'Overall grade',				'o',	PERCENTS)
 			),
 			'Optimize caching' => array(
