@@ -7,6 +7,21 @@ header('Content-type: text/plain');
 
 // Add new migrations on top, right below this line.
 
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 14
+ * Added basic UserBase activity tracking
+*/
+$versions[14]['up'][]	= "CREATE TABLE `u_activity` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time of activity',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `activity_id` int(2) unsigned NOT NULL COMMENT 'Activity ID',
+  KEY `time` (`time`),
+  KEY `user_id` (`user_id`),
+  KEY `activity_id` (`activity_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores user activities'
+";
+$versions[14]['down'][]	= "DROP TABLE `u_activity`";
+
 /* version 13
  *
  * PageSpeed 1.9 support
