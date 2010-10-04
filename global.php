@@ -287,7 +287,7 @@ $all_metrics = array(
 			),
 			'Best practices' => array(
 				array( 'Overall rank',			'rank',		PERCENTS),
-				array( 'Cacheing rank',			'cache',	PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Browser+Caching'),
+				array( 'Caching rank',			'cache',	PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Browser+Caching'),
 				array( 'Network rank',			'net',		PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Network+Requests+and+Roundtrips'),
 				array( 'Server rank',			'server',	PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+Server-Side+Performance+Optimization'),
 				array( 'JavaScript rank',		'js',		PERCENTS,	'https://community.dynatrace.com/community/display/PUB/Best+Practices+on+JavaScript+and+AJAX+Performance')
