@@ -1,7 +1,16 @@
-all:	update assets
+all:	update userbase dbupgrade assets
 
 update:
 	svn update
+
+userbase:
+	rm -rf __users_export
+	svn export http://svn.github.com/sergeychernyshev/UserBase.git __users_export
+	rm -rf users
+	mv __users_export/users .
+	rm -rf __users_export
+
+dbupgrade:
 	php dbupgrade.php
 
 rel:	release
@@ -20,6 +29,13 @@ else
 	# Creating release tarball and zip
 	#
 	svn export https://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
+
+	# copying userbase there too
+	rm -rf __users_export
+	svn export http://svn.github.com/sergeychernyshev/UserBase.git __users_export
+	mv __users_export/users showslow_${v}/
+	rm -rf __users_export
+
 	# Not including Makefile into the package since it's not doing anything but release packaging
 	tar -c showslow_${v} |gzip > showslow_${v}.tgz
 	zip -r showslow_${v}.zip showslow_${v}

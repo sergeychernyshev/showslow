@@ -24,3 +24,7 @@ UserConfig::$header = dirname(__FILE__).'/header.php';
 UserConfig::$footer = dirname(__FILE__).'/footer.php';
 
 UserConfig::$rememberMeDefault = true;
+
+define('SHOWSLOW_ACTIVITY_ADD_URL', 1);
+// array of activities in the system velue is an array of label and value of activity
+UserConfig::$activities[SHOWSLOW_ACTIVITY_ADD_URL] = array('Added URL for monitoring', 5);

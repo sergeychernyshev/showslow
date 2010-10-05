@@ -83,7 +83,7 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 		error_log(mysql_error());
 	}
 
-	error_log($result);
+	$current_user->recordActivity(SHOWSLOW_ACTIVITY_ADD_URL);
 
 	header('Location: '.$showslow_base.'my.php#added');
 	exit;
