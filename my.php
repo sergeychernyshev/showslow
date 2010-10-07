@@ -222,9 +222,7 @@ if (count($rows))
 				<td class="score" style="color: silver" title="No data collected">no data</td>
 				<td><div class="gbox" title="No data collected"><div class="bar"/></div></td>
 			<?php } ?>
-		<?php } else {
-			$link = false;
-		?>
+		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em" title="Data for this URL is being collected"><i>collecting data</i></td>
 			<?php for($i=0; $i<$cols; $i++) {?>
 			<td class="score" style="color: silver" title="Collecting data"><img style="vertical-align: text-bottom" src="<?php echo assetURL('clock.png')?>"/></td>

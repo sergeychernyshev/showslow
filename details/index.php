@@ -159,14 +159,10 @@ while ($pagetest_row = mysql_fetch_assoc($result)) {
 }
 mysql_free_result($result);
 
-if (!$row && !$ps_row && !$dt_row && $har === false) {
-	?>No data is available yet
-</body></html>
-<?php 
-	exit;
-}
-
-if ($row)
+if ($row && !(is_null($row['yslow_timestamp'])
+	&& is_null($row['pagespeed_timestamp'])
+	&& is_null($row['dynatrace_timestamp']))
+	)
 {
 	?>
 	<table cellpadding="15" cellspacing="5"><tr>
@@ -185,8 +181,11 @@ if ($row)
 	}
 	?>
 	</tr></table>
+<?php
+}
 
-	<?php if (!is_null($webPageTestBase)) { ?>
+
+if (!is_null($webPageTestBase)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
@@ -199,9 +198,36 @@ if ($row)
 	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
-	<?php } ?>
+<?php
+}
 
-	<?php 
+if ($row && is_null($row['yslow_timestamp'])
+	&& is_null($row['pagespeed_timestamp'])
+	&& is_null($row['dynatrace_timestamp']))
+{
+	?>
+	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
+	<table width="100%" height="250px" style="border: 1px solid silver"><tr>
+	<td align="center" valign="middle">
+		<table cellpadding="3px">
+		<tr>
+		<td><img src="<?php echo assetURL('clock.png')?>"/></td>
+		<td style="font-size: larger">Data is being collected</td>
+		</tr>
+		<tr><td colspan="2" align="center"><div class="gbox"><div class="bar ccol"></div></td></tr>
+		</table>
+	</td>
+	</tr></table>
+<?php
+} else if (!$row) {
+	?><div style="padding: 2em">No data is collected for this URL</div><?php
+}
+
+if ($row && !(is_null($row['yslow_timestamp'])
+	&& is_null($row['pagespeed_timestamp'])
+	&& is_null($row['dynatrace_timestamp']))
+	)
+{
 	// Graph
 	?>
 	<script>
@@ -214,7 +240,7 @@ if ($row)
 
 	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
 	<div id="my-timeplot" style="height: 250px;"></div>
-	<div style="fint-size: 0.2em">
+	<div style="font-size: 0.9em">
 	<?php
 	if (!is_null($row['yslow_timestamp']))
 	{
