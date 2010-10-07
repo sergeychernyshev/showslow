@@ -22,6 +22,7 @@ else
 	# Creating release tarball and zip
 	#
 	svn export https://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
+	cp asset_versions.php showslow_${v}/asset_versions.php
 
 	# Not including Makefile into the package since it's not doing anything but release packaging
 	tar -c showslow_${v} |gzip > showslow_${v}.tgz
