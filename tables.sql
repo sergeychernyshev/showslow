@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `db_version`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL DEFAULT '13',
+  `version` int(10) unsigned NOT NULL DEFAULT '14',
   PRIMARY KEY (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,7 +58,7 @@ CREATE TABLE `dynatrace` (
   `timeinrendering` bigint(20) unsigned DEFAULT NULL COMMENT 'Total Time in Rendering [ms]',
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=115445 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `har` (
   `har` longblob NOT NULL COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates that HAR data is stored compressed',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=256 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=592 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +112,7 @@ CREATE TABLE `metric` (
   `metric_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `value` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=535 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=852 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +167,7 @@ CREATE TABLE `pagespeed` (
   `pSprite` float unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=217153 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +185,24 @@ CREATE TABLE `pagetest` (
   `test_url` blob NOT NULL COMMENT 'PageTest result URL to redirect to',
   `location` text COMMENT 'Test location',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=610 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `u_activity`
+--
+
+DROP TABLE IF EXISTS `u_activity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `u_activity` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time of activity',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `activity_id` int(2) unsigned NOT NULL COMMENT 'Activity ID',
+  KEY `time` (`time`),
+  KEY `user_id` (`user_id`),
+  KEY `activity_id` (`activity_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores user activities';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +261,7 @@ CREATE TABLE `u_users` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `fb_id` (`fb_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1777 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +282,7 @@ CREATE TABLE `urls` (
   `dynatrace_last_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Last measurement ID for dynaTrace beacon',
   PRIMARY KEY (`id`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=26336 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=45408 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,7 +342,7 @@ CREATE TABLE `yslow2` (
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=390587 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=633462 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -337,4 +354,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-09-17 22:57:22
+-- Dump completed on 2010-10-07  9:54:26
