@@ -54,6 +54,9 @@ $sessionSecret = '...................................................';
 # (for publicly hosted instances)
 #$googleAnalyticsProfile = '';
 
+# KissMetrics key
+#$kissMetricsKey = '';
+
 # show Feedback button
 #$showFeedbackButton = true;
 
