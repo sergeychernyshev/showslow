@@ -11,7 +11,11 @@ if (array_key_exists('new', $_GET)) {
 }
 
 if ($new) {
-	$query = sprintf("SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE DATE_ADD(added, INTERVAL %d HOUR) > NOW() AND last_update IS NULL", $monitoringPeriod);
+	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id WHERE DATE_ADD(added, INTERVAL %d HOUR) > NOW()";
+	foreach ($all_metrics as $provider_name => $provider) {
+		$query .= " AND ".$provider['table'].'_last_id IS NULL';
+	}
+	$query = sprintf($query, $monitoringPeriod);
 } else {
 	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id";
 }
