@@ -48,8 +48,7 @@ if (in_array($current_user->getID(), $noMaxURLsForUsers)) {
 $noMoreURLs = false;
 if ($maxURLsPerUser)
 {
-	$query = sprintf('SELECT count(*) AS cnt FROM urls INNER JOIN user_urls ON urls.id = user_urls.url_id
-		WHERE user_urls.user_id = %d', $current_user->getID());
+	$query = sprintf('SELECT count(*) AS cnt FROM user_urls	WHERE user_urls.user_id = %d', $current_user->getID());
 
 	$result = mysql_query($query);
 
