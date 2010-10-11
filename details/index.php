@@ -174,7 +174,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 		?>
 		<td valign="top" align="center" class="<?php echo $provider_name ?>">
 		<img src="http://chart.apis.google.com/chart?chs=225x108&cht=gom&chd=t:<?php echo urlencode($score)?>&chl=<?php echo urlencode($pretty_score.' ('.$score.')') ?>" alt="<?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)" title="Current <?php echo $provider['title'] ?> <?php echo $provider['score_name'] ?>: <?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)"/>
-		<div>Current <a href="<?php echo $provider['url'] ?>"><?php echo $provider['title'] ?></a> <?php echo $provider['score_name'] ?>: <b><?php echo $pretty_score ?> (<i><?php echo htmlentities($score)?></i>)</b></div>
+		<div>Current <a target="_blank" href="<?php echo $provider['url'] ?>"><?php echo $provider['title'] ?></a> <?php echo $provider['score_name'] ?>: <b><?php echo $pretty_score ?> (<i><?php echo htmlentities($score)?></i>)</b></div>
 		</td>
 		<?php
 		}
@@ -310,7 +310,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 					if ($odd) { ?><tr><?php }
 
 					if (isset($metric[3])) {
-						?><td class="titlecol"><a href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
+						?><td class="titlecol"><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
 					}else{
 						?><td class="titlecol"><?php echo $metric[0]?></td><?php
 
