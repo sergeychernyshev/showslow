@@ -16,6 +16,11 @@ require_once(dirname(__FILE__).'/header.php');
 </style>
 <h1>URLs measured</h1>
 <?php
+$searchstring = null;
+if (array_key_exists('search', $_GET)) {
+	$searchstring = "urls.url LIKE '%".mysql_real_escape_string(trim($_GET['search']))."%'";
+}
+
 $current_group = array_key_exists('group', $_GET) ? $_GET['group'] : null;
 
 $subset = null;
@@ -30,7 +35,7 @@ if (is_array($URLGroups) && count($URLGroups) > 0) {
 <?php
 	} else {
 ?>
-<li><a href="<?php echo $showslow_base.'all.php'?>">All URLs</a></li>
+<li><a href="<?php echo $showslow_base.'all.php'.(is_null($searchstring) ? '' : '?search='.urlencode(trim($_GET['search'])))?>">All URLs</a></li>
 <?php
 	}
 
@@ -39,7 +44,7 @@ if (is_array($URLGroups) && count($URLGroups) > 0) {
 			$subset = $group['urls'];
 			?><li><b><?php echo $group['title']?></b></li><?php
 		} else {
-			?><li><a href="<?php echo $showslow_base.'all.php?group='.$id; ?>"><?php echo $group['title']?></a></li><?php
+			?><li><a href="<?php echo $showslow_base.'all.php?'.(is_null($searchstring) ? '' : 'search='.urlencode(trim($_GET['search'])).'&').'group='.$id; ?>"><?php echo $group['title']?></a></li><?php
 		}
 	}
 ?></ul>
@@ -103,6 +108,10 @@ if (!is_null($subsetstring)) {
 	$query .= " AND ($subsetstring)";
 }
 
+if (!is_null($searchstring)) {
+	$query .= " AND $searchstring";
+}
+
 $result = mysql_query($query);
 $row = mysql_fetch_row($result);
 $total = $row[0];
@@ -125,6 +134,10 @@ $query = 'SELECT url, last_update,
 if (!is_null($subsetstring)) {
 	$query .= " AND ($subsetstring)";
 }
+if (!is_null($searchstring)) {
+	$query .= " AND $searchstring";
+}
+
 $query .= sprintf(" ORDER BY url LIMIT %d OFFSET %d", $perPage, $offset);
 
 $result = mysql_query($query);
@@ -151,7 +164,12 @@ while ($row = mysql_fetch_assoc($result)) {
 		$dynatrace = true;
 	}
 }
-
+?>
+<form action="" method="GET">
+Search URLs: <input type="text" size="80" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/> <input type="submit" value="search"/> <?php if (!is_null($subset)) {?><input type="hidden" name="group" value="<?php echo htmlentities($_GET['group']) ?>"/><?php } ?>
+</form>
+<hr size="1">
+<?php
 if ($yslow || $pagespeed || $dynatrace) {
 ?>
 <div class="paginator">
