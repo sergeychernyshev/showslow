@@ -17,7 +17,7 @@ require_once(dirname(__FILE__).'/header.php');
 <h1>URLs measured</h1>
 <?php
 $searchstring = null;
-if (array_key_exists('search', $_GET)) {
+if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
 	$searchstring = "urls.url LIKE '%".mysql_real_escape_string(trim($_GET['search']))."%'";
 }
 
@@ -165,8 +165,14 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 }
 ?>
-<form action="" method="GET">
-Search URLs: <input type="text" size="80" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/> <input type="submit" value="search"/> <?php if (!is_null($subset)) {?><input type="hidden" name="group" value="<?php echo htmlentities($_GET['group']) ?>"/><?php } ?>
+<form name="searchform" action="" method="GET">
+Search URLs:
+<input type="text" id="search" size="80" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/>
+<input type="submit" value="search"/>
+<input type="button" value="clear" onclick="document.getElementById('search').value=''; document.searchform.submit()">
+<?php if (!is_null($subset)) {
+	?><input type="hidden" name="group" value="<?php echo htmlentities($_GET['group']) ?>"/><?php
+} ?>
 </form>
 <hr size="1">
 <?php
