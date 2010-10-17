@@ -1,10 +1,10 @@
-all:	update dbupgrade assets
+all:	update updatedb assets
 	cd users && $(MAKE)
 
 update:
 	svn update
 
-dbupgrade:
+updatedb:
 	php dbupgrade.php
 
 rel:	release
