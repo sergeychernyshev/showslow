@@ -12,6 +12,53 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 16
+ * Adding mroe details for PageTest
+*/
+$versions[16]['up'][]	= "ALTER TABLE `pagetest`
+ADD `f_loadTime` MEDIUMINT(3) UNSIGNED COMMENT '[first view] Load Time (ms)',
+ADD `r_loadTime` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] Load Time (ms)',
+ADD `f_TTFB` MEDIUMINT(3) UNSIGNED COMMENT '[first view] Time to First Byte (ms)',
+ADD `r_TTFB` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] Time to First Byte (ms)',
+ADD `f_bytesIn` INT(4) UNSIGNED COMMENT '[first view] Bytes In',
+ADD `r_bytesIn` INT(4) UNSIGNED COMMENT '[repeat view] Bytes In',
+ADD `f_bytesInDoc` INT(4) UNSIGNED COMMENT '[first view] Bytes In (Document)',
+ADD `r_bytesInDoc` INT(4) UNSIGNED COMMENT '[repeat view] Bytes In (Document)',
+ADD `f_requests` SMALLINT(2) UNSIGNED COMMENT '[first view] Number of Requests',
+ADD `r_requests` SMALLINT(2) UNSIGNED COMMENT '[repeat view] Number of Requests',
+ADD `f_requestsDoc` SMALLINT(2) UNSIGNED COMMENT '[first view] Number of Requests (Document)',
+ADD `r_requestsDoc` SMALLINT(2) UNSIGNED COMMENT '[repeat view] Number of Requests (Document)',
+ADD `f_render` MEDIUMINT(3) UNSIGNED COMMENT '[first view] Time to Start Render (ms)',
+ADD `r_render` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] Time to Start Render (ms)',
+ADD `f_fullyLoaded` MEDIUMINT(3) UNSIGNED COMMENT '[first view] Time to Fully Loaded (ms)',
+ADD `r_fullyLoaded` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] Time to Fully Loaded (ms)',
+ADD `f_docTime` MEDIUMINT(3) UNSIGNED COMMENT '[first view] Document Complete Time (ms)',
+ADD `r_docTime` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] Document Complete Time (ms)',
+ADD `f_domTime` MEDIUMINT(3) UNSIGNED COMMENT '[first view] DOM Element Time (ms)',
+ADD `r_domTime` MEDIUMINT(3) UNSIGNED COMMENT '[repeat view] DOM Element Time (ms)'";
+$versions[16]['down'][]	= "ALTER TABLE `pagetest`
+  DROP `f_loadTime`,
+  DROP `r_loadTime`,
+  DROP `f_TTFB`,
+  DROP `r_TTFB`,
+  DROP `f_bytesIn`,
+  DROP `r_bytesIn`,
+  DROP `f_bytesInDoc`,
+  DROP `r_bytesInDoc`,
+  DROP `f_requests`,
+  DROP `r_requests`,
+  DROP `f_requestsDoc`,
+  DROP `r_requestsDoc`,
+  DROP `f_render`,
+  DROP `r_render`,
+  DROP `f_fullyLoaded`,
+  DROP `r_fullyLoaded`,
+  DROP `f_docTime`,
+  DROP `r_docTime`,
+  DROP `f_domTime`,
+  DROP `r_domTime`;";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 15
  * UserBase will now use it's own DBUpgrade instance
  * let's create base version for it since all tables were maintained here
