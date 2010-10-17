@@ -261,6 +261,10 @@ if (is_array($defaultURLsToCompare)) {
 foreach ($customLists as $list_id => $list) {
 	?><td><a <?php if ($SECTION == 'custom_list_'.$list_id) {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>list.php?id=<?php echo $list_id; ?>"><?php echo $list['title'] ?></td><?php
 }
+
+foreach ($additionalMenuItems as $menu_item) {
+	?><td><a href="<?php echo htmlentities($menu_item['url']) ?>"><?php echo htmlentities($menu_item['title']) ?></td><?php
+}
 ?>
 <td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring ranking tools</a></td>
 <td><a href="http://code.google.com/p/showslow/downloads/list">Download ShowSlow</a></td>

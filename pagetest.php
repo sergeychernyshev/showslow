@@ -5,7 +5,7 @@ if (array_key_exists('url', $_REQUEST))
 {
 	$url_id = getUrlId($_REQUEST['url']);
 
-	$runtest = $webPageTestBase.'runtest.php?f=xml&r=yes&url='.urlencode($_REQUEST['url']);
+	$runtest = $webPageTestBase.'runtest.php?'.($webPageTestExtraParams ? $webPageTestExtraParams.'&' : '').'f=xml&r=yes&url='.urlencode($_REQUEST['url']);
 	$location = null;
 	$private = false;
 

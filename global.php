@@ -72,6 +72,7 @@ $webPageTestBase = 'http://www.webpagetest.org/';
 require_once(dirname(__FILE__).'/pagetestlocations.php');
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
+$webPageTestExtraParams = '';
 $keepPrivatePageTests = false;
 
 # a list of URLs to compare by default. Set to NULL to not send any URLs
@@ -148,6 +149,9 @@ $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various
 
 # configuring tabs
 $customLists = array();
+
+# additional menu items (url, title are keys for each item) 
+$additionalMenuItems = array();
 
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
