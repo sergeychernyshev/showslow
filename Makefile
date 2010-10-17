@@ -1,4 +1,5 @@
 all:	update dbupgrade assets
+	cd users && $(MAKE)
 
 update:
 	svn update

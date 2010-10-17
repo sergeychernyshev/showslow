@@ -1,11 +1,27 @@
 <?php
-require_once(dirname(__FILE__).'/global.php');
-require_once(dirname(__FILE__).'/dbupgrade/dbup.php');
+/*
+ * Copy this script to the folder above and populate $versions array with your migrations
+ * For more info see: http://www.dbupgrade.org/Main_Page#Migrations_($versions_array)
+ *
+ * Note: this script should be versioned in your code repository so it always reflects current code's
+ *       requirements for the database structure.
+*/
+require_once(dirname(__FILE__).'/dbupgrade/lib.php');
 
 $versions = array();
-header('Content-type: text/plain');
-
 // Add new migrations on top, right below this line.
+
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 15
+ * UserBase will now use it's own DBUpgrade instance
+ * let's create base version for it since all tables were maintained here
+*/
+$versions[15]['up'][]	= "CREATE TABLE `3f7f6ece338d68f7fbd069377de434e0_db_version` (
+  `version` int(10) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`version`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+";
+$versions[15]['down'][]	= "DROP TABLE `3f7f6ece338d68f7fbd069377de434e0_db_version`";
 
 /* -------------------------------------------------------------------------------------------------------
  * VERSION 14
@@ -256,12 +272,9 @@ $versions[2] = array(
 // version 1
 // To get to version 1, use snapshot in tables.sql
 
-try {
-	if (!empty($argc) && count($argv) == 2 && $argv[1] == 'down') {
-		dbdown(new mysqli( $host, $user, $pass, $db), $versions);
-	} else {
-		dbup(new mysqli( $host, $user, $pass, $db), $versions);
-	}
-} catch (Exception $e) {
-	echo '[ERR] Caught exception: ',  $e->getMessage(), "\n";
-}
+require_once(dirname(__FILE__).'/global.php');
+
+// creating DBUpgrade object with your database credentials and $versions defined above
+$dbupgrade = new DBUpgrade(new mysqli( $host, $user, $pass, $db), $versions);
+
+require_once(dirname(__FILE__).'/dbupgrade/client.php');
