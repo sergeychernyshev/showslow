@@ -313,24 +313,23 @@ if ($row && !(is_null($row['yslow_timestamp'])
 						?><td class="titlecol"><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
 					}else{
 						?><td class="titlecol"><?php echo $metric[0]?></td><?php
-
 					}
 
 					$value = $row[$provider_name.'_'.$metric[1]];
 
-					if ($metric[2] == PERCENTS){
-						if ($value >= 0) {
+					if (is_null($value)) {
+						?><td colspan="3" class="na">n/a</td><?php	
+					} else {
+						if ($metric[2] == PERCENTS){
 							$pretty_score = prettyScore($value);
 						?>
 							<td class="value"><?php echo $pretty_score?> (<i><?php echo htmlentities($value)?></i>%)</td>
 							<td><span id="details_<?php echo $provider_name.'_'.$metric[1] ?>" class="details"></span></td>
 							<td><div class="gbox" title="Current <?php echo $provider['score_name']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td>
-						<?php } else { ?>
-							<td><i>N/A</i></td>
-							<td></td>
-						<?php }
-					} else {
-						?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+						<?php
+						} else {
+							?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+						}
 					}
 
 					if (!$odd) { ?></tr><?php }
