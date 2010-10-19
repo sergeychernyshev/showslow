@@ -12,6 +12,61 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 17
+ * Adding "Avoid Empty Image src" rule to yslow
+ * Making all scores unsigned types
+*/
+$versions[17]['up'][] = "ALTER TABLE `yslow2`
+	ADD `yemptysrc` SMALLINT(3) UNSIGNED COMMENT 'Avoid Empty Image src' AFTER `yexpires`,
+	MODIFY `ynumreq` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Make fewer HTTP requests',
+	MODIFY `ycdn` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Using CDN',
+	MODIFY `yexpires` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Expires Headers',
+	MODIFY `ycompress` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Gzip components',
+	MODIFY `ycsstop` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'CSS at the top',
+	MODIFY `yjsbottom` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'JS at the bottom',
+	MODIFY `yexpressions` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'CSS expressions',
+	MODIFY `yexternal` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Make JavaScript and CSS external',
+	MODIFY `ydns` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Reduce DNS lookups',
+	MODIFY `yminify` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Minify JavaScript and CSS',
+	MODIFY `yredirects` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Avoid URL redirects',
+	MODIFY `ydupes` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Remove duplicate JavaScript and CSS',
+	MODIFY `yetags` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Configure entity tags (ETags)',
+	MODIFY `yxhr` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Make AJAX cacheable',
+	MODIFY `yxhrmethod` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Use GET for AJAX requests',
+	MODIFY `ymindom` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Reduce the number of DOM elements',
+	MODIFY `yno404` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Avoid HTTP 404 (Not Found) error',
+	MODIFY `ymincookie` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Reduce cookie size',
+	MODIFY `ycookiefree` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Use cookie-free domains',
+	MODIFY `ynofilter` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Avoid AlphaImageLoader filter',
+	MODIFY `yimgnoscale` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Do not scale images in HTML',
+	MODIFY `yfavicon` smallint(3) UNSIGNED DEFAULT NULL COMMENT 'Make favicon small and cacheable'";
+
+$versions[17]['down'][] = "ALTER TABLE `yslow2`
+	DROP yemptysrc,
+	MODIFY `ynumreq` smallint(6) DEFAULT NULL COMMENT 'Make fewer HTTP requests',
+	MODIFY `ycdn` smallint(6) DEFAULT NULL COMMENT 'Using CDN',
+	MODIFY `yexpires` smallint(6) DEFAULT NULL COMMENT 'Expires Headers',
+	MODIFY `ycompress` smallint(6) DEFAULT NULL COMMENT 'Gzip components',
+	MODIFY `ycsstop` smallint(6) DEFAULT NULL COMMENT 'CSS at the top',
+	MODIFY `yjsbottom` smallint(6) DEFAULT NULL COMMENT 'JS at the bottom',
+	MODIFY `yexpressions` smallint(6) DEFAULT NULL COMMENT 'CSS expressions',
+	MODIFY `yexternal` smallint(6) DEFAULT NULL COMMENT 'Make JavaScript and CSS external',
+	MODIFY `ydns` smallint(6) DEFAULT NULL COMMENT 'Reduce DNS lookups',
+	MODIFY `yminify` smallint(6) DEFAULT NULL COMMENT 'Minify JavaScript and CSS',
+	MODIFY `yredirects` smallint(6) DEFAULT NULL COMMENT 'Avoid URL redirects',
+	MODIFY `ydupes` smallint(6) DEFAULT NULL COMMENT 'Remove duplicate JavaScript and CSS',
+	MODIFY `yetags` smallint(6) DEFAULT NULL COMMENT 'Configure entity tags (ETags)',
+	MODIFY `yxhr` smallint(6) DEFAULT NULL COMMENT 'Make AJAX cacheable',
+	MODIFY `yxhrmethod` smallint(6) DEFAULT NULL COMMENT 'Use GET for AJAX requests',
+	MODIFY `ymindom` smallint(6) DEFAULT NULL COMMENT 'Reduce the number of DOM elements',
+	MODIFY `yno404` smallint(6) DEFAULT NULL COMMENT 'Avoid HTTP 404 (Not Found) error',
+	MODIFY `ymincookie` smallint(6) DEFAULT NULL COMMENT 'Reduce cookie size',
+	MODIFY `ycookiefree` smallint(6) DEFAULT NULL COMMENT 'Use cookie-free domains',
+	MODIFY `ynofilter` smallint(6) DEFAULT NULL COMMENT 'Avoid AlphaImageLoader filter',
+	MODIFY `yimgnoscale` smallint(6) DEFAULT NULL COMMENT 'Do not scale images in HTML',
+	MODIFY `yfavicon` smallint(6) DEFAULT NULL COMMENT 'Make favicon small and cacheable'";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 16
  * Adding mroe details for PageTest
 */

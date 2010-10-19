@@ -192,6 +192,7 @@ $all_metrics = array(
 				array( 'Make fewer HTTP requests',		'ynumreq',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#num_http'),
 				array( 'Use a Content Delivery Network (CDN)',	'ycdn', 	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cdn'),
 				array( 'Add Expires headers',			'yexpires',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#expires'),
+				array( 'Avoid Empty Image src',			'yemptysrc',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#emptysrc'),
 				array( 'Compress components with gzip',		'ycompress',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#gzip'),
 				array( 'Put CSS at top',			'ycsstop',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#css_top'),
 				array( 'Put JavaScript at bottom',		'yjsbottom',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#js_bottom'),
