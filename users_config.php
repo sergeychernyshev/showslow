@@ -18,6 +18,8 @@ UserConfig::$modules[] = new UsernamePasswordAuthenticationModule();
 // TODO - implement accounts and then switch it to true.
 UserConfig::$useAccounts = false;
 
+UserConfig::$dont_display_activity_for[] = 1;
+
 UserConfig::$SESSION_SECRET = $sessionSecret;
 
 UserConfig::$header = dirname(__FILE__).'/header.php';

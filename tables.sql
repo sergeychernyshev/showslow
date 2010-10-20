@@ -16,6 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `3f7f6ece338d68f7fbd069377de434e0_db_version`
+--
+
+DROP TABLE IF EXISTS `3f7f6ece338d68f7fbd069377de434e0_db_version`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `3f7f6ece338d68f7fbd069377de434e0_db_version` (
+  `version` int(10) unsigned NOT NULL DEFAULT '2',
+  PRIMARY KEY (`version`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `db_version`
 --
 
@@ -23,7 +36,7 @@ DROP TABLE IF EXISTS `db_version`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL DEFAULT '14',
+  `version` int(10) unsigned NOT NULL DEFAULT '17',
   PRIMARY KEY (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,7 +71,7 @@ CREATE TABLE `dynatrace` (
   `timeinrendering` bigint(20) unsigned DEFAULT NULL COMMENT 'Total Time in Rendering [ms]',
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=115445 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=137420 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +91,7 @@ CREATE TABLE `event` (
   `resource_url` blob COMMENT 'additional URL to resource related to the event.',
   PRIMARY KEY (`id`),
   KEY `start` (`start`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +108,7 @@ CREATE TABLE `har` (
   `har` longblob NOT NULL COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates that HAR data is stored compressed',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=592 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=634 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +125,7 @@ CREATE TABLE `metric` (
   `metric_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `value` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=852 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=854 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +180,7 @@ CREATE TABLE `pagespeed` (
   `pSprite` float unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=217153 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=250259 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,8 +197,28 @@ CREATE TABLE `pagetest` (
   `test_id` varchar(255) NOT NULL COMMENT 'PageTest test id',
   `test_url` blob NOT NULL COMMENT 'PageTest result URL to redirect to',
   `location` text COMMENT 'Test location',
+  `f_loadTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] Load Time (ms)',
+  `r_loadTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] Load Time (ms)',
+  `f_TTFB` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] Time to First Byte (ms)',
+  `r_TTFB` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] Time to First Byte (ms)',
+  `f_bytesIn` int(4) unsigned DEFAULT NULL COMMENT '[first view] Bytes In',
+  `r_bytesIn` int(4) unsigned DEFAULT NULL COMMENT '[repeat view] Bytes In',
+  `f_bytesInDoc` int(4) unsigned DEFAULT NULL COMMENT '[first view] Bytes In (Document)',
+  `r_bytesInDoc` int(4) unsigned DEFAULT NULL COMMENT '[repeat view] Bytes In (Document)',
+  `f_requests` smallint(2) unsigned DEFAULT NULL COMMENT '[first view] Number of Requests',
+  `r_requests` smallint(2) unsigned DEFAULT NULL COMMENT '[repeat view] Number of Requests',
+  `f_requestsDoc` smallint(2) unsigned DEFAULT NULL COMMENT '[first view] Number of Requests (Document)',
+  `r_requestsDoc` smallint(2) unsigned DEFAULT NULL COMMENT '[repeat view] Number of Requests (Document)',
+  `f_render` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] Time to Start Render (ms)',
+  `r_render` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] Time to Start Render (ms)',
+  `f_fullyLoaded` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] Time to Fully Loaded (ms)',
+  `r_fullyLoaded` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] Time to Fully Loaded (ms)',
+  `f_docTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] Document Complete Time (ms)',
+  `r_docTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] Document Complete Time (ms)',
+  `f_domTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[first view] DOM Element Time (ms)',
+  `r_domTime` mediumint(3) unsigned DEFAULT NULL COMMENT '[repeat view] DOM Element Time (ms)',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=610 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4701 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -257,11 +290,12 @@ CREATE TABLE `u_users` (
   `temppasstime` timestamp NULL DEFAULT NULL COMMENT 'Temporary password generation time',
   `requirespassreset` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Flag indicating that user must reset their password before using the site',
   `fb_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Facebook user ID',
+  `last_accessed` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `fb_id` (`fb_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1777 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1929 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,7 +316,7 @@ CREATE TABLE `urls` (
   `dynatrace_last_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Last measurement ID for dynaTrace beacon',
   PRIMARY KEY (`id`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=45408 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=47134 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,32 +351,33 @@ CREATE TABLE `yslow2` (
   `r` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT 'total amount of requests with empty cache',
   `i` text NOT NULL COMMENT 'testing profile used',
   `lt` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'page load time',
-  `ynumreq` smallint(6) DEFAULT NULL COMMENT 'Make fewer HTTP requests',
-  `ycdn` smallint(6) DEFAULT NULL COMMENT 'Using CDN',
-  `yexpires` smallint(6) DEFAULT NULL COMMENT 'Expires Headers',
-  `ycompress` smallint(6) DEFAULT NULL COMMENT 'Gzip components',
-  `ycsstop` smallint(6) DEFAULT NULL COMMENT 'CSS at the top',
-  `yjsbottom` smallint(6) DEFAULT NULL COMMENT 'JS at the bottom',
-  `yexpressions` smallint(6) DEFAULT NULL COMMENT 'CSS expressions',
-  `yexternal` smallint(6) DEFAULT NULL COMMENT 'Make JavaScript and CSS external',
-  `ydns` smallint(6) DEFAULT NULL COMMENT 'Reduce DNS lookups',
-  `yminify` smallint(6) DEFAULT NULL COMMENT 'Minify JavaScript and CSS',
-  `yredirects` smallint(6) DEFAULT NULL COMMENT 'Avoid URL redirects',
-  `ydupes` smallint(6) DEFAULT NULL COMMENT 'Remove duplicate JavaScript and CSS',
-  `yetags` smallint(6) DEFAULT NULL COMMENT 'Configure entity tags (ETags)',
-  `yxhr` smallint(6) DEFAULT NULL COMMENT 'Make AJAX cacheable',
-  `yxhrmethod` smallint(6) DEFAULT NULL COMMENT 'Use GET for AJAX requests',
-  `ymindom` smallint(6) DEFAULT NULL COMMENT 'Reduce the number of DOM elements',
-  `yno404` smallint(6) DEFAULT NULL COMMENT 'Avoid HTTP 404 (Not Found) error',
-  `ymincookie` smallint(6) DEFAULT NULL COMMENT 'Reduce cookie size',
-  `ycookiefree` smallint(6) DEFAULT NULL COMMENT 'Use cookie-free domains',
-  `ynofilter` smallint(6) DEFAULT NULL COMMENT 'Avoid AlphaImageLoader filter',
-  `yimgnoscale` smallint(6) DEFAULT NULL COMMENT 'Do not scale images in HTML',
-  `yfavicon` smallint(6) DEFAULT NULL COMMENT 'Make favicon small and cacheable',
+  `ynumreq` smallint(3) unsigned DEFAULT NULL COMMENT 'Make fewer HTTP requests',
+  `ycdn` smallint(3) unsigned DEFAULT NULL COMMENT 'Using CDN',
+  `yexpires` smallint(3) unsigned DEFAULT NULL COMMENT 'Expires Headers',
+  `yemptysrc` smallint(3) unsigned DEFAULT NULL COMMENT 'Avoid Empty Image src',
+  `ycompress` smallint(3) unsigned DEFAULT NULL COMMENT 'Gzip components',
+  `ycsstop` smallint(3) unsigned DEFAULT NULL COMMENT 'CSS at the top',
+  `yjsbottom` smallint(3) unsigned DEFAULT NULL COMMENT 'JS at the bottom',
+  `yexpressions` smallint(3) unsigned DEFAULT NULL COMMENT 'CSS expressions',
+  `yexternal` smallint(3) unsigned DEFAULT NULL COMMENT 'Make JavaScript and CSS external',
+  `ydns` smallint(3) unsigned DEFAULT NULL COMMENT 'Reduce DNS lookups',
+  `yminify` smallint(3) unsigned DEFAULT NULL COMMENT 'Minify JavaScript and CSS',
+  `yredirects` smallint(3) unsigned DEFAULT NULL COMMENT 'Avoid URL redirects',
+  `ydupes` smallint(3) unsigned DEFAULT NULL COMMENT 'Remove duplicate JavaScript and CSS',
+  `yetags` smallint(3) unsigned DEFAULT NULL COMMENT 'Configure entity tags (ETags)',
+  `yxhr` smallint(3) unsigned DEFAULT NULL COMMENT 'Make AJAX cacheable',
+  `yxhrmethod` smallint(3) unsigned DEFAULT NULL COMMENT 'Use GET for AJAX requests',
+  `ymindom` smallint(3) unsigned DEFAULT NULL COMMENT 'Reduce the number of DOM elements',
+  `yno404` smallint(3) unsigned DEFAULT NULL COMMENT 'Avoid HTTP 404 (Not Found) error',
+  `ymincookie` smallint(3) unsigned DEFAULT NULL COMMENT 'Reduce cookie size',
+  `ycookiefree` smallint(3) unsigned DEFAULT NULL COMMENT 'Use cookie-free domains',
+  `ynofilter` smallint(3) unsigned DEFAULT NULL COMMENT 'Avoid AlphaImageLoader filter',
+  `yimgnoscale` smallint(3) unsigned DEFAULT NULL COMMENT 'Do not scale images in HTML',
+  `yfavicon` smallint(3) unsigned DEFAULT NULL COMMENT 'Make favicon small and cacheable',
   `details` text COMMENT 'Beacon details',
   PRIMARY KEY (`id`),
   KEY `url_id` (`url_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=633462 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
+) ENGINE=MyISAM AUTO_INCREMENT=668550 DEFAULT CHARSET=latin1 COMMENT='Measurements gathered from yslow beacon v2.0 or earlier';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -354,4 +389,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-10-07  9:54:26
+-- Dump completed on 2010-10-19 23:19:26
