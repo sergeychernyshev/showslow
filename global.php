@@ -69,7 +69,6 @@ $homePageMetaTags = '';
 
 # this enables a form to run a test on WebPageTest.org
 $webPageTestBase = 'http://www.webpagetest.org/';
-require_once(dirname(__FILE__).'/pagetestlocations.php');
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
 $webPageTestExtraParams = '';
@@ -518,6 +517,58 @@ function validateURL($url, $outputerror = true) {
 	}
 
 	return $url;
+}
+
+$webPageTestLocations = array();
+$webPageTestLocationsById = array();
+function getPageTestLocations() {
+	global $webPageTestLocations, $webPageTestLocationsById, $webPageTestBase;
+
+	if (count($webPageTestLocations) > 0) {
+		return;
+	}
+
+	// Getting a list of locations from WebPageTest
+	$ch = curl_init(); 
+	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml');
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$output = curl_exec($ch);
+
+	if (empty($output)) {
+		$err = curl_error($ch);
+		curl_close($ch);
+		failWithMessage("API call ($locationsURL) failed: ".$err);
+	}
+
+	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	if ($code != 200) {
+		curl_close($ch);
+		failWithMessage("PageTest didn't accept the request: $code");
+	}
+	curl_close($ch);
+
+	$xml = new SimpleXMLElement($output);
+
+	if (empty($xml)) {
+		failWithMessage("Failed to parse XML response");
+	}
+
+	if ($xml->statusCode != 200) {
+		failWithMessage("PageTest getLocations returned failure status code: ".$xml->statusCode." (".$xml->statusText.")");
+	}
+	foreach ($xml->data->location as $location) {
+		$id = $location->id;
+
+		$loc = array(
+			'id' => $id,
+			'default' => $location->default == 1 ? true : false,
+			'title' => $location->Label.' ('.$location->Browser.')',
+			'tests' => $location->PendingTests->Total
+		);
+
+		$webPageTestLocations[] = $loc;
+		$webPageTestLocationsById["$id"] = $loc;
+	}
 }
 
 function getUrlId($url, $outputerror = true)

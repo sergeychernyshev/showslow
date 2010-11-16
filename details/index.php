@@ -184,14 +184,20 @@ if ($row && !(is_null($row['yslow_timestamp'])
 <?php
 }
 
+// fetching locations only when needed
+getPageTestLocations();
 
 if (!is_null($webPageTestBase)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
 	Location: <select name="location">
-	<?php foreach ($webPageTestLocations as $code => $label) { ?>
-	<option value="<?php echo htmlentities($code)?>"><?php echo htmlentities($label)?></option>
+	<?php foreach ($webPageTestLocations as $location) {
+		if ($location['tests'] > 50) {
+			continue;
+		}
+	?>
+		<option <?php echo htmlentities($location['default']) ? 'selected ' : ''?>value="<?php echo htmlentities($location['id'])?>"><?php echo htmlentities($location['title'])?></option>
 	<?php } ?></select>
 	<input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/><label for="wpt_private">Private</label>
 	<input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/><label for="wpt_fvonly">First View Only</label>
@@ -282,9 +288,11 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	<?php
 	$comps = array();
 
-	foreach ($details['g'] as $n => $y) {
-		if (is_array($y) && array_key_exists('components', $y)) {
-			$comps['yslow_'.$n] = $y['components'];
+	if (is_array($details) && array_key_exists('g', $details)) {
+		foreach ($details['g'] as $n => $y) {
+			if (is_array($y) && array_key_exists('components', $y)) {
+				$comps['yslow_'.$n] = $y['components'];
+			}
 		}
 	}
 	?>
@@ -382,10 +390,13 @@ if (count($pagetest) > 0) {
 	</tr>
 <?php
 	foreach ($pagetest as $pagetestentry) {
+		$location = array_key_exists($pagetestentry['location'], $webPageTestLocationsById) ?
+			$webPageTestLocationsById[$pagetestentry['location']]['title'] :
+			$pagetestentry['location'];
 ?>
 	<tr>
 	<td><?php echo htmlentities($pagetestentry['t'])?></td>
-	<td><?php echo htmlentities($pagetestentry['location'])?></td>
+	<td><?php echo htmlentities($location)?></td>
 	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
 	</tr>
 <?php

@@ -12,13 +12,33 @@ if (array_key_exists('url', $_REQUEST))
 	if (array_key_exists('location', $_REQUEST)) {
 		$location = $_REQUEST['location'];
 		$runtest.='&location='.$location;
+	} else {
+		header('Location: '.$showslow_base);
+		exit;
 	}
+
 	if (array_key_exists('private', $_REQUEST)) {
 		$private = $_REQUEST['private'];
 		$runtest.='&private='.$_REQUEST['private'];
 	}
 	if (array_key_exists('fvonly', $_REQUEST)) {
 		$runtest.='&fvonly='.$_REQUEST['fvonly'];
+	}
+
+	// fetching locations only when needed
+	getPageTestLocations();
+
+	if (!array_key_exists($location, $webPageTestLocationsById))
+	{
+		// location doesn't exist
+		error_log("PageTest Location doesn't exist: $location");
+		header('Location: '.$showslow_base);
+		exit;
+	} else if ($webPageTestLocationsById[$location]['tests'] > 50) {
+		// location is overloaded
+		error_log("PageTest Location is overloaded: $location");
+		header('Location: '.$showslow_base);
+		exit;
 	}
 
 	$ch = curl_init(); 
@@ -59,7 +79,7 @@ if (array_key_exists('url', $_REQUEST))
 			mysql_real_escape_string($url_id),
 			mysql_real_escape_string($testId),
 			mysql_real_escape_string($userUrl),
-			mysql_real_escape_string($webPageTestLocations[$location])
+			mysql_real_escape_string($location)
 		);
 
 		if (!mysql_query($query))
