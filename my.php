@@ -56,12 +56,15 @@ if ($maxURLsPerUser)
 		error_log(mysql_error());
 	}
 
-	if ($cnt = mysql_fetch_row($result) && $cnt[0] >= $maxURLsPerUser)
+	$cnt = mysql_fetch_row($result);
+	if (is_array($cnt) && $cnt[0] >= $maxURLsPerUser)
 	{
 		$noMoreURLs = true;
 	}
 	mysql_free_result($result);
 }
+
+error_log('No more URLs? '.($noMoreURLs ? 'yes' : 'no'));
 
 if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 	$url_id = getUrlId(resolveRedirects($_REQUEST['url']), false);

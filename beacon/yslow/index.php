@@ -50,6 +50,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	$ynumreq	= $grades['ynumreq']['score'];
 	$ycdn		= $grades['ycdn']['score'];
 	$yexpires	= $grades['yexpires']['score'];
+	$yemptysrc	= $grades['yemptysrc']['score'];
 	$ycompress	= $grades['ycompress']['score'];
 	$ycsstop	= $grades['ycsstop']['score'];
 	$yjsbottom	= $grades['yjsbottom']['score'];
@@ -74,7 +75,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	$query = sprintf("/* grades POST */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i` , lt,
-		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
+		`ynumreq`,	`ycdn`,		`yexpires`,	`yemptysrc`, `ycompress`,	`ycsstop`,
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
 		`ymindom`,	`yno404`,	`ymincookie`,	`ycookiefree`,	`ynofilter`,
@@ -82,7 +83,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%d', '%d', '%s', '%d',
-		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
@@ -99,6 +100,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		mysql_real_escape_string($ynumreq),
 		mysql_real_escape_string($ycdn),
 		mysql_real_escape_string($yexpires),
+		mysql_real_escape_string($yemptysrc),
 		mysql_real_escape_string($ycompress),
 		mysql_real_escape_string($ycsstop),
 		mysql_real_escape_string($yjsbottom),
@@ -140,7 +142,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	$query = sprintf("/* basic GET */ INSERT INTO yslow2 (
 		`ip` , `user_agent` , `url_id` ,
 		`w` , `o` , `r` , `i`, lt,
-		`ynumreq`,	`ycdn`,		`yexpires`,	`ycompress`,	`ycsstop`,
+		`ynumreq`,	`ycdn`,		`yexpires`,	`yemptysrc`,	`ycompress`,	`ycsstop`,
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
 		`ymindom`,	`yno404`,	`ymincookie`,	`ycookiefree`,	`ynofilter`,
@@ -148,7 +150,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%d', '%d', '%s', '%d',
-		'%d', '%d', '%d', '%d', '%d',
+		'%d', '%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
@@ -165,6 +167,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		mysql_real_escape_string($_GET['ynumreq']),
 		mysql_real_escape_string($_GET['ycdn']),
 		mysql_real_escape_string($_GET['yexpires']),
+		mysql_real_escape_string($_GET['yemptysrc']),
 		mysql_real_escape_string($_GET['ycompress']),
 		mysql_real_escape_string($_GET['ycsstop']),
 		mysql_real_escape_string($_GET['yjsbottom']),
