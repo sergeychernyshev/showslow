@@ -12,6 +12,15 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 18
+ * IP is not required anymore
+*/
+$versions[18]['up'][]	= "ALTER TABLE `pagespeed` CHANGE `ip` `ip` INT(4) UNSIGNED NULL DEFAULT '0'";
+$versions[18]['up'][]	= "ALTER TABLE `yslow2` CHANGE `ip` `ip` INT(4) UNSIGNED NULL DEFAULT '0' COMMENT 'IP address of the agent'";
+$versions[18]['down'][]	= "ALTER TABLE `yslow2` CHANGE `ip` `ip` INT(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'IP address of the agent'";
+$versions[18]['down'][]	= "ALTER TABLE `pagespeed` CHANGE `ip` `ip` INT(4) UNSIGNED NOT NULL DEFAULT '0'";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 17
  * Adding "Avoid Empty Image src" rule to yslow
  * Making all scores unsigned types

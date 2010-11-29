@@ -7,6 +7,9 @@ update:
 updatedb:
 	php dbupgrade.php
 
+cleantables:
+	sed -e 's/Database: showslow.*/Database: showslow/' -e 's/ AUTO_INCREMENT=[0-9]*\b//' -i tables.sql
+
 rel:	release
 release: assets
 ifndef v
