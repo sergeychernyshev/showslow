@@ -184,14 +184,20 @@ if ($row && !(is_null($row['yslow_timestamp'])
 <?php
 }
 
+// fetching locations only when needed
+getPageTestLocations();
 
 if (!is_null($webPageTestBase)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
 	Location: <select name="location">
-	<?php foreach ($webPageTestLocations as $code => $label) { ?>
-	<option value="<?php echo htmlentities($code)?>"><?php echo htmlentities($label)?></option>
+	<?php foreach ($webPageTestLocations as $location) {
+		if ($location['tests'] > 50) {
+			continue;
+		}
+	?>
+		<option <?php echo htmlentities($location['default']) ? 'selected ' : ''?>value="<?php echo htmlentities($location['id'])?>"><?php echo htmlentities($location['title'])?></option>
 	<?php } ?></select>
 	<input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/><label for="wpt_private">Private</label>
 	<input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/><label for="wpt_fvonly">First View Only</label>
@@ -282,9 +288,11 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	<?php
 	$comps = array();
 
-	foreach ($details['g'] as $n => $y) {
-		if (is_array($y) && array_key_exists('components', $y)) {
-			$comps['yslow_'.$n] = $y['components'];
+	if (is_array($details) && array_key_exists('g', $details)) {
+		foreach ($details['g'] as $n => $y) {
+			if (is_array($y) && array_key_exists('components', $y)) {
+				$comps['yslow_'.$n] = $y['components'];
+			}
 		}
 	}
 	?>
@@ -313,24 +321,23 @@ if ($row && !(is_null($row['yslow_timestamp'])
 						?><td class="titlecol"><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
 					}else{
 						?><td class="titlecol"><?php echo $metric[0]?></td><?php
-
 					}
 
 					$value = $row[$provider_name.'_'.$metric[1]];
 
-					if ($metric[2] == PERCENTS){
-						if ($value >= 0) {
+					if (is_null($value)) {
+						?><td colspan="3" class="na">n/a</td><?php	
+					} else {
+						if ($metric[2] == PERCENTS){
 							$pretty_score = prettyScore($value);
 						?>
 							<td class="value"><?php echo $pretty_score?> (<i><?php echo htmlentities($value)?></i>%)</td>
 							<td><span id="details_<?php echo $provider_name.'_'.$metric[1] ?>" class="details"></span></td>
 							<td><div class="gbox" title="Current <?php echo $provider['score_name']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td>
-						<?php } else { ?>
-							<td><i>N/A</i></td>
-							<td></td>
-						<?php }
-					} else {
-						?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+						<?php
+						} else {
+							?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+						}
 					}
 
 					if (!$odd) { ?></tr><?php }
@@ -383,10 +390,13 @@ if (count($pagetest) > 0) {
 	</tr>
 <?php
 	foreach ($pagetest as $pagetestentry) {
+		$location = array_key_exists($pagetestentry['location'], $webPageTestLocationsById) ?
+			$webPageTestLocationsById[$pagetestentry['location']]['title'] :
+			$pagetestentry['location'];
 ?>
 	<tr>
 	<td><?php echo htmlentities($pagetestentry['t'])?></td>
-	<td><?php echo htmlentities($pagetestentry['location'])?></td>
+	<td><?php echo htmlentities($location)?></td>
 	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
 	</tr>
 <?php

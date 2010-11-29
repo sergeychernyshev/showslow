@@ -19,6 +19,9 @@ if (!isset($current_user)) {
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
+<link rel="icon" type="image/vnd.microsoft.icon" href="<?php echo assetURL('favicon.ico')?>"> 
+<link rel="apple-touch-icon" href="<?php echo assetURL('showslow_iphone_icon.png')?>" /> 
+
 <style type="text/css">
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.

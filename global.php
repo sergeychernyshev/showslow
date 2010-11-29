@@ -14,6 +14,7 @@ $URLGroups = array();
 # Ignore URLs matching the prefix or a regext. If one of them matches, URLs is going to be ignored
 # You might want to remove 10.x, 192.168.x and 172.16-32.x if you're testing web sites on a private network.
 $ignoreURLs = array(
+	'http://0.0.0.0',
 	'http://127.0.0.',
 	'http://localhost/',
 	'http://localhost:',
@@ -69,7 +70,6 @@ $homePageMetaTags = '';
 
 # this enables a form to run a test on WebPageTest.org
 $webPageTestBase = 'http://www.webpagetest.org/';
-require_once(dirname(__FILE__).'/pagetestlocations.php');
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
 $webPageTestExtraParams = '';
@@ -192,6 +192,7 @@ $all_metrics = array(
 				array( 'Make fewer HTTP requests',		'ynumreq',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#num_http'),
 				array( 'Use a Content Delivery Network (CDN)',	'ycdn', 	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#cdn'),
 				array( 'Add Expires headers',			'yexpires',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#expires'),
+				array( 'Avoid Empty Image src',			'yemptysrc',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#emptysrc'),
 				array( 'Compress components with gzip',		'ycompress',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#gzip'),
 				array( 'Put CSS at top',			'ycsstop',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#css_top'),
 				array( 'Put JavaScript at bottom',		'yjsbottom',	PERCENTS,	'http://developer.yahoo.com/performance/rules.html#js_bottom'),
@@ -517,6 +518,58 @@ function validateURL($url, $outputerror = true) {
 	}
 
 	return $url;
+}
+
+$webPageTestLocations = array();
+$webPageTestLocationsById = array();
+function getPageTestLocations() {
+	global $webPageTestLocations, $webPageTestLocationsById, $webPageTestBase;
+
+	if (count($webPageTestLocations) > 0) {
+		return;
+	}
+
+	// Getting a list of locations from WebPageTest
+	$ch = curl_init(); 
+	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml');
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$output = curl_exec($ch);
+
+	if (empty($output)) {
+		$err = curl_error($ch);
+		curl_close($ch);
+		failWithMessage("API call ($locationsURL) failed: ".$err);
+	}
+
+	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	if ($code != 200) {
+		curl_close($ch);
+		failWithMessage("PageTest didn't accept the request: $code");
+	}
+	curl_close($ch);
+
+	$xml = new SimpleXMLElement($output);
+
+	if (empty($xml)) {
+		failWithMessage("Failed to parse XML response");
+	}
+
+	if ($xml->statusCode != 200) {
+		failWithMessage("PageTest getLocations returned failure status code: ".$xml->statusCode." (".$xml->statusText.")");
+	}
+	foreach ($xml->data->location as $location) {
+		$id = $location->id;
+
+		$loc = array(
+			'id' => $id,
+			'default' => $location->default == 1 ? true : false,
+			'title' => $location->Label.' ('.$location->Browser.')',
+			'tests' => $location->PendingTests->Total
+		);
+
+		$webPageTestLocations[] = $loc;
+		$webPageTestLocationsById["$id"] = $loc;
+	}
 }
 
 function getUrlId($url, $outputerror = true)
