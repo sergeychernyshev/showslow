@@ -7,6 +7,9 @@ update:
 updatedb:
 	php dbupgrade.php
 
+cleantables:
+	sed -e 's/Database: showslow.*/Database: showslow/' -e 's/ AUTO_INCREMENT=[0-9]*\b//' -i tables.sql
+
 rel:	release
 release: assets
 ifndef v
@@ -22,7 +25,9 @@ else
 	#
 	# Creating release tarball and zip
 	#
-	svn export https://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
+	svn co http://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
+	(cd showslow_${v}/users && $(MAKE) .git)
+	find showslow_${v} -type d -name .svn |xargs -n10 rm -rf
 	cp asset_versions.php showslow_${v}/asset_versions.php
 
 	# Not including Makefile into the package since it's not doing anything but release packaging
