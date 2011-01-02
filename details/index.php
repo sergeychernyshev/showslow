@@ -187,7 +187,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 // fetching locations only when needed
 getPageTestLocations();
 
-if (!is_null($webPageTestBase)) { ?>
+if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>

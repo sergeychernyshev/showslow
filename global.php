@@ -69,6 +69,7 @@ $cleanOldYSlowBeaconDetails = false;
 $homePageMetaTags = '';
 
 # this enables a form to run a test on WebPageTest.org
+$webPageTestKey = null; # must be set to something to not null to enable
 $webPageTestBase = 'http://www.webpagetest.org/';
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
@@ -523,15 +524,15 @@ function validateURL($url, $outputerror = true) {
 $webPageTestLocations = array();
 $webPageTestLocationsById = array();
 function getPageTestLocations() {
-	global $webPageTestLocations, $webPageTestLocationsById, $webPageTestBase;
+	global $webPageTestLocations, $webPageTestLocationsById, $webPageTestBase, $webPageTestKey;
 
-	if (count($webPageTestLocations) > 0) {
+	if (count($webPageTestLocations) > 0 || is_null($webPageTestKey)) {
 		return;
 	}
 
 	// Getting a list of locations from WebPageTest
 	$ch = curl_init(); 
-	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml');
+	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml&k='.urlencode($webPageTestKey));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	$output = curl_exec($ch);
 
