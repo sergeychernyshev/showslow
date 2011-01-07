@@ -12,6 +12,15 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 19
+ * Adding har link parameter
+*/
+$versions[19]['up'][]	= "ALTER TABLE  `har` CHANGE  `har`  `har` LONGBLOB NULL COMMENT  'HAR contents'";
+$versions[19]['up'][]	= "ALTER TABLE  `har` ADD  `link` BLOB NULL COMMENT  'URL of HAR file'";
+$versions[19]['down'][]	= "ALTER TABLE  `har` DROP  `link`";
+$versions[19]['down'][]	= "ALTER TABLE  `har` CHANGE  `har`  `har` LONGBLOB NOT NULL COMMENT  'HAR contents'";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 18
  * IP is not required anymore
 */

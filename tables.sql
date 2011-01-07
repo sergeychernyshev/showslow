@@ -36,7 +36,7 @@ DROP TABLE IF EXISTS `db_version`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `db_version` (
-  `version` int(10) unsigned NOT NULL DEFAULT '18',
+  `version` int(10) unsigned NOT NULL DEFAULT '19',
   PRIMARY KEY (`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -105,8 +105,9 @@ CREATE TABLE `har` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique HAR id',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `url_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'URL id',
-  `har` longblob NOT NULL COMMENT 'HAR contents',
+  `har` longblob COMMENT 'HAR contents',
   `compressed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates that HAR data is stored compressed',
+  `link` blob COMMENT 'URL of HAR file',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -389,4 +390,4 @@ CREATE TABLE `yslow2` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-11-28 23:31:08
+-- Dump completed on 2011-01-07 19:01:55

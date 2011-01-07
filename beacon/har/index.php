@@ -1,6 +1,43 @@
 <?php 
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
+// in case when link to external HAR file was provided
+
+if (array_key_exists('link', $_REQUEST) && trim($_REQUEST['link']) != ''
+	&& array_key_exists('url', $_REQUEST))
+{
+	$link = filter_var(urldecode(trim($_REQUEST['link'])), FILTER_VALIDATE_URL);
+
+	$url_id = getUrlId(urldecode($_REQUEST['url']));
+	
+	if (array_key_exists('timestamp', $_REQUEST))
+	{
+		$query = sprintf("/* HAR link */ INSERT INTO har (timestamp, url_id, link)
+		VALUES ('%s', '%d', '%s')",
+			mysql_real_escape_string($_REQUEST['timestamp']),
+			mysql_real_escape_string($url_id),
+			mysql_real_escape_string($link)
+		);
+	}
+	else
+	{
+		$query = sprintf("/* HAR link */ INSERT INTO har (url_id, link)
+		VALUES ('%d', '%s')",
+			mysql_real_escape_string($url_id),
+			mysql_real_escape_string($link)
+		);
+	}
+
+
+	if (!mysql_query($query))
+	{
+		beaconError(mysql_error());
+	}
+
+	header('HTTP/1.0 204 Data accepted');
+	exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] != 'POST')
 {
 	?><html>
@@ -33,6 +70,7 @@ if (!$enableHARBeacon) {
 <tr><td>URL:</td><td><input type="text" name="url" value="http://www.example.com/" size="80"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php } ?>/></td></tr>
 <tr valign="top"><td>Time:</td><td><input type="text" name="timestamp" size="25" value="<?php echo date("Y-m-d H:i:s");?>"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/><br/>Time in MySQL <a href="http://dev.mysql.com/doc/refman/5.1/en/datetime.html">timestamp format</a></td></tr>
 <tr><td>Pick HAR file:</td><td><input name="har" type="file"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/></td></tr>
+<tr><td>Or enter a URL of<br/>externally hosted HAR file:</td><td><input type="text" name="link" value="" size="80"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php } ?>/></td></tr>
 <tr><td></td><td><input type="submit" value="add"<?php if (!$enableHARBeacon) {?> disabled="disabled"<?php }?>/></td></tr>
 
 </table>
@@ -42,6 +80,9 @@ if (!$enableHARBeacon) {
 <?php 
 	exit;
 }
+
+
+// in case HAR body was POSTed to beacon
 
 // check if manual upload was used
 if (array_key_exists('har', $_FILES))

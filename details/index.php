@@ -127,7 +127,7 @@ echo 'var metrics = '.json_encode($metrics);
 }
 
 // checking if there is har data
-$query = sprintf("SELECT har.timestamp as t, har.id as id FROM har WHERE har.url_id = '%d' ORDER BY timestamp DESC",
+$query = sprintf("SELECT har.timestamp as t, har.id as id, har.link as link FROM har WHERE har.url_id = '%d' ORDER BY timestamp DESC",
 	mysql_real_escape_string($urlid)
 );
 
@@ -407,17 +407,23 @@ if (count($pagetest) > 0) {
 }
 
 if (count($har) > 0) {
+	$har_url = is_null($har[0]['link']) ?
+		$showslow_base.'details/har.php?id='.urlencode($har[0]['id']).'callback=onInputData'
+		: $har[0]['link'];
 ?>
 	<a name="har-table"/><h2>HAR data collected</h2>
 
-	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($har[0]['id']); ?>%26callback%3DonInputData" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
+	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo urlencode($har_url) ?>" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
 	<tr><th>Time</th><th>HAR</th></tr>
 <?php
 	foreach ($har as $harentry) {
+		$har_url = is_null($harentry['link']) ?
+			$showslow_base.'details/har.php?id='.urlencode($harentry['id']).'callback=onInputData'
+			: $harentry['link'];
 ?>
-	<tr><td><?php echo htmlentities($harentry['t'])?></td><td><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo $showslow_base?>details/har.php%3Fid%3D<?php echo urlencode($harentry['id'])?>%26callback%3DonInputData" target="_blank">view in HAR viewer</a></td></tr>
+	<tr><td><?php echo htmlentities($harentry['t'])?></td><td><a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo urlencode($har_url) ?>" target="_blank">view in HAR viewer</a></td></tr>
 <?php
 	}
 ?>
