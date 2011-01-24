@@ -35,8 +35,8 @@ else
 	zip -r showslow_${v}.zip showslow_${v}
 	rm -rf showslow_${v}
 	# upload to Google Code repository (need account with enough permissions)
-	googlecode/googlecode_upload.py -s "ShowSlow v${v} (tarball)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.tgz
 	googlecode/googlecode_upload.py -s "ShowSlow v${v} (zip)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.zip
+	googlecode/googlecode_upload.py -s "ShowSlow v${v} (tarball)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.tgz
 	rm showslow_${v}.tgz showslow_${v}.zip
 endif
 
