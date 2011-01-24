@@ -2,7 +2,7 @@ all:	update updatedb assets
 	cd users && $(MAKE)
 
 update:
-	svn update
+	if [ -d .svn ]; then svn update; fi
 
 updatedb:
 	php dbupgrade.php
@@ -47,7 +47,7 @@ timeplot-patch:
 clean: noassets
 
 assets:
-	svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php
+	if [ -d .svn ]; then svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php; fi
 
 # uncomment next line when we'll have any CSS files to process
 #find ./ -name '*.css' -not -wholename "./timeplot/*" -not -wholename "./timeline/*" -not -wholename "./ajax/*" -not -wholename "./users/*" | xargs -n1 php svn-assets/cssurlrewrite.php
