@@ -512,8 +512,6 @@ $versions[1]['down'][] = "DROP TABLE pagespeed";
 $versions[1]['down'][] = "DROP TABLE urls";
 $versions[1]['down'][] = "DROP TABLE yslow2";
 
-// To get to version 1, use snapshot in tables.sql
-
 require_once(dirname(__FILE__).'/global.php');
 
 // creating DBUpgrade object with your database credentials and $versions defined above
