@@ -262,6 +262,10 @@ if (is_array($defaultURLsToCompare)) {
 <td><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></td>
 <?php 
 foreach ($customLists as $list_id => $list) {
+	if (array_key_exists('hidden', $list) && $list['hidden']) {
+		continue;
+	}
+
 	?><td><a <?php if ($SECTION == 'custom_list_'.$list_id) {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>list.php?id=<?php echo $list_id; ?>"><?php echo $list['title'] ?></td><?php
 }
 
