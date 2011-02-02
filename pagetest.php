@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__FILE__).'/global.php');
+require_once(dirname(__FILE__).'/users/users.php');
 
 if (!is_null($webPageTestKey) && array_key_exists('url', $_REQUEST))
 {
@@ -92,6 +93,11 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_REQUEST))
 			mysql_real_escape_string($url_id)
 		);
 		$result = mysql_query($query);
+	}
+
+	$current_user = User::get();
+	if (!is_null($current_user)) {
+		$current_user->recordActivity(SHOWSLOW_ACTIVITY_PAGETEST_START);
 	}
 
 	header('Location: '.$userUrl);

@@ -28,5 +28,7 @@ UserConfig::$footer = dirname(__FILE__).'/footer.php';
 UserConfig::$rememberMeDefault = true;
 
 define('SHOWSLOW_ACTIVITY_ADD_URL', 1);
+define('SHOWSLOW_ACTIVITY_PAGETEST_START', 2);
 // array of activities in the system velue is an array of label and value of activity
 UserConfig::$activities[SHOWSLOW_ACTIVITY_ADD_URL] = array('Added URL for monitoring', 5);
+UserConfig::$activities[SHOWSLOW_ACTIVITY_PAGETEST_START] = array('Started WebPagetest test', 2);
