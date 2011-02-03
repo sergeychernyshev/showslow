@@ -845,5 +845,16 @@ function beaconError($message)
 	exit;
 }
 
+/*
+ * Cuts the string to be $maxlength and replaces the last $margin characters with ellipsis
+*/
+function ellipsis($string, $maxlength, $margin = 2) {
+	if (strlen($string) > ($maxlength)) {
+		return substr($string, 0, $maxlength - $margin)."...";
+	}
+
+	return $string;
+}
+
 mysql_connect($host, $user, $pass);
 mysql_select_db($db);

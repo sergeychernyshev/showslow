@@ -104,7 +104,7 @@ echo 'var metrics = '.json_encode($metrics);
 	font-weight: bold;
 }
 </style>
-<h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(substr($url, 0, 30))?><?php if (strlen($url) > 30) { ?>...<?php } ?></a></h1>
+<h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h1>
 <?php if (!is_null($addThisProfile)) {?>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
