@@ -1,14 +1,17 @@
-all:	update updatedb assets
-	cd users && $(MAKE)
+all:	updatecode updateusers assets updatedb 
 
-update:
-	if [ -d .svn ]; then svn update; fi
+updatecode:
+ifneq "$(wildcard .git )" ""
+	git pull origin master
+	git submodule init
+	git submodule update
+endif
+
+updateusers:
+	cd users && $(MAKE)
 
 updatedb:
 	php dbupgrade.php
-
-cleantables:
-	sed -e 's/Database: showslow.*/Database: showslow/' -e 's/ AUTO_INCREMENT=[0-9]*\b//' -i tables.sql
 
 rel:	release
 release: assets
@@ -21,25 +24,10 @@ else
 	#
 	# Tagging it with release tag
 	#
-	svn copy . https://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/
-	#
-	# Creating release tarball and zip
-	#
-	svn co http://showslow.googlecode.com/svn/tags/REL_${subst .,_,${v}}/ showslow_${v}
-	(cd showslow_${v}/users && $(MAKE) .git)
-	find showslow_${v} -type d -name .svn |xargs -n10 rm -rf
-	cp asset_versions.php showslow_${v}/asset_versions.php
-
-	# Not including Makefile into the package since it's not doing anything but release packaging
-	tar -c showslow_${v} |gzip > showslow_${v}.tgz
-	zip -r showslow_${v}.zip showslow_${v}
-	rm -rf showslow_${v}
-	# upload to Google Code repository (need account with enough permissions)
-	googlecode/googlecode_upload.py -s "ShowSlow v${v} (zip)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.zip
-	googlecode/googlecode_upload.py -s "ShowSlow v${v} (tarball)" -p showslow -l "Featured,Type-Archive,OpSys-All" showslow_${v}.tgz
-	rm showslow_${v}.tgz showslow_${v}.zip
+	git tag -a REL_${subst .,_,${v}}
 endif
 
+# No need for this really since we patched Timeplot clone on Github
 timeplot-patch:
 	patch -p0 <timeplot.patch
 
@@ -47,7 +35,10 @@ timeplot-patch:
 clean: noassets
 
 assets:
-	if [ -d .svn ]; then svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php; fi
+
+# TODO write a tool to generate hash-based asset_versions and not VCS-based.
+# TODO update .htaccess to support letters in hashes
+#	if [ -d .svn ]; then svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php; fi
 
 # uncomment next line when we'll have any CSS files to process
 #find ./ -name '*.css' -not -wholename "./timeplot/*" -not -wholename "./timeline/*" -not -wholename "./ajax/*" -not -wholename "./users/*" | xargs -n1 php svn-assets/cssurlrewrite.php
