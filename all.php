@@ -3,6 +3,16 @@ require_once(dirname(__FILE__).'/global.php');
 require_once(dirname(__FILE__).'/users/users.php');
 require_once(dirname(__FILE__).'/paginator.class.php');
 
+$searchstring = null;
+if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
+	$searchstring = "urls.url LIKE '%".mysql_real_escape_string(trim($_GET['search']))."%'";
+
+	$current_user = User::get();
+	if (!is_null($current_user)) {
+		$current_user->recordActivity(SHOWSLOW_ACTIVITY_URL_SEARCH);
+	}
+}
+
 $TITLE = 'URLs measured';
 $SECTION = 'all';
 require_once(dirname(__FILE__).'/header.php');
@@ -16,11 +26,6 @@ require_once(dirname(__FILE__).'/header.php');
 </style>
 <h1>URLs measured</h1>
 <?php
-$searchstring = null;
-if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
-	$searchstring = "urls.url LIKE '%".mysql_real_escape_string(trim($_GET['search']))."%'";
-}
-
 $current_group = array_key_exists('group', $_GET) ? $_GET['group'] : null;
 
 $subset = null;
