@@ -42,11 +42,19 @@ $xml = new SimpleXMLElement('<data/>');
 while ($row = mysql_fetch_assoc($result)) {
 	$event = $xml->addChild('event');
 	$event->addAttribute('start', date('r', $row['s']));
+	$event->addAttribute('latestStart', date('r', $row['s']));
 	$event->addAttribute('title', ($row['type'] ? $row['type'].': ' : '').$row['title']);
-	if ($row['e'])
+
+	$end = $row['e'];
+
+	if (!$row['e'])
 	{
-		$event->addAttribute('end', date('r',$row['e']));
+		$end = $row['s'];
 	}
+
+	$event->addAttribute('end', date('r', $end));
+	$event->addAttribute('earliestEnd', date('r', $end));
+
 	if ($row['link'])
 	{
 		$event->addAttribute('link', $row['link']);
