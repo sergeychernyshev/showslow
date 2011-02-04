@@ -6,7 +6,7 @@ function updateUrlAggregates($url_id, $measurement_id)
 	global $cleanOldYSlowBeaconDetails;
 
 	# updating latest values for the URL
-	$query = sprintf("UPDATE urls SET yslow2_last_id = %d, last_update = now() WHERE id = %d",
+	$query = sprintf("UPDATE urls SET yslow2_last_id = %d, last_update = now(), y_refresh_request = 0 WHERE id = %d",
 		mysql_real_escape_string($measurement_id),
 		mysql_real_escape_string($url_id)
 	);

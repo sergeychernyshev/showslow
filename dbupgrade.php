@@ -12,6 +12,17 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 20 
+ * Allow test requests
+*/
+$versions[20]['up'][]	= "ALTER TABLE  `urls` ADD  `y_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when YSlow score needs refreshing'";
+$versions[20]['up'][]	= "ALTER TABLE  `urls` ADD  `p_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when PageSpeed score needs refreshing'";
+$versions[20]['up'][]	= "ALTER TABLE  `urls` ADD  `dt_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when dynaTrace score needs refreshing'";
+$versions[20]['down'][]	= "ALTER TABLE  `urls` DROP  `dt_refresh_request`";
+$versions[20]['down'][]	= "ALTER TABLE  `urls` DROP  `p_refresh_request`";
+$versions[20]['down'][]	= "ALTER TABLE  `urls` DROP  `y_refresh_request`";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 19
  * Adding har link parameter
 */

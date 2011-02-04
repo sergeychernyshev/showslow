@@ -4,7 +4,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
-	$query = sprintf("UPDATE urls set pagespeed_last_id = %d, last_update = now() WHERE id = %d",
+	$query = sprintf("UPDATE urls set pagespeed_last_id = %d, last_update = now(), p_refresh_request = 0 WHERE id = %d",
 		mysql_real_escape_string($measurement_id),
 		mysql_real_escape_string($url_id)
 	);
