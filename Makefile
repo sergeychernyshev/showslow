@@ -14,7 +14,7 @@ updatedb:
 	php dbupgrade.php
 
 rel:	release
-release: assets
+release: packages
 ifndef v
 	# Must specify version as 'v' param
 	#
@@ -25,6 +25,25 @@ else
 	# Tagging it with release tag
 	#
 	git tag -a REL_${subst .,_,${v}}
+endif
+
+packages:
+ifndef v
+	# Must specify version as 'v' param
+	#
+	#   make rel v=1.1.1
+	#
+else
+	# generate the package
+	git clone . showslow_${v}
+	cd showslow_${v} && ${MAKE} updatecode
+	cd showslow_${v}/users && ${MAKE} updatecode
+	cd showslow_${v} && ${MAKE} assets 
+	cd showslow_${v} && find ./ -name "\.git*" | xargs -n10 rm -r
+
+	tar -c showslow_${v} |gzip > showslow_${v}.tgz
+	zip -r showslow_${v}.zip showslow_${v}
+	rm -rf showslow_${v}
 endif
 
 # No need for this really since we patched Timeplot clone on Github
