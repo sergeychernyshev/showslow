@@ -274,7 +274,7 @@ foreach ($additionalMenuItems as $menu_item) {
 }
 ?>
 <td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring ranking tools</a></td>
-<td><a href="http://code.google.com/p/showslow/downloads/list">Download ShowSlow</a></td>
+<td><a href="https://github.com/sergeychernyshev/showslow/downloads">Download ShowSlow</a></td>
 </tr></table>
 </div>
 <div id="main">
