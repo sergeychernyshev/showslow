@@ -159,15 +159,28 @@ while ($pagetest_row = mysql_fetch_assoc($result)) {
 }
 mysql_free_result($result);
 
-if ($row && !(is_null($row['yslow_timestamp'])
-	&& is_null($row['pagespeed_timestamp'])
-	&& is_null($row['dynatrace_timestamp']))
-	)
+$havemetrics = false;
+if ($row) {
+	foreach (array_keys($all_metrics) as $provider_name) {
+		if ($enabledMetrics[$provider_name]
+			&& !is_null($row[$provider_name.'_timestamp']))
+		{
+			$havemetrics = true;
+			break;
+		}
+	}
+}
+
+if ($havemetrics)
 {
 	?>
 	<table cellpadding="15" cellspacing="5"><tr>
 	<?php
 	foreach ($all_metrics as $provider_name => $provider) {
+		if (!$enabledMetrics[$provider_name]) {
+			continue;
+		}
+
 		$score = $row[$provider_name.'_'.$provider['score_column']];
 		if (!is_null($score)) {
 			$pretty_score = prettyScore($score);
@@ -207,9 +220,7 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 <?php
 }
 
-if ($row && is_null($row['yslow_timestamp'])
-	&& is_null($row['pagespeed_timestamp'])
-	&& is_null($row['dynatrace_timestamp']))
+if (!$havemetrics)
 {
 	?>
 	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
@@ -229,18 +240,27 @@ if ($row && is_null($row['yslow_timestamp'])
 	?><div style="padding: 2em">No data is collected for this URL</div><?php
 }
 
-if ($row && !(is_null($row['yslow_timestamp'])
-	&& is_null($row['pagespeed_timestamp'])
-	&& is_null($row['dynatrace_timestamp']))
-	)
+if ($havemetrics)
 {
 	// Graph
 	?>
 	<script>
-	url = '<?php echo htmlentities($url)?>';
-	ydataversion = '<?php echo urlencode($row['yslow_timestamp'])?>';
-	psdataversion = '<?php echo urlencode($row['pagespeed_timestamp'])?>';
-	dtdataversion = '<?php echo urlencode($row['dynatrace_timestamp'])?>';
+	url = '<?php echo htmlentities($url) ?>';
+	ydataversion = <?php if ($enabledMetrics['yslow']) {
+		?>'<?php echo urlencode($row['yslow_timestamp']) ?>'<?php
+	} else {
+		?>null<?php
+	} ?>;
+	psdataversion = <?php if ($enabledMetrics['pagespeed']) {
+		?>'<?php echo urlencode($row['pagespeed_timestamp']) ?>'<?php
+	} else {
+		?>null<?php
+	} ?>;
+	dtdataversion = <?php if ($enabledMetrics['dynatrace']) {
+		?>'<?php echo urlencode($row['dynatrace_timestamp']) ?>'<?php
+	} else {
+		?>null<?php
+	} ?>;
 	eventversion = '<?php echo urlencode($eventupdate)?>';
 	</script>
 
@@ -248,7 +268,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	<div id="my-timeplot" style="height: 250px;"></div>
 	<div style="font-size: 0.9em">
 	<?php
-	if (!is_null($row['yslow_timestamp']))
+	if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp']))
 	{
 	?>
 	<span style="color: #D0A825">Page Size</span> (in bytes);
@@ -258,7 +278,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	<?php
 	}
 
-	if (!is_null($row['pagespeed_timestamp']))
+	if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp']))
 	{
 	?>
 	<span style="color: #6F4428">Page Speed Grade</span> (0-100);
@@ -266,7 +286,7 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	<?php
 	}
 
-	if (!is_null($row['dynatrace_timestamp']))
+	if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp']))
 	{
 	?>
 	<span style="color: #AB0617">dynaTrace rank</span> (0-100);
@@ -304,6 +324,9 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	foreach ($all_metrics as $provider_name => $provider) {
 		if (!is_null($row[$provider_name.'_timestamp']))
 		{
+			if (!$enabledMetrics[$provider_name]) {
+				continue;
+			}
 		?>
 			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><?php echo $provider['title']?> breakdown</h2>
 			<table>
@@ -355,21 +378,21 @@ if ($row && !(is_null($row['yslow_timestamp'])
 	}
 }
 
-if (!is_null($row['yslow_timestamp'])) {
+if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
 	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
 	<div id="measurementstable"></div>
 	<?php 
 }
 
-if (!is_null($row['pagespeed_timestamp'])) {
+if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
 	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
 	<div id="ps_measurementstable"></div>
 <?php 
 }
 
-if (!is_null($row['dynatrace_timestamp'])) {
+if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
 	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
 	<div id="dt_measurementstable"></div>

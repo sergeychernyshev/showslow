@@ -159,13 +159,13 @@ $rows = array();
 while ($row = mysql_fetch_assoc($result)) {
 	$rows[] = $row;
 
-	if (!$yslow && !is_null($row['o'])) {
+	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
 		$yslow = true;
 	}
-	if (!$pagespeed && !is_null($row['ps_o'])) {
+	if ($enabledMetrics['pagespeed'] && !$pagespeed && !is_null($row['ps_o'])) {
 		$pagespeed = true;
 	}
-	if (!$dynatrace && !is_null($row['dt_o'])) {
+	if ($enabledMetrics['dynatrace'] && !$dynatrace && !is_null($row['dt_o'])) {
 		$dynatrace = true;
 	}
 }

@@ -79,13 +79,13 @@ if (count($urls) > 0) {
 		);
 
 		// if at least one value exists for ranker, enable it
-		if (!is_null($row['y_version'])) {
+		if ($enabledMetrics['yslow'] && !is_null($row['y_version'])) {
 			$counters['yslow'] += 1;
 		} 
-		if (!is_null($row['p_version'])) {
+		if ($enabledMetrics['pagespeed'] && !is_null($row['p_version'])) {
 			$counters['pagespeed'] += 1;
 		} 
-		if (!is_null($row['d_version'])) {
+		if ($enabledMetrics['dynatrace'] && !is_null($row['d_version'])) {
 			$counters['dynatrace'] += 1;
 		} 
 	}

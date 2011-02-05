@@ -38,6 +38,13 @@ $ignoreURLs = array(
 	'http://172.31.'
 );
 
+# Enabling display and collection of data
+$enabledMetrics = array(
+	'yslow'		=> true,
+	'pagespeed'	=> true,
+	'dynatrace'	=> true
+);
+
 # If set to true, drop all query strings. If array, then match prefixes.
 $dropQueryStrings = false;
 
