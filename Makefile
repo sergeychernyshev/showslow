@@ -67,14 +67,12 @@ timeplot-patch:
 clean: noassets
 
 assets:
-
-# TODO write a tool to generate hash-based asset_versions and not VCS-based.
-# TODO update .htaccess to support letters in hashes
-#	if [ -d .svn ]; then svn status --verbose --xml |php svn-assets/svnassets.php > asset_versions.php; fi
+	# generating crc32 hashes of all assets that should be versioned
+	find ./ -type f | grep -v -E '^./(timeline|timeplot|ajax)/' | grep -E '\.(png|jpg|css|js|gif|xml|txt|ico|svn|swf|flv)$$' |xargs -n10 crc32 | sed -e 's/\t\.\//\t/' > asset_versions.tsv
 
 # uncomment next line when we'll have any CSS files to process
 #find ./ -name '*.css' -not -wholename "./timeplot/*" -not -wholename "./timeline/*" -not -wholename "./ajax/*" -not -wholename "./users/*" | xargs -n1 php svn-assets/cssurlrewrite.php
 
 noassets:
-	cp svn-assets/no-assets.php asset_versions.php
+	rm asset_versions.tsv
 	find ./ -name '*_deploy.css' | xargs -n10 rm -f

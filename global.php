@@ -124,8 +124,8 @@ $googleFriendConnectSiteID = null;
 # Smoothing distance (averaging window will be from x-distance to x+distance)
 $smoothDistance = 5;
 
-require_once(dirname(__FILE__).'/asset_versions.php');
 require_once(dirname(__FILE__).'/svn-assets/asset_functions.php');
+loadAssetVersionsTSV(dirname(__FILE__).'/asset_versions.tsv');
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
 $ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">Page Speed</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
