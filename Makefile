@@ -1,4 +1,13 @@
-all:	updatecode updateusers assets updatedb 
+all:	checkconfig updatecode updateusers assets updatedb 
+
+checkconfig:
+ifeq "$(wildcard config.php)" ""
+	@echo =
+	@echo =	You must create config.php file first
+	@echo =	Start by copying config.sample.php
+	@echo =
+	@exit 1
+endif
 
 updatecode:
 ifneq "$(wildcard .git )" ""
