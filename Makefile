@@ -34,6 +34,7 @@ else
 	# Tagging it with release tag
 	#
 	git tag -a REL_${subst .,_,${v}}
+	git push --tags
 endif
 
 packages:
