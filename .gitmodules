@@ -16,6 +16,3 @@
 [submodule "dbupgrade"]
 	path = dbupgrade
 	url = git://github.com/sergeychernyshev/DBUpgrade.git
-[submodule "SVN-Assets"]
-	path = SVN-Assets
-	url = git://github.com/sergeychernyshev/SVN-Assets.git
