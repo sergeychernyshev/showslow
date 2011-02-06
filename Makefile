@@ -23,7 +23,9 @@ updatedb:
 	php dbupgrade.php
 
 rel:	release
-release: packages
+release: releasetag packages
+
+releasetag:
 ifndef v
 	# Must specify version as 'v' param
 	#
@@ -46,6 +48,7 @@ ifndef v
 else
 	# generate the package
 	git clone . showslow_${v}
+	cd showslow_${v} && git checkout REL_${subst .,_,${v}}
 	cd showslow_${v} && ${MAKE} updatecode
 	cd showslow_${v}/users && ${MAKE} updatecode
 	cd showslow_${v} && ${MAKE} assets 
