@@ -54,7 +54,7 @@ else
 	cd showslow_${v} && ${MAKE} assets 
 	cd showslow_${v} && find ./ -name "\.git*" | xargs -n10 rm -r
 
-	tar -c showslow_${v} |gzip > showslow_${v}.tgz
+	tar -c showslow_${v} |bzip2 > showslow_${v}.tar.bz2
 	zip -r showslow_${v}.zip showslow_${v}
 	rm -rf showslow_${v}
 endif
