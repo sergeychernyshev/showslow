@@ -23,7 +23,7 @@ updatedb:
 	php dbupgrade.php
 
 rel:	release
-release: releasetag packages
+release: assets releasetag packages
 
 releasetag:
 ifndef v
@@ -32,6 +32,9 @@ ifndef v
 	#   make rel v=1.1.1
 	#
 else
+	# first we need to commit the latest asset fingerprints into the repository
+	git commit asset_versions.tsv -m "Checking in asset fingerprints for v${v}"
+
 	#
 	# Tagging it with release tag
 	#
