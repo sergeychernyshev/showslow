@@ -32,8 +32,8 @@ ifndef v
 	#   make rel v=1.1.1
 	#
 else
-# first if asset fingerprints were changed, we need to commit them into the repository
-ifneq "$(git ls-files -m asset_versions.tsv)" ""
+ifneq "$(shell git ls-files -m asset_versions.tsv)" ""
+	# first if asset fingerprints were changed, we need to commit them into the repository
 	git commit asset_versions.tsv -m "Checking in asset fingerprints for v${v}"
 endif
 
