@@ -32,8 +32,10 @@ ifndef v
 	#   make rel v=1.1.1
 	#
 else
-	# first we need to commit the latest asset fingerprints into the repository
+# first if asset fingerprints were changed, we need to commit them into the repository
+ifneq "$(git ls-files -m asset_versions.tsv)" ""
 	git commit asset_versions.tsv -m "Checking in asset fingerprints for v${v}"
+endif
 
 	#
 	# Tagging it with release tag

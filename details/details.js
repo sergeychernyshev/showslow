@@ -3,10 +3,10 @@
 var timeplot;
 
 YAHOO.util.Event.onDOMReady(function() { 
-	var eventSource2 = new Timeplot.DefaultEventSource(); // YSlow2 measurements
-	var pagespeed = new Timeplot.DefaultEventSource(); // Page Speed measurements
-	var dynatrace = new Timeplot.DefaultEventSource(); // dynaTrace  measurements
-	var showslowevents = new Timeplot.DefaultEventSource(); // ShowSlow Events
+	var eventSource2 = new Timeplot.DefaultEventSource();	// YSlow2 measurements
+	var pagespeed = new Timeplot.DefaultEventSource();	// Page Speed measurements
+	var dynatrace = new Timeplot.DefaultEventSource();	// dynaTrace  measurements
+	var showslowevents = new Timeplot.DefaultEventSource();	// ShowSlow Events
 
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
 		gridColor: "#000000",
