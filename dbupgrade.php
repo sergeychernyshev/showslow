@@ -294,7 +294,7 @@ $versions[6]['up'][] = "CREATE TABLE `u_users` (
   `regtime` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Time of registration',
   `name` text NOT NULL,
   `username` varchar(25) default NULL,
-  `email` varchar(320) default NULL,
+  `email` varchar(255) default NULL,
   `pass` varchar(40) NOT NULL COMMENT 'Password digest',
   `salt` varchar(13) NOT NULL COMMENT 'Salt',
   `temppass` varchar(13) default NULL COMMENT 'Temporary password used for password recovery',
