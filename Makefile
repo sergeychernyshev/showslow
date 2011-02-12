@@ -1,4 +1,4 @@
-all:	checkconfig updatecode updateusers assets updatedb 
+all:	checkconfig updatecode assets updatedb updateusers 
 
 checkconfig:
 ifeq "$(wildcard config.php)" ""
