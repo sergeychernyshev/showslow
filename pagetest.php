@@ -14,7 +14,7 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_REQUEST))
 		$location = $_REQUEST['location'];
 		$runtest.='&location='.$location;
 	} else {
-		header('Location: '.$showslow_base);
+		header('Location: '.$showslow_base.'#no-pagetest-location');
 		exit;
 	}
 
@@ -33,12 +33,12 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_REQUEST))
 	{
 		// location doesn't exist
 		error_log("PageTest Location doesn't exist: $location");
-		header('Location: '.$showslow_base);
+		header('Location: '.$showslow_base.'#pagetest-location-doesn-exist');
 		exit;
 	} else if ($webPageTestLocationsById[$location]['tests'] > 50) {
 		// location is overloaded
 		error_log("PageTest Location is overloaded: $location");
-		header('Location: '.$showslow_base);
+		header('Location: '.$showslow_base.'#pagetest-location-overloaded');
 		exit;
 	}
 
