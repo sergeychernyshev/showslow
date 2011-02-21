@@ -22,7 +22,7 @@ $versions[21]['up'][] = "CREATE TABLE `dommonster` (
   `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement time',
   `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID',
   elements bigint(20) unsigned NOT NULL COMMENT 'number of elements [number]',
-  nodecount bigint(20) unsigned NOT NULL COMMENT 'number of DOM modes [number]',
+  nodecount bigint(20) unsigned NOT NULL COMMENT 'number of DOM nodes [number]',
   textnodes bigint(20) unsigned NOT NULL COMMENT 'number of Text nodes [number]',
   textnodessize bigint(20) unsigned NOT NULL COMMENT 'size of Text nodes [bytes]',
   contentpercent decimal(5,2) unsigned NOT NULL COMMENT 'content percentage [percentage]',
