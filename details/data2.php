@@ -9,6 +9,8 @@
 #	provider	provider name to output data for (see $metrics array for values)
 #	smooth		smooth values (usually used for display on the graph)
 #	ver		if specified (making URL unique), aggressive caching headers are used
+#	start		start date in the range (optional)
+#	end		end date in the range (defaults to now)
 #
 require_once(dirname(dirname(__FILE__)).'/global.php');
 
@@ -27,7 +29,7 @@ if (!array_key_exists('url', $_GET) || filter_var($_GET['url'], FILTER_VALIDATE_
 	exit;
 }
 
-$query = sprintf("SELECT id, UNIX_TIMESTAMP(last_update) AS lu FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
+$query = sprintf("SELECT id, url, UNIX_TIMESTAMP(last_update) AS lu FROM urls WHERE urls.url = '%s'", mysql_real_escape_string($_GET['url']));
 $result = mysql_query($query);
 
 if (!$result) {
@@ -36,6 +38,7 @@ if (!$result) {
 
 $row = mysql_fetch_assoc($result);
 $urlid = $row['id'];
+$url = $row['url'];
 $lastupdate = $row['lu'];
 mysql_free_result($result);
 
@@ -73,6 +76,20 @@ foreach ($provider['metrics'] as $section_name => $section) {
 $query .= "\nFROM ".$provider['table'];
 
 $query .= "\nWHERE ".$provider['table'].".url_id = ".mysql_real_escape_string($urlid);
+
+if (array_key_exists('start', $_GET)) {
+	$start = strtotime($_GET['start']);
+	if ($start !== FALSE && $start != -1) {
+		$query .= "\nAND timestamp >= FROM_UNIXTIME(".mysql_real_escape_string($start).")";
+	}
+}
+
+if (array_key_exists('end', $_GET)) {
+	$end = strtotime($_GET['end']);
+	if ($start !== FALSE && $start != -1) {
+		$query .= "\nAND timestamp <= FROM_UNIXTIME(".mysql_real_escape_string($end).")";
+	}
+}
 
 #echo $query; exit;
 
