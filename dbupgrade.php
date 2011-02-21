@@ -12,6 +12,30 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 21
+ * Added DOM Monstermetrics
+*/
+$versions[21]['up'][] = "ALTER TABLE urls ADD dommonster_last_id BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Last measurement ID for DOM Monster beacon'";
+$versions[21]['up'][] = "CREATE TABLE `dommonster` (
+  `id` bigint(20) unsigned NOT NULL auto_increment COMMENT 'Measurement ID',
+  `version` varchar(255) default NULL COMMENT 'Version of DOM Monster bookmarklet',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Measurement time',
+  `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID',
+  elements bigint(20) unsigned NOT NULL COMMENT 'number of elements [number]',
+  nodecount bigint(20) unsigned NOT NULL COMMENT 'number of DOM modes [number]',
+  textnodes bigint(20) unsigned NOT NULL COMMENT 'number of Text nodes [number]',
+  textnodessize bigint(20) unsigned NOT NULL COMMENT 'size of Text nodes [bytes]',
+  contentpercent decimal(5,2) unsigned NOT NULL COMMENT 'content percentage [percentage]',
+  average decimal(10,1) unsigned NOT NULL COMMENT 'average nesting depth [number]',
+  domsize bigint(20) unsigned NOT NULL COMMENT 'serialized DOM size [bytes]',
+  bodycount bigint(20) unsigned default NULL COMMENT 'DOM tree serialization time [ms]',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM";
+
+$versions[21]['down'][] = "ALTER TABLE urls DROP dommonster_last_id";
+$versions[21]['down'][] = "DROP TABLE `dommonster`;";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 20 
  * Allow test requests
 */

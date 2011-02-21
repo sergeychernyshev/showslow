@@ -16,3 +16,6 @@
 [submodule "dbupgrade"]
 	path = dbupgrade
 	url = git://github.com/sergeychernyshev/DBUpgrade.git
+[submodule "beacon/dommonster/dom-monster"]
+	path = beacon/dommonster/dom-monster
+	url = git://github.com/sergeychernyshev/dom-monster.git
