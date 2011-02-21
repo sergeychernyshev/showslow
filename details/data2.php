@@ -141,7 +141,8 @@ if ($format == 'csv') {
 	echo '# Measurement time';
 	foreach ($provider['metrics'] as $section_name => $section) {
 		foreach ($section as $metric) {
-			echo ', '.$metric[0];
+			$units = $metric_types[$metric[2]]['legend'];
+			echo ', '.$metric[0].($units !== '' ? ' ('.$units.')' : '');
 		}
 	}
 	echo "\n";
