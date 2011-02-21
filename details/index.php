@@ -103,6 +103,29 @@ echo 'var metrics = '.json_encode($metrics);
 .value {
 	font-weight: bold;
 }
+
+.levelbox-low {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #80E41F;
+}
+.levelbox-mid {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #E8871D;
+}
+.levelbox-high {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #A02523;
+}
+
 </style>
 <h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h1>
 <?php if (!is_null($addThisProfile)) {?>
@@ -177,7 +200,7 @@ if ($havemetrics)
 	<table cellpadding="15" cellspacing="5"><tr>
 	<?php
 	foreach ($all_metrics as $provider_name => $provider) {
-		if (!$enabledMetrics[$provider_name]) {
+		if (!$enabledMetrics[$provider_name] || !array_key_exists('score_column', $provider)) {
 			continue;
 		}
 
@@ -239,7 +262,6 @@ if (!$havemetrics)
 } else if (!$row) {
 	?><div style="padding: 2em">No data is collected for this URL</div><?php
 }
-
 if ($havemetrics)
 {
 	// Graph
@@ -328,7 +350,7 @@ if ($havemetrics)
 				continue;
 			}
 		?>
-			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><?php echo $provider['title']?> breakdown</h2>
+			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><a href="<?php echo $provider['url']; ?>" target="_blank"><?php echo $provider['title']?></a> metrics</h2>
 			<table>
 			<?php
 			foreach ($provider['metrics'] as $section_name => $metrics)
@@ -351,15 +373,45 @@ if ($havemetrics)
 					if (is_null($value)) {
 						?><td colspan="3" class="na">n/a</td><?php	
 					} else {
-						if ($metric[2] == PERCENTS){
+						if ($metric[2] == PERCENT_GRADE){
 							$pretty_score = prettyScore($value);
 						?>
 							<td class="value"><?php echo $pretty_score?> (<i><?php echo htmlentities($value)?></i>%)</td>
 							<td><span id="details_<?php echo $provider_name.'_'.$metric[1] ?>" class="details"></span></td>
-							<td><div class="gbox" title="Current <?php echo $provider['score_name']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td>
-						<?php
+							<td><div class="gbox" title="Current <?php echo $provider['score_name']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td><?php
 						} else {
-							?><td colspan="3" class="value"><?php echo $value.$metric_types[$metric[2]]['units'] ?></td><?php	
+							?><td colspan="3" class="value"><?php
+
+							if (!array_key_exists(4, $metric)) {
+							} else if ($metric[4] == 'levels') {
+								?><div class="levelbox-<?php
+								if ($value < $metric[5][0]) {
+									echo 'low';
+								} else if ($value < $metric[5][1]) {
+									echo 'mid';
+								} else {
+									echo 'high';
+								}
+								?>"></div><?php
+							} else if ($metric[4] == 'reverselevels') {
+								?><div class="levelbox-<?php
+								if ($value < $metric[5][0]) {
+									echo 'high';
+								} else if ($value < $metric[5][1]) {
+									echo 'mid';
+								} else {
+									echo 'low';
+								}
+								?>"></div><?php
+							}
+
+							if ($metric[2] == BYTES) {
+								?><span title="<?php echo $value ?> bytes"><?php echo floor($value/1000) ?>KB</span><?php	
+							} else {
+								echo $value.$metric_types[$metric[2]]['units'];
+							}
+
+							?></td><?php
 						}
 					}
 
