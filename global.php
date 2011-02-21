@@ -178,7 +178,7 @@ define('PERCENTS', 4);
 # if no label needed like for number, just don't insert it here
 $metric_types = array(
 	BYTES =>		array( 'legend'	=> 'in bytes',	'units'	=> ' bytes'),
-	MS =>			array( 'legend'	=> 'im ms',	'units'	=> ' ms'),
+	MS =>			array( 'legend'	=> 'in ms',	'units'	=> ' ms'),
 	PERCENT_GRADE =>	array( 'legend'	=> '0-100',	'units'	=> '%'),
 	NUMBER =>		array( 'legend'	=> '',		'units'	=> ''),
 	PERCENTS =>		array( 'legend'	=> '0-100',	'units'	=> '%')
