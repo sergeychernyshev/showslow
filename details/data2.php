@@ -204,9 +204,16 @@ if ($format == 'csv') {
 		echo "\n";
 	}
 } else if ($format == 'json') {
-	# JS timestamp (used by flot) - milliseconds since January 1, 1970 00:00:00 UTC
+	# flat array with no keys - order is the same as specified in metrics parameter
+	$jsondata = array();
+
 	for ($i = 0; $i < count($rows); $i++) {
-		$rows[$i]['timestamp'] = $rows[$i]['timestamp'] * 1000;
+		# JS timestamp (used by flot) - milliseconds since January 1, 1970 00:00:00 UTC
+		$jsondata[$i][] = $rows[$i]['timestamp'] * 1000;
+
+		for ($j = 0; $j < count($metrics); $j++) {
+			$jsondata[$i][] = $rows[$i][$metrics[$j][1]];
+		}
 	}
-	echo json_encode($rows);
+	echo json_encode($jsondata);
 }
