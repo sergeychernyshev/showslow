@@ -1,12 +1,14 @@
 <?php
 #
 # This script extracts data from Show Slow for export or for display on the graph
+# It returns data for only one provider at a time so you might need to make multiple requests
 #
 # Perameters:
 #	url		URL of the page to get data for
 #	download	if present, will force browser to download the result instead of displaying inline
 #	format		"csv" or "json" output format
-#	provider	provider name to output data for (see $metrics array for values)
+#	provider	provider name to output data for (see $all_metrics array's keys for valid values)
+#	metrics		a comma-separated list of metrics (defaults to all metrics by provider)
 #	smooth		smooth values (usually used for display on the graph)
 #	ver		if specified (making URL unique), aggressive caching headers are used
 #	start		start date in the range (optional)
@@ -63,14 +65,59 @@ if (!$enabledMetrics[$provider_name] || is_null($provider)) {
 	exit;
 }
 
+# contains all metrics (not only names) to return
+$metrics = array();
+
+if (array_key_exists('metrics', $_GET)) {
+	$metrics_to_show = split(',', $_GET['metrics']);
+
+	$provider_has_metrics_to_show = array();
+
+	# lets go through all metrics that we know for this provider
+	foreach ($provider['metrics'] as $section_name => $section) {
+		foreach ($section as $metric) {
+			$index = array_search($metric[1], $metrics_to_show);
+
+			# if metric was requested, lets add it to $metrics array
+			if (is_array($metrics_to_show) && $index !== FALSE) {
+				$metrics[$index] = $metric;
+				$provider_has_metrics_to_show[] = $metric[1];
+			}
+		}
+	}
+
+	# if we have more metrics requested, then we have, let's errror out
+	$leftover = array_diff($metrics_to_show, $provider_has_metrics_to_show);
+	if (count($leftover) > 0) {
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+	<head>
+	<title>Bad Request: metrics are not supported</title>
+	</head>
+	<body>
+	<h1>Bad Request: metrics are not supported</h1>
+	<p>Metric(s) <b><?php echo implode(', ', $leftover) ?></b> not stored for <b><?php echo $provider['title']?></b></p>
+	</body></html>
+	<?php
+		exit;
+	}
+} else {
+	foreach (array_values($provider['metrics']) as $section) {
+		foreach ($section as $metric) {
+			$metrics[] = $metric;
+		}
+	}
+}
+
 # a list of result columns to smooth if requested
 $to_smooth = array();
 
-foreach ($provider['metrics'] as $section_name => $section) {
-	foreach ($section as $metric) {
-		$to_smooth[] = $metric[1];
-		$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$metric[1];
-	}
+for ($i = 0; $i < count($metrics); $i++) {
+	$metric = $metrics[$i];
+
+	$to_smooth[] = $metric[1];
+	$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$metric[1];
 }
 
 $query .= "\nFROM ".$provider['table'];
@@ -139,21 +186,19 @@ header('Content-disposition: '.(array_key_exists('download', $_GET) ? 'attachmen
 
 if ($format == 'csv') {
 	echo '# Measurement time';
-	foreach ($provider['metrics'] as $section_name => $section) {
-		foreach ($section as $metric) {
-			$units = $metric_types[$metric[2]]['legend'];
-			echo ', '.$metric[0].($units !== '' ? ' ('.$units.')' : '');
-		}
+	for ($i = 0; $i < count($metrics); $i++) {
+		$metric = $metrics[$i];
+		$units = $metric_types[$metric[2]]['legend'];
+		echo ', ['.$metric[1].'] '.$metric[0].($units !== '' ? ' ('.$units.')' : '');
 	}
 	echo "\n";
 
 	foreach ($rows as $row) {
 		echo date('c', $row['timestamp']);
 
-		foreach ($provider['metrics'] as $section_name => $section) {
-			foreach ($section as $metric) {
-				echo ','.$row[$metric[1]];
-			}
+		for ($i = 0; $i < count($metrics); $i++) {
+			$metric = $metrics[$i];
+			echo ','.$row[$metric[1]];
 		}
 
 		echo "\n";
