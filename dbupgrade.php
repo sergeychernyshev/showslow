@@ -12,6 +12,18 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 22
+ * Adding explicit default values for refresher bits
+*/
+$versions[22]['up'][]	= "ALTER TABLE  `urls` CHANGE  `y_refresh_request`  `y_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT  'Set it to one when YSlow score needs refreshing'";
+$versions[22]['up'][]	= "ALTER TABLE  `urls` CHANGE  `p_refresh_request`  `p_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT  'Set it to one when YSlow score needs refreshing'";
+$versions[22]['up'][]	= "ALTER TABLE  `urls` CHANGE  `dt_refresh_request`  `dt_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT  'Set it to one when YSlow score needs refreshing'";
+
+$versions[22]['down'][]	= "ALTER TABLE  `urls` CHANGE  `y_refresh_request`  `y_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when YSlow score needs refreshing'";
+$versions[22]['down'][]	= "ALTER TABLE  `urls` CHANGE  `p_refresh_request`  `p_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when YSlow score needs refreshing'";
+$versions[22]['down'][]	= "ALTER TABLE  `urls` CHANGE  `dt_refresh_request`  `dt_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when YSlow score needs refreshing'";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 21
  * Added DOM Monstermetrics
 */
