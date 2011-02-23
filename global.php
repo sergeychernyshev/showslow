@@ -162,6 +162,9 @@ $customLists = array();
 # additional menu items (url, title are keys for each item) 
 $additionalMenuItems = array();
 
+# a list of admin user IDs for authentication into UserBase administration interface
+$instanceAdmins = array();
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 
