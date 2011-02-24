@@ -21,6 +21,7 @@ UserConfig::$useAccounts = false;
 UserConfig::$SESSION_SECRET = $sessionSecret;
 
 UserConfig::$admins = $instanceAdmins;
+UserConfig::$dont_display_activity_for = $instanceAdmins;
 
 UserConfig::$header = dirname(__FILE__).'/header.php';
 UserConfig::$footer = dirname(__FILE__).'/footer.php';
