@@ -142,7 +142,7 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 <title>Bad Request: Page Speed beacon</title>
 </head>
 <body>
-<h1>Bad Request: Page Speed beacon</h1>
+<h1>Page Speed beacon</h1>
 <p>This is <a href="http://code.google.com/speed/page-speed/">Page Speed</a> beacon entry point.</p>
 
 <h1>Configure your Page Speed</h1>
@@ -154,6 +154,9 @@ Set these two Firefox parameters on <b>about:config</b> page:</p>
 <li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
 </ul>
+
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 
 </body></html>
 <?php

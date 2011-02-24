@@ -78,7 +78,7 @@ i {
 </style>
 </head>
 <body>
-<h1>Bad Request: Event beacon</h1>
+<h1>Event beacon</h1>
 <p>This is an event beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to this URL:</p>
 <b><pre><?php echo $showslow_base?>beacon/events/?type=<i>sometype</i>&amp;url_prefix=<i>url_prefix</i>&amp;title=<i>some+title</i>&amp;start=<i><?php echo urlencode(date("Y-m-d"))?></i>&amp;end=<i><?php echo urlencode(date("Y-m-d"))?></i>&amp;resource_url=<i>link+to+page</i></pre></b>
@@ -97,6 +97,9 @@ or use form below to manually enter events.
 
 </table>
 </form>
+
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php
 	exit;

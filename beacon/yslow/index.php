@@ -203,7 +203,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 <title>Bad Request: YSlow beacon</title>
 </head>
 <body>
-<h1>Bad Request: YSlow beacon</h1>
+<h1>YSlow beacon</h1>
 <p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
 
 <h1>Configure your YSlow</h1>
@@ -219,6 +219,8 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 <li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 </ul>
 
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php
 	exit;

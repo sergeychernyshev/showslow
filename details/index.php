@@ -127,7 +127,14 @@ echo 'var metrics = '.json_encode($metrics);
 }
 
 </style>
-<h1 style="margin-bottom: 0">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h1>
+<h1 style="margin-bottom: 0;">
+<div style="float: left; margin-right: 0.5em">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
+
+<div style="font-size: xx-small; text-align: left">public instance sponsor<br/>
+<a href="http://www.blaze.io/"><img src="http://cdn.webpagetest.org/images/sponsors/blaze.png" border="0" width="120" height="21" title="120x21px"/></a></div>
+
+<div style="clear: both"></div>
+</h1>
 <?php if (!is_null($addThisProfile)) {?>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
@@ -262,6 +269,16 @@ if (!$havemetrics)
 } else if (!$row) {
 	?><div style="padding: 2em">No data is collected for this URL</div><?php
 }
+
+?>
+<a name="blaze"/><h2>Run a test using <a href="http://www.blaze.io/" target="_blank">Blaze</a></h2>
+<form action="http://www.blaze.io/" method="GET" target="_blank">
+Get automated optimization report from Blaze
+<input type="submit" style="font-weight: bold" value="get report &gt;&gt;"/>
+<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
+</form>
+<?php
+
 if ($havemetrics)
 {
 	// Graph
@@ -351,6 +368,9 @@ if ($havemetrics)
 			}
 		?>
 			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><a href="<?php echo $provider['url']; ?>" target="_blank"><?php echo $provider['title']?></a> metrics</h2>
+			<?php if (array_key_exists('description', $provider)) {
+				?><p><?php echo $provider['description'] ?></p><?php
+			}?>
 			<table>
 			<?php
 			foreach ($provider['metrics'] as $section_name => $metrics)

@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] != 'POST')
 {
 	?><html>
 <head>
-<title>HAR beacon</title>
+<title>Bad Request: HAR beacon</title>
 </head>
 <body>
 <h1>HAR beacon</h1>
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] != 'POST')
 
 <p>Beacon URL: <b style="color: blue"><?php echo $showslow_base?>beacon/har/</b></p>
 
-<h2>You can use on of these HAR providers</h2>
+<h2>You can use one of these HAR providers</h2>
 <ul>
 <li><a href="http://getfirebug.com/releases/extensions.html#netexport">NetExport</a> extension for Firebug</li>
 </ul>
@@ -76,6 +76,8 @@ if (!$enableHARBeacon) {
 </table>
 </form>
 
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php 
 	exit;

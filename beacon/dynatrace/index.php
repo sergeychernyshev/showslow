@@ -92,14 +92,16 @@ if (!is_null($post) && array_key_exists('url', $post)
 <title>Bad Request: dynaTrace AJAX Edition beacon</title>
 </head>
 <body>
-<h1>Bad Request: dynaTrace AJAX Edition beacon</h1>
+<h1>dynaTrace AJAX Edition beacon</h1>
 <p>This is <a href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> beacon entry point.</p>
 
 <h1>Configure dynaTrace AJAX Edition</h1>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your dynaTrace AJAX Edition data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
-<p><b>TODO - insert real documentation</b></p>
+<p>You can find dynaTrace configuration documentation <a href="http://www.showslow.org/Configuring_dynaTrace_AJAX_Edition">on our wiki</a>.</p>
 
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php
 	exit;

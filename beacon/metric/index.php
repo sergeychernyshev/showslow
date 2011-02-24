@@ -42,7 +42,7 @@ i {
 </style>
 </head>
 <body>
-<h1>Bad Request: Custom Metric beacon</h1>
+<h1>Custom Metric beacon</h1>
 <p>This is custom metric beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to one of these URLs (for specific metric):</p>
 <b><pre>
@@ -83,6 +83,9 @@ foreach ($metrics as $name => $metric) {
 
 </table>
 </form>
+
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php
 	exit;

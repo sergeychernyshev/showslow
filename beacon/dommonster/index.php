@@ -66,6 +66,15 @@ if (array_key_exists('url', $_POST) && array_key_exists('stats', $_POST))
 	}
 
 	updateUrlAggregates($url_id, mysql_insert_id());
+
+	$url = validateURL($_POST['url']);
+?><html><head><script>
+	if (confirm('Sucess: data is saved to Show Slow (<?php echo $showslow_base ?>)\nWould you like to open the resuls page?')) {
+		top.location = '<?php echo $showslow_base ?>details/?url=' + encodeURIComponent('<?php echo $url?>');
+	}
+</script></head><body></body></html>
+<?php
+	exit;
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
@@ -74,7 +83,8 @@ if (array_key_exists('url', $_POST) && array_key_exists('stats', $_POST))
 <title>Bad Request: DOM Monster beacon</title>
 <style>
 .bookmarklet {
-	padding: 4px;
+	padding: 3px 4px;
+	margin: 0 3px;
 	background: #dfdfdf;
 	border: 1px solid gray;
 	color: black;
@@ -85,19 +95,17 @@ if (array_key_exists('url', $_POST) && array_key_exists('stats', $_POST))
 </style>
 </head>
 <body>
-<h1>Bad Request: DOM Monster beacon</h1>
+<h1>DOM Monster beacon</h1>
 <p>This is <a href="http://mir.aculo.us/dom-monster/">DOM Monster</a> beacon entry point.</p>
 
 <h1>Sending data to beacon</h1>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your DOM Monster data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
-<p>To send data to this instance, drag <a class="bookmarklet" href="javascript:(function(){SHOWSLOWINSTANCE%20='<?php echo $showslow_base?>';var%20script=document.createElement('script');script.src='<?php echo assetURL('beacon/dommonster/dom-monster/src/dommonster.js')?>?'+Math.floor((+new Date));document.body.appendChild(script);})()">DOM Monster!</a> to your toolmar and then click "send to Show Slow" button when report is shown.</p>
+<p>To send data to this instance, drag <a class="bookmarklet" href="javascript:(function(){SHOWSLOWINSTANCE%20='<?php echo $showslow_base?>';var%20script=document.createElement('script');script.src='<?php echo assetURL('beacon/dommonster/dom-monster/src/dommonster.js')?>?'+Math.floor((+new Date));document.body.appendChild(script);})()">DOM Monster!</a> bookmarklet to your toolbar and click "send to Show Slow" button when report is shown.</p>
 
-
+<hr/>
+<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 </body></html>
 <?php
 	exit;
 }
-?><html><head><script>
-	alert('Sucess: data is saved to Show Slow');
-</script></head><body></body></html>
