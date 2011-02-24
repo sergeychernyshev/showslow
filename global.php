@@ -318,7 +318,7 @@ $all_metrics = array(
 	),
 	'dommonster' => array(
 		'title' => 'DOM Monster',
-		'description' => '<p>To send data to this instance, drag <a style="padding: 3px 4px; margin: 0 3px; background: #dfdfdf; border: 1px solid gray; color: black; text-decoration: none; font-size: xx-small; font-family: verdana" href="javascript:(function(){SHOWSLOWINSTANCE%20='.$showslow_base.';var%20script=document.createElement(\'script\');script.src='.assetURL('beacon/dommonster/dom-monster/src/dommonster.js').'?\'+Math.floor((+new Date));document.body.appendChild(script);})()">DOM Monster!</a> bookmarklet to your toolbar and click "send to Show Slow" button when report is shown.</p>',
+		'description' => '<p>To send data to this instance, drag <a style="padding: 3px 4px; margin: 0 3px; background: #dfdfdf; border: 1px solid gray; color: black; text-decoration: none; font-size: xx-small; font-family: verdana" href="javascript:(function(){SHOWSLOWINSTANCE%20=\''.$showslow_base.'\';var%20script=document.createElement(\'script\');script.src='.assetURL('beacon/dommonster/dom-monster/src/dommonster.js').'?\'+Math.floor((+new Date));document.body.appendChild(script);})()">DOM Monster!</a> bookmarklet to your toolbar and click "send to Show Slow" button when report is shown.</p>',
 		'url' => 'http://mir.aculo.us/dom-monster/',
 		'table' => 'dommonster',
 		'metrics' => array(
