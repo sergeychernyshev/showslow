@@ -56,6 +56,14 @@ $metrics = array();
 # (for publicly hosted instances)
 $googleAnalyticsProfile = '';
 
+# exclude GA code for matching user agents
+$googleAnalyticsExcludeUserAgents = array(
+	'/YottaaMonitor/i'
+);
+
+# exclude GA code for matching IP addresses
+$googleAnalyticsExcludeIPs = array();
+
 # KissMetrics key
 $kissMetricsKey = '';
 
@@ -882,6 +890,25 @@ function beaconError($message)
 </body></html>
 <?php
 	exit;
+}
+
+// returns true if GA code needs to be excluded
+function excludeGoogleAnalytics() {
+	global $googleAnalyticsExcludeUserAgents, $googleAnalyticsExcludeIPs;
+
+	foreach ($googleAnalyticsExcludeUserAgents as $regex) {
+		if (preg_match($regex, $_SERVER['HTTP_USER_AGENT']) > 0) {
+			return true;
+		}
+	}
+
+	foreach ($googleAnalyticsExcludeIPs as $ip) {
+		if ($ip == $_SERVER["REMOTE_ADDR"]) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /*

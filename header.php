@@ -193,7 +193,7 @@ _loadSuper = window.onload;
 window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
 </script>
 <?php } ?>
-<?php if ($googleAnalyticsProfile) {?>
+<?php if ($googleAnalyticsProfile && !excludeGoogleAnalytics()) {?>
 <script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
