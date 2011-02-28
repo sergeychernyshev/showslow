@@ -611,7 +611,7 @@ function getPageTestLocations() {
 		$loc = array(
 			'id' => $id,
 			'default' => $location->default == 1 ? true : false,
-			'title' => $location->Label.' ('.$location->Browser.')',
+			'title' => $location->Label.' using '.$location->Browser,
 			'tests' => $location->PendingTests->Total
 		);
 
