@@ -92,6 +92,9 @@ $webPageTestFirstRunOnlyByDefault = false;
 $webPageTestExtraParams = '';
 $keepPrivatePageTests = false;
 
+# array of tools to show above the graph
+$customTools = array();
+
 # a list of URLs to compare by default. Set to NULL to not send any URLs
 # $defaultURLsToCompare = array('http://www.google.com/', 'http://www.yahoo.com/', 'http://www.amazon.com/');
 $defaultURLsToCompare = NULL;

@@ -127,7 +127,7 @@ echo 'var metrics = '.json_encode($metrics);
 }
 
 </style>
-<h1 style="margin-bottom: 0;">
+<h1 style="margin: 0.3em 0 0 0;">
 <div style="float: left; margin-right: 0.5em">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
 
 <div style="clear: both"></div>
@@ -201,7 +201,7 @@ if ($row) {
 if ($havemetrics)
 {
 	?>
-	<table cellpadding="15" cellspacing="5"><tr>
+	<table cellpadding="0" cellspacing="5"><tr>
 	<?php
 	foreach ($all_metrics as $provider_name => $provider) {
 		if (!$enabledMetrics[$provider_name] || !array_key_exists('score_column', $provider)) {
@@ -245,6 +245,14 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
 <?php
+}
+
+if (is_array($customTools)) {
+	foreach ($customTools as $name => $title) {
+		?><a name="<?php echo $name ?>"><h2><?php echo $title ?></h2>
+<?php
+		call_user_func('customTool_'.$name, $url);
+	}
 }
 
 if (!$havemetrics)

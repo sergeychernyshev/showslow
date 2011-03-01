@@ -131,6 +131,10 @@ td, th { white-space: nowrap; }
 	height: 15px;
 }
 
+h2 {
+	margin: 0.5em 0 0.3em 0;
+}
+
 <?php for($i=1; $i<=count($colorSteps); $i++) {?>
 .c<?php echo $i; ?> {
 	background: #<?php echo $colorSteps[$i-1]; ?>;
