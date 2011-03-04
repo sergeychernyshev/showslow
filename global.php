@@ -872,7 +872,7 @@ function failWithMessage($message)
 </head>
 <body>
 <h1>500 ShowSlow Error</h1>
-<p>Something went wrong. If it persists, please report it to <a href="http://code.google.com/p/showslow/issues/list">issue tracker</a>.</a>
+<p>Something went wrong. If it persists, please report it to <a href="https://github.com/sergeychernyshev/showslow/issues">issue tracker</a>.</a>
 <p><?php echo $message?></p>
 </body></html>
 <?php
