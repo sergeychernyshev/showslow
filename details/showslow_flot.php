@@ -34,6 +34,14 @@
             margin: 10px auto;
         }
         
+        .reset {
+            text-align: center;
+        }
+        
+        #reset {
+        
+        }
+        
         fieldset {
             width: 960px;
             margin: 15px auto;
@@ -74,7 +82,12 @@
 <body>
     <h1><?php echo $url ?></h1>
     <div id="graph"></div>
-    <div id="overview"></div>
+    <div>
+        <div id="overview"></div>
+        <div class="reset">
+            <button id="reset">Reset Zoom</button>
+        </div>
+    </div>
     <form>
     <fieldset id="yslow">
         <legend>YSlow Metrics</legend>
@@ -393,6 +406,11 @@
                     $this.next().css('color', '');
                 }
             });
+        });
+        
+        // Attach method to reset button
+        $('#reset').click(function () {
+            SS.resetZoomSelection();
         });
         
         // Not necessary but looks nice to have an empty graph present before use

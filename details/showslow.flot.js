@@ -148,7 +148,7 @@ var SS = (function ($) {
             xaxis: {
                 position: 'bottom',
                 mode: 'time',
-                //timeformat: '%m/%d/%y %H:%M:%S',
+                //stimeformat: '%m/%d/%y %H:%M:%S',
                 //minTickSize: [1, 'month'],
                 //tickSize: [1, 'day']
             },
@@ -227,7 +227,6 @@ var SS = (function ($) {
         _graph.setSelection(ranges);
     });
         
-
     function _getMetrics (options, callback) {
         if (typeof callback !== 'function') { callback = false; }
         
@@ -286,6 +285,11 @@ var SS = (function ($) {
         }
     }
 
+
+    function _resetZoomSelection () {
+        _graph = $.plot($('#graph'), data, _graph_options);
+        _overview = $.plot($('#overview'), data, _overview_options);    
+    }
     
     return {    // Publicly accessible methods.
         getMetrics: function (options, callback) {
@@ -294,6 +298,10 @@ var SS = (function ($) {
    
         removeSeries: function (provider, metric) {
             _removeSeries(provider, metric);
+        },
+        
+        resetZoomSelection: function () {
+            _resetZoomSelection();
         }
     }
 })(jQuery);
