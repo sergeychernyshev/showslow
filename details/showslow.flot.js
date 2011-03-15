@@ -243,7 +243,7 @@ var SS = (function ($) {
             $.each(dataset, function (key, val) {
                 data.push(val);
             });
-            $('#legend').empty();
+            //$('#legend').empty();
             _graph = $.plot($('#graph'), data, _graph_options);
         }
     }
