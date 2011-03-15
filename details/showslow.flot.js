@@ -123,8 +123,6 @@ var SS = (function ($) {
             legend: {
                 show: true,
                 position: 'sw',
-                //container: $('#legend'),
-                //noColumns: 10
             },
         
             grid: {
@@ -150,7 +148,7 @@ var SS = (function ($) {
             xaxis: {
                 position: 'bottom',
                 mode: 'time',
-                timeformat: '%b %d %y',
+                //timeformat: '%m/%d/%y %H:%M:%S',
                 //minTickSize: [1, 'month'],
                 //tickSize: [1, 'day']
             },
