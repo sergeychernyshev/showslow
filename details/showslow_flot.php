@@ -28,10 +28,10 @@
             margin: 0 auto;
         }
         
-        #legend {
-            width: 640px;
-            height: 50px;
-            margin: 0 auto;
+        #overview {
+            width: 480px;
+            height: 60px;
+            margin: 10px auto;
         }
         
         fieldset {
@@ -74,8 +74,7 @@
 <body>
     <h1><?php echo $url ?></h1>
     <div id="graph"></div>
-    <div id="miniature"></div>
-    <div id="legend"></div>
+    <div id="overview"></div>
     <form>
     <fieldset id="yslow">
         <legend>YSlow Metrics</legend>
@@ -404,6 +403,8 @@
                 }
             }
         });
+        
+        $.plot('#overview', []);
     </script>
 </body>
 </html>

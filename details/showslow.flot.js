@@ -187,10 +187,49 @@ var SS = (function ($) {
                 }
             ]
         },
+        
+        _overview,
+        _overview_options = {
+            legend: {
+                show: false
+            },
+            series: {
+                lines: {
+                    show: true,
+                    lineWidth: 1
+                },
+                points: {
+                    show: false
+                },
+                shadowSize: 0
+            },
+            xaxis: { ticks: [], mode: 'time' },
+            yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
+            selection: { mode: 'x' }
+        },
+        
         data = [],
         dataset = {};
-
     
+    // Ensure identical colors on both graphs
+    _overview_options.colors = _graph_options.colors;
+
+    // Perform selection on little graph based on big graph selection
+    $("#graph").bind("plotselected", function (event, ranges) {
+        _graph = $.plot($("#graph"), data,
+                      $.extend(true, {}, _graph_options, {
+                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                      }));
+        _overview.setSelection(ranges, true);
+    });
+
+
+    // Perform zooming on big graph based on little graph selection
+    $("#overview").bind("plotselected", function (event, ranges) {
+        _graph.setSelection(ranges);
+    });
+        
+
     function _getMetrics (options, callback) {
         if (typeof callback !== 'function') { callback = false; }
         
@@ -229,7 +268,8 @@ var SS = (function ($) {
                 });
 
                 _graph = $.plot($('#graph'), data, _graph_options);               
-
+                _overview = $.plot($('#overview'), data, _overview_options);
+                
                 if (callback) { callback(results); }
             }
         });      
@@ -243,8 +283,8 @@ var SS = (function ($) {
             $.each(dataset, function (key, val) {
                 data.push(val);
             });
-            //$('#legend').empty();
             _graph = $.plot($('#graph'), data, _graph_options);
+            _overview = $.plot($('#overview'), data, _overview_options);
         }
     }
 
