@@ -207,7 +207,9 @@ var SS = (function ($) {
         },
         
         data = [],
-        dataset = {};
+        dataset = {},
+        
+        previous_point = null;  // Tooltip tracking
     
     // Ensure identical colors on both graphs
     _overview_options.colors = _graph_options.colors;
@@ -226,7 +228,41 @@ var SS = (function ($) {
     $("#overview").bind("plotselected", function (event, ranges) {
         _graph.setSelection(ranges);
     });
+
+    // Track hovering over items to display tooltip
+    $("#graph").bind("plothover", function (event, pos, item) {
+        if (item) {
+            if (previous_point != item.dataIndex) {
+                previous_point = item.dataIndex;
+                
+                $("#tooltip").remove();
+                var date = new Date(item.datapoint[0]).toUTCString(),
+                    value = item.datapoint[1],
+                    content = '';
+                
+                content = '<span>' + date + '</span><br/><br/><span>' + item.series.label + ': ' + value + '</span>';
+                 
+                showTooltip(item.pageX, item.pageY, content);
+            }
+        } else {
+            $("#tooltip").remove();
+            previous_point = null;            
+        }
+    });
         
+    function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+    
     function _getMetrics (options, callback) {
         if (typeof callback !== 'function') { callback = false; }
         
