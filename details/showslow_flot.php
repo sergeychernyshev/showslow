@@ -1,4 +1,6 @@
 <?php
+require_once(dirname(dirname(__FILE__)).'/global.php');
+
     $url = isset($_GET['url']) ? $_GET['url'] : 'http://www.yahoo.com/';
 ?>
 <!DOCTYPE html>
@@ -366,11 +368,11 @@
     <script language="javascript" type="text/javascript" src="../flot/excanvas.min.js"></script>
     <![endif]-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-    <script src="../flot/jquery.flot.js"></script>
-    <script src="../flot/jquery.flot.crosshair.js"></script>
-    <script src="../flot/jquery.flot.selection.js"></script>
-    <script src="../flot/jquery.flot.resize.js"></script>
-    <script src="showslow.flot.js"></script>
+    <script src="<?php echo assetURL('flot/jquery.flot.js') ?>"></script>
+    <script src="<?php echo assetURL('flot/jquery.flot.crosshair.js') ?>"></script>
+    <script src="<?php echo assetURL('flot/jquery.flot.selection.js') ?>"></script>
+    <script src="<?php echo assetURL('flot/jquery.flot.resize.js') ?>"></script>
+    <script src="<?php echo assetURL('details/showslow.flot.js') ?>"></script>
     <script>
         // Event handlers to all <legend> elements
         // to allow click hide/show of metric selections
