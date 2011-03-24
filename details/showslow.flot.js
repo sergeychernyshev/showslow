@@ -113,11 +113,14 @@ var SS = (function ($) {
         _graph,
         _graph_options = {
             series: {
-                lines: { show: true },
-                points: { 
+                lines: { 
                     show: true,
-                    radius: 4.5
-                }
+                    lineWidth: 1 
+                },
+                points: { 
+                    show: false
+                },
+                shadowSize: 1
             },
         
             legend: {
@@ -147,10 +150,7 @@ var SS = (function ($) {
             // Single X-axis for dates
             xaxis: {
                 position: 'bottom',
-                mode: 'time',
-                //stimeformat: '%m/%d/%y %H:%M:%S',
-                //minTickSize: [1, 'month'],
-                //tickSize: [1, 'day']
+                mode: 'time'
             },
         
             // Multiple Y-axes for each datatype
@@ -201,7 +201,7 @@ var SS = (function ($) {
                 },
                 shadowSize: 0
             },
-            xaxis: { ticks: [], mode: 'time' },
+            xaxis: { mode: 'time' },
             yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
             selection: { mode: 'x' }
         },
