@@ -7,12 +7,6 @@ b91953b0	details/compare.js
 db7622eb	details/details.js
 753b4fe0	details/showslow.flot.js
 65baaa63	favicon.ico
-863af2ba	flot/examples/arrow-down.gif
-d768bddc	flot/examples/arrow-left.gif
-710f31a7	flot/examples/arrow-right.gif
-b7b80a7d	flot/examples/arrow-up.gif
-4aadd9fc	flot/examples/hs-2004-27-a-large_web.jpg
-51515998	flot/examples/layout.css
 e6e1722c	flot/excanvas.js
 60cd50f8	flot/excanvas.min.js
 cc33575e	flot/jquery.colorhelpers.js
@@ -38,3 +32,4 @@ bac5e6c3	screenshots/showslow_home_small.png
 1a72b8cd	showslow_110.png
 05de4c8b	showslow_icon.png
 f8d3e20a	showslow_iphone_icon.png
+4cedb4e6	shsl_blz_mobile.png
