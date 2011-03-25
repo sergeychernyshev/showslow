@@ -26,21 +26,50 @@ require_once(dirname(__FILE__).'/header.php');
 </style>
 <h1>URLs measured</h1>
 <?php
-$current_group = array_key_exists('group', $_GET) ? $_GET['group'] : null;
+
+if (array_key_exists('group', $_GET)) {
+	$current_group = $_GET['group'];
+} else if (!is_null($DefaultURLGroup)) {
+	$current_group = $DefaultURLGroup;
+} else {
+	$current_group = '__show_all__';
+}
 
 $subset = null;
 
 if (is_array($URLGroups) && count($URLGroups) > 0) {
+	$params = array();
+
+	if (!is_null($searchstring)) {
+		$params['search'] = urlencode(trim($_GET['search']));
+	}
+
+	$paramsstring = '';
 ?>
 <ul>
 <?php 
-	if (is_null($current_group)) {
+	if ($current_group == '__show_all__') {
 ?>
 <li><b>All URLs</b></li>
 <?php
 	} else {
+		$id = '__show_all__';
+
+		if ($DefaultURLGroup == $id) {
+			$linkparams = $params;
+		} else {
+			$linkparams = array_merge($params, array('group' => urlencode($id)));
+		}
+
+		$paramsstring = '';
+		if (count($linkparams) > 0) {
+			foreach ($linkparams as $name => $param) {
+				$paramsstring .= $paramsstring == '' ? '?' : '&';
+				$paramsstring .= $name.'='.$param;
+			}
+		}
 ?>
-<li><a href="<?php echo $showslow_base.'all.php'.(is_null($searchstring) ? '' : '?search='.urlencode(trim($_GET['search'])))?>">All URLs</a></li>
+<li><a href="<?php echo $showslow_base.'all.php'.$paramsstring ?>">All URLs</a></li>
 <?php
 	}
 
@@ -49,7 +78,20 @@ if (is_array($URLGroups) && count($URLGroups) > 0) {
 			$subset = $group['urls'];
 			?><li><b><?php echo $group['title']?></b></li><?php
 		} else {
-			?><li><a href="<?php echo $showslow_base.'all.php?'.(is_null($searchstring) ? '' : 'search='.urlencode(trim($_GET['search'])).'&').'group='.$id; ?>"><?php echo $group['title']?></a></li><?php
+			if ($DefaultURLGroup == $id) {
+				$linkparams = $params;
+			} else {
+				$linkparams = array_merge($params, array('group' => urlencode($id)));
+			}
+
+			$paramsstring = '';
+			if (count($linkparams) > 0) {
+				foreach ($linkparams as $name => $param) {
+					$paramsstring .= $paramsstring == '' ? '?' : '&';
+					$paramsstring .= $name.'='.$param;
+				}
+			}
+			?><li><a href="<?php echo $showslow_base.'all.php'.$paramsstring ?>"><?php echo $group['title']?></a></li><?php
 		}
 	}
 ?></ul>
@@ -174,10 +216,10 @@ while ($row = mysql_fetch_assoc($result)) {
 Search URLs:
 <input type="text" id="search" size="80" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/>
 <input type="submit" value="search"/>
+<?php if ($DefaultURLGroup != $current_group) { ?>
+<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
+<?php } ?>
 <input type="button" value="clear" onclick="document.getElementById('search').value=''; document.searchform.submit()">
-<?php if (!is_null($subset)) {
-	?><input type="hidden" name="group" value="<?php echo htmlentities($_GET['group']) ?>"/><?php
-} ?>
 </form>
 <hr size="1">
 <?php
