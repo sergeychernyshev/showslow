@@ -19,6 +19,3 @@
 [submodule "beacon/dommonster/dom-monster"]
 	path = beacon/dommonster/dom-monster
 	url = git://github.com/sergeychernyshev/dom-monster.git
-[submodule "flot"]
-	path = flot
-	url = git://github.com/sergeychernyshev/flot.git
