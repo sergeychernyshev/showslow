@@ -12,6 +12,13 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 23
+ * Added HAR beacon last_id
+*/
+$versions[23]['up'][] = "ALTER TABLE urls ADD har_last_id BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Last measurement ID for HAR beacon'";
+$versions[23]['down'][] = "ALTER TABLE urls DROP har_last_id";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 22
  * Adding explicit default values for refresher bits
 */

@@ -1,6 +1,22 @@
 <?php 
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
+function updateUrlAggregates($url_id, $measurement_id)
+{
+	global $cleanOldYSlowBeaconDetails;
+
+	# updating latest values for the URL
+	$query = sprintf("UPDATE urls SET har_last_id = %d, last_update = now() WHERE id = %d",
+		mysql_real_escape_string($measurement_id),
+		mysql_real_escape_string($url_id)
+	);
+	$result = mysql_query($query);
+
+	if (!$result) {
+		beaconError(mysql_error());
+	}
+}
+
 // in case when link to external HAR file was provided
 
 if (array_key_exists('link', $_REQUEST) && trim($_REQUEST['link']) != ''
@@ -33,6 +49,8 @@ if (array_key_exists('link', $_REQUEST) && trim($_REQUEST['link']) != ''
 	{
 		beaconError(mysql_error());
 	}
+
+	updateUrlAggregates($url_id, mysql_insert_id());
 
 	header('HTTP/1.0 204 Data accepted');
 	exit;
@@ -191,6 +209,8 @@ if (array_key_exists('url', $_REQUEST))
 	{
 		beaconError(mysql_error());
 	}
+
+	updateUrlAggregates($url_id, mysql_insert_id());
 } else {
 	header('HTTP/1.0 400 Bad Request');
 

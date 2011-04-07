@@ -149,6 +149,7 @@ $query = "SELECT count(*)
 		LEFT JOIN yslow2 ON urls.yslow2_last_id = yslow2.id
 		LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id
 		LEFT JOIN dynatrace ON urls.dynatrace_last_id = dynatrace.id
+		LEFT JOIN har ON urls.har_last_id = har.id
 	WHERE last_update IS NOT NULL";
 
 if (!is_null($subsetstring)) {
@@ -176,6 +177,7 @@ $query = 'SELECT url, last_update,
 		LEFT JOIN yslow2 ON urls.yslow2_last_id = yslow2.id
 		LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id
 		LEFT JOIN dynatrace ON urls.dynatrace_last_id = dynatrace.id
+		LEFT JOIN har ON urls.har_last_id = har.id
 	WHERE last_update IS NOT NULL';
 
 if (!is_null($subsetstring)) {
