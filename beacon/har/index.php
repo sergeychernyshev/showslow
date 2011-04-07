@@ -57,13 +57,18 @@ if ($_SERVER["REQUEST_METHOD"] != 'POST')
 
 <h2>You can use one of these HAR providers</h2>
 <ul>
-<li><a href="http://getfirebug.com/releases/extensions.html#netexport">NetExport</a> extension for Firebug</li>
+<li><p><a href="http://getfirebug.com/wiki/index.php/Firebug_Extensions#NetExport">NetExport</a> extension for Firebug.</p><p>By default NetExport extension sends data to a beacon on a public instance of <a href="http://www.showslow.com/beacon/har/" target="_blank">ShowSlow</a>.</p>
+<p>To point it to your instance, you need to open <b style="color: blue; text-decoration: underline"><tt>about:config</tt></b> page in Firefox and set the preference there:</p>
+<p><b style="color: blue"><tt>extensions.firebug.netexport.beaconServerURL = <?php echo $showslow_base?>beacon/har/</tt></b></p></li>
 </ul>
+
 <?php
 if (!$enableHARBeacon) {
-	?><p style="color: red">HAR beacon is disabled on this instance of ShowSlow.<br/>Add <tt>$enableHARBeacon = true;</tt> to your configuration file to enable it.</p><?php
+	?><h1 style="color: red">This beacon is currently disabled</h1><?php
+	?><p>HAR beacon is disabled on this instance of ShowSlow.<br/>Add <b style="color: blue"><tt>$enableHARBeacon = true;</tt></b> to your configuration file to enable it.</p><?php
 }
 ?>
+
 <h1>Submit HAR manually</h1>
 <form action="" method="POST" enctype="multipart/form-data">
 <table>
