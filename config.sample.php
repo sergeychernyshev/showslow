@@ -11,6 +11,10 @@ $host = 'localhost';
 
 $sessionSecret = '...................................................';
 
+# configuration for email communication
+#$supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
+#$supportEmailReplyTo = 'showslow@example.com';
+
 # Custom metrics supported
 #$metrics['bouncerate'] = array(
 #	'id' => 1,

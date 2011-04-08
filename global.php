@@ -139,6 +139,10 @@ $googleFriendConnectSiteID = null;
 # Smoothing distance (averaging window will be from x-distance to x+distance)
 $smoothDistance = 5;
 
+# configuration for email communication
+$supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
+$supportEmailReplyTo = 'showslow@example.com';
+
 require_once(dirname(__FILE__).'/svn-assets/asset_functions.php');
 loadAssetVersionsTSV(dirname(__FILE__).'/asset_versions.tsv');
 

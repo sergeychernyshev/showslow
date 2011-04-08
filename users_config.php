@@ -18,6 +18,11 @@ UserConfig::$modules[] = new UsernamePasswordAuthenticationModule();
 // TODO - implement accounts and then switch it to true.
 UserConfig::$useAccounts = false;
 
+#UserConfig::$enableInvitations = true;
+
+UserConfig::$supportEmailFrom = $supportEmailFrom;
+UserConfig::$supportEmailReplyTo = $supportEmailReplyTo;
+
 UserConfig::$SESSION_SECRET = $sessionSecret;
 
 UserConfig::$admins = $instanceAdmins;
