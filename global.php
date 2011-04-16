@@ -94,6 +94,8 @@ $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
 $webPageTestExtraParams = '';
 $keepPrivatePageTests = false;
+$webPageTestLocationsAPCKey = 'showslow_wpt_locations';
+$webPageTestLocationsTTL = 300;
 
 # array of tools to show above the graph
 $customTools = array();
@@ -581,9 +583,25 @@ function validateURL($url, $outputerror = true) {
 $webPageTestLocations = array();
 $webPageTestLocationsById = array();
 function getPageTestLocations() {
-	global $webPageTestLocations, $webPageTestLocationsById, $webPageTestBase, $webPageTestKey;
+	global $webPageTestLocations, $webPageTestLocationsAPCKey, $webPageTestLocationsTTL,
+		$webPageTestLocationsById, $webPageTestBase, $webPageTestKey;
 
-	if (count($webPageTestLocations) > 0 || is_null($webPageTestKey)) {
+	if (is_null($webPageTestKey)) {
+		return;
+	}
+
+	if(function_exists('apc_cache_info') && apc_cache_info('user', TRUE) && function_exists('apc_fetch')) {
+		$apc_webPageTestLocations = apc_fetch($webPageTestLocationsAPCKey);
+
+		if (is_array($apc_webPageTestLocations)) {
+			$webPageTestLocations = $apc_webPageTestLocations;
+			foreach ($webPageTestLocations as $loc) {
+				$webPageTestLocationsById[$loc['id']] = $loc;
+			}
+		}
+	}
+
+	if (count($webPageTestLocations) > 0) {
 		return;
 	}
 
@@ -616,17 +634,21 @@ function getPageTestLocations() {
 		failWithMessage("PageTest getLocations returned failure status code: ".$xml->statusCode." (".$xml->statusText.")");
 	}
 	foreach ($xml->data->location as $location) {
-		$id = $location->id;
+		$id = (string)$location->id;
 
 		$loc = array(
 			'id' => $id,
 			'default' => $location->default == 1 ? true : false,
 			'title' => $location->Label.' using '.$location->Browser,
-			'tests' => $location->PendingTests->Total
+			'tests' => (string)$location->PendingTests->Total
 		);
 
 		$webPageTestLocations[] = $loc;
 		$webPageTestLocationsById["$id"] = $loc;
+	}
+
+	if (function_exists('apc_cache_info') && apc_cache_info('user', TRUE) && function_exists('apc_store')) {
+		apc_store($webPageTestLocationsAPCKey, $webPageTestLocations, $webPageTestLocationsTTL);
 	}
 }
 
