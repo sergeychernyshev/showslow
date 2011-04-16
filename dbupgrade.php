@@ -12,6 +12,53 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 24
+ * Added UserBase accounts table which we never created
+*/
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_accounts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `plan` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Payment plan ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_account_users` (
+  `account_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `role` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  KEY `user_account` (`account_id`),
+  KEY `account_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+$versions[24]['up'][] = "ALTER TABLE `u_account_users`
+  ADD CONSTRAINT `account_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `u_account_users_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `u_accounts` (`id`),
+  ADD CONSTRAINT `u_account_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`)";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_account_features` (
+  `account_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `feature_id` int(2) unsigned NOT NULL COMMENT 'Feature ID',
+  PRIMARY KEY (`account_id`,`feature_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Keeps feature list for all users'";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_user_preferences` (
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `current_account_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `preference_current_account` (`current_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+
+$versions[24]['up'][] = "ALTER TABLE `u_user_preferences`
+  ADD CONSTRAINT `preference_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_preferences_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`),
+  ADD CONSTRAINT `user_preferences_ibfk_2` FOREIGN KEY (`current_account_id`) REFERENCES `u_accounts` (`id`)";
+
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_user_preferences";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_account_features";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_account_users";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_accounts";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 23
  * Added HAR beacon last_id
 */
