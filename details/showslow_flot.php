@@ -1,7 +1,30 @@
 <?php
 require_once(dirname(dirname(__FILE__)).'/global.php');
 
-    $url = isset($_GET['url']) ? $_GET['url'] : 'http://www.yahoo.com/';
+$url = isset($_GET['url']) ? $_GET['url'] : 'http://www.yahoo.com/';
+
+$flot_metrics = array();
+$color = 0;
+
+foreach ($all_metrics as $provider_name => $provider) {
+	foreach ($provider['metrics'] as $section_name => $section) {
+		foreach ($section as $metric) {
+			$flot_metrics[$provider_name][$metric[1]] = array(
+				'color' => $color++,
+				'label' => $metric[0],
+				'data' => array(),
+				'yaxis' => $metric[2] + 1
+			);
+		}
+	}
+}
+
+foreach (array_keys($defaultGraphMetrics) as $provider_name) {
+	if ($enabledMetrics[$provider_name])
+	{
+		$default_metrics[$provider_name] = $defaultGraphMetrics[$provider_name];
+	}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +47,7 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
             font-size: .9em;
         }
         
-        #graph {
+        #flot {
             width: 960px;
             height: 320px;
             margin: 0 auto;
@@ -80,10 +103,15 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
             column-rule: 1px solid #ccc;
         }
     </style>
+    <script>
+    var flot_metrics = <?php echo json_encode($flot_metrics); ?>;
+    var url = <?php echo json_encode($url); ?>;
+    var default_metrics = <?php echo json_encode($default_metrics); ?>;
+   </script>
 </head>
 <body>
     <h1><?php echo $url ?></h1>
-    <div id="graph"></div>
+    <div id="flot"></div>
     <div>
         <div id="overview"></div>
         <div class="reset">
@@ -94,82 +122,82 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
     <fieldset id="yslow">
         <legend>YSlow Metrics</legend>
         <div class="col">
-        <input type="checkbox" id="yslow-o">
+        <input type="checkbox" class="metric-toggle" id="yslow-o">
         <label for="yslow-o">Overall rank</label><br/>
 
-        <input type="checkbox" id="yslow-w">
+        <input type="checkbox" class="metric-toggle" id="yslow-w">
         <label for="yslow-w">Page Size</label><br/>
 
-        <input type="checkbox" id="yslow-r">
+        <input type="checkbox" class="metric-toggle" id="yslow-r">
         <label for="yslow-r">Amount of requests with empty cache</label><br/>
 
-        <input type="checkbox" id="yslow-lt">
+        <input type="checkbox" class="metric-toggle" id="yslow-lt">
         <label for="yslow-lt">Page Load time</label><br/>
         
-        <input type="checkbox" id="ynumreq">
+        <input type="checkbox" class="metric-toggle" id="ynumreq">
         <label for="ynumreq">Make fewer HTTP requests</label><br/>
         
-        <input type="checkbox" id="ycdn">
+        <input type="checkbox" class="metric-toggle" id="ycdn">
         <label for="ycdn">Use a Content Delivery Network (CDN)</label><br/>
         
-        <input type="checkbox" id="yexpires">
+        <input type="checkbox" class="metric-toggle" id="yexpires">
         <label for="yexpires">Add Expires headers</label><br/>
         
-        <input type="checkbox" id="yemptysrc">
+        <input type="checkbox" class="metric-toggle" id="yemptysrc">
         <label for="yemptysrc">Avoid Empty Img src</label><br/>
         
-        <input type="checkbox" id="ycsstop">
+        <input type="checkbox" class="metric-toggle" id="ycsstop">
         <label for="ycsstop">Put CSS at top</label><br/>
         
-        <input type="checkbox" id="yjsbottom">
+        <input type="checkbox" class="metric-toggle" id="yjsbottom">
         <label for="yjsbottom">Put JavaScript at bottom</label><br/>
         
-        <input type="checkbox" id="yexpressions">
+        <input type="checkbox" class="metric-toggle" id="yexpressions">
         <label for="yexpressions">Avoid CSS expressions</label><br/>
         
-        <input type="checkbox" id="yexternal">
+        <input type="checkbox" class="metric-toggle" id="yexternal">
         <label for="yexternal">Make JavaScript and CSS external</label><br/>
         
-        <input type="checkbox" id="ydns">
+        <input type="checkbox" class="metric-toggle" id="ydns">
         <label for="ydns">Reduce DNS lookups</label><br/>
         
-        <input type="checkbox" id="yminify">
+        <input type="checkbox" class="metric-toggle" id="yminify">
         <label for="yminify">Minify JavaScript and CSS</label><br/>
         
-        <input type="checkbox" id="yredirects">
+        <input type="checkbox" class="metric-toggle" id="yredirects">
         <label for="yredirects">Avoid URL redirects</label><br/>
         
-        <input type="checkbox" id="ydupes">
+        <input type="checkbox" class="metric-toggle" id="ydupes">
         <label for="ydupes">Remove duplicate JavaScript and CSS</label><br/>
         
-        <input type="checkbox" id="yetags">
+        <input type="checkbox" class="metric-toggle" id="yetags">
         <label for="yetags">Configure entity tags (ETags)</label><br/>
         
-        <input type="checkbox" id="yxhr">
+        <input type="checkbox" class="metric-toggle" id="yxhr">
         <label for="yxhr">Make AJAX cacheable</label><br/>
         
-        <input type="checkbox" id="yxhrmethod">
+        <input type="checkbox" class="metric-toggle" id="yxhrmethod">
         <label for="yxhrmethod">Use GET for AJAX requests</label><br/>
         
-        <input type="checkbox" id="ymindom">
+        <input type="checkbox" class="metric-toggle" id="ymindom">
         <label for="ymindom">Reduce the number of DOM elements</label><br/>
         
-        <input type="checkbox" id="yno404">
+        <input type="checkbox" class="metric-toggle" id="yno404">
         <label for="yno404">Avoid HTTP 404 (Not Found) error</label><br/>
         
-        <input type="checkbox" id="ymincookie">
+        <input type="checkbox" class="metric-toggle" id="ymincookie">
         <label for="ymincookie">Reduce cookie size</label><br/>
         
-        <input type="checkbox" id="ycookiefree">
+        <input type="checkbox" class="metric-toggle" id="ycookiefree">
         <label for="ycookiefree">Use cookie-free domains</label><br/>
         
-        <input type="checkbox" id="ynofilter">
+        <input type="checkbox" class="metric-toggle" id="ynofilter">
         <label for="ynofilter">Avoid AlphaImageLoader filter</label><br/>
         
-        <input type="checkbox" id="yimgnoscale">
+        <input type="checkbox" class="metric-toggle" id="yimgnoscale">
         <label for="yimgnoscale">Do not scale images in HTML</label><br/>
         
-        <input type="checkbox" id="yfavicon">
+        <input type="checkbox" class="metric-toggle" id="yfavicon">
         <label for="yfavicon">Make favicon small and cacheable</label>
         </div>
     </fieldset>
@@ -179,100 +207,100 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
         <legend>PageSpeed Metrics</legend>
         
         <div class="col">
-        <input type="checkbox" id="pagespeed-o">
+        <input type="checkbox" class="metric-toggle" id="pagespeed-o">
         <label for="pagespeed-o">Overall grade</label><br/>
         
-        <input type="checkbox" id="pagespeed-w">
+        <input type="checkbox" class="metric-toggle" id="pagespeed-w">
         <label for="pagespeed-w">Page Size</label><br/>
 
-        <input type="checkbox" id="pagespeed-l">
+        <input type="checkbox" class="metric-toggle" id="pagespeed-l">
         <label for="pagespeed-l">Page load time</label><br/>
         
-        <input type="checkbox" id="pagespeed-t">
+        <input type="checkbox" class="metric-toggle" id="pagespeed-t">
         <label for="pagespeed-t">Transfer size of all resources</label><br/>
         
-        <input type="checkbox" id="pagespeed-r">
+        <input type="checkbox" class="metric-toggle" id="pagespeed-r">
         <label for="pagespeed-r">Total Requests</label><br/>
         
-        <input type="checkbox" id="pBrowserCache">
+        <input type="checkbox" class="metric-toggle" id="pBrowserCache">
         <label for="pBrowserCache">Leverage browser caching</label><br/>
         
-        <input type="checkbox" id="pCacheValid">
+        <input type="checkbox" class="metric-toggle" id="pCacheValid">
         <label for="pCacheValid">Leverage proxy caching</label><br/>
         
-        <input type="checkbox" id="pMinDns">
+        <input type="checkbox" class="metric-toggle" id="pMinDns">
         <label for="pMinDns">Minimize DNS lookups</label><br/>
         
-        <input type="checkbox" id="pBadReqs">
+        <input type="checkbox" class="metric-toggle" id="pBadReqs">
         <label for="pBadReqs">Avoid bad requests</label><br/>
         
-        <input type="checkbox" id="pCombineJS">
+        <input type="checkbox" class="metric-toggle" id="pCombineJS">
         <label for="pCombineJS">Combine external JavaScript</label><br/>
         
-        <input type="checkbox" id="pCombineCSS">
+        <input type="checkbox" class="metric-toggle" id="pCombineCSS">
         <label for="pCombineCSS">Combine external CSS</label><br/>
         
-        <input type="checkbox" id="pSprite">
+        <input type="checkbox" class="metric-toggle" id="pSprite">
         <label for="pSprite">Combine images using CSS sprites</label><br/>
         
-        <input type="checkbox" id="pCssJsOrder">
+        <input type="checkbox" class="metric-toggle" id="pCssJsOrder">
         <label for="pCssJsOrder">Optimize the order of styles and scripts</label><br/>
         
-        <input type="checkbox" id="pDocWrite">
+        <input type="checkbox" class="metric-toggle" id="pDocWrite">
         <label for="pDocWrite">Avoid document.write</label><br/>
         
-        <input type="checkbox" id="pCssImport">
+        <input type="checkbox" class="metric-toggle" id="pCssImport">
         <label for="pCssImport">Avoid CSS @import</label><br/>
         
-        <input type="checkbox" id="pPreferAsync">
+        <input type="checkbox" class="metric-toggle" id="pPreferAsync">
         <label for="pPreferAsync">Prefer asynchronous resources</label><br/>
         
-        <input type="checkbox" id="pParallelDl">
+        <input type="checkbox" class="metric-toggle" id="pParallelDl">
         <label for="pParallelDl">Parallelize downloads across hostnames</label><br/>
         
-        <input type="checkbox" id="pMinReqSize">
+        <input type="checkbox" class="metric-toggle" id="pMinReqSize">
         <label for="pMinReqSize">Minimize request size</label><br/>
         
-        <input type="checkbox" id="pNoCookie">
+        <input type="checkbox" class="metric-toggle" id="pNoCookie">
         <label for="pNoCookie">Serve static content from a cookieless domain</label><br/>
         
-        <input type="checkbox" id="pGzip">
+        <input type="checkbox" class="metric-toggle" id="pGzip">
         <label for="pGzip">Enable compression</label><br/>
         
-        <input type="checkbox" id="pUnusedCSS">
+        <input type="checkbox" class="metric-toggle" id="pUnusedCSS">
         <label for="pUnusedCSS">Remove unused CSS</label><br/>
         
-        <input type="checkbox" id="pMinifyJS">
+        <input type="checkbox" class="metric-toggle" id="pMinifyJS">
         <label for="pMinifyJS">Minify JavaScript</label><br/>
         
-        <input type="checkbox" id="pMinifyCSS">
+        <input type="checkbox" class="metric-toggle" id="pMinifyCSS">
         <label for="pMinifyCSS">Minify CSS</label><br/>
         
-        <input type="checkbox" id="pMinifyHTML">
+        <input type="checkbox" class="metric-toggle" id="pMinifyHTML">
         <label for="pMinifyHTML">Minify HTML</label><br/>
         
-        <input type="checkbox" id="pDeferJS">
+        <input type="checkbox" class="metric-toggle" id="pDeferJS">
         <label for="pDeferJS">Defer loading of JavaScript</label><br/>
         
-        <input type="checkbox" id="pOptImages">
+        <input type="checkbox" class="metric-toggle" id="pOptImages">
         <label for="pOptImages">Optimize images</label><br/>
         
-        <input type="checkbox" id="pScaleImages">
+        <input type="checkbox" class="metric-toggle" id="pScaleImages">
         <label for="pScaleImages">Serve scaled images</label><br/>
         
-        <input type="checkbox" id="pDupeRsrc">
+        <input type="checkbox" class="metric-toggle" id="pDupeRsrc">
         <label for="pDupeRsrc">Serve resources from a consistent URL</label><br/>
         
-        <input type="checkbox" id="pCssSelect">
+        <input type="checkbox" class="metric-toggle" id="pCssSelect">
         <label for="pCssSelect">Use efficient CSS selectors</label><br/>
         
-        <input type="checkbox" id="pCssInHead">
+        <input type="checkbox" class="metric-toggle" id="pCssInHead">
         <label for="pCssInHead">Put CSS in the document head</label><br/>
         
-        <input type="checkbox" id="pImgDims">
+        <input type="checkbox" class="metric-toggle" id="pImgDims">
         <label for="pImgDims">Specify image dimensions</label><br/>
         
-        <input type="checkbox" id="pCharsetEarly">
+        <input type="checkbox" class="metric-toggle" id="pCharsetEarly">
         <label for="pCharsetEarly">Specify a character set early</label>
         </div>
     </fieldset>
@@ -282,52 +310,52 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
         <legend>dynaTrace Metrics</legend>
         
         <div class="col">
-        <input type="checkbox" id="timetoimpression">
+        <input type="checkbox" class="metric-toggle" id="timetoimpression">
         <label for="timetoimpression">Time to first impression</label><br/>
         
-        <input type="checkbox" id="timetoonload">
+        <input type="checkbox" class="metric-toggle" id="timetoonload">
         <label for="timetoonload">Time to onLoad</label><br/>
         
-        <input type="checkbox" id="timetofullload">
+        <input type="checkbox" class="metric-toggle" id="timetofullload">
         <label for="timetofullload">Time to full page load</label><br/>
         
-        <input type="checkbox" id="timeonnetwork">
+        <input type="checkbox" class="metric-toggle" id="timeonnetwork">
         <label for="timeonnetwork">Total time on network</label><br/>
         
-        <input type="checkbox" id="timeinjs">
+        <input type="checkbox" class="metric-toggle" id="timeinjs">
         <label for="timeinjs">Total time in JavaScript</label><br/>
         
-        <input type="checkbox" id="timeinrendering">
+        <input type="checkbox" class="metric-toggle" id="timeinrendering">
         <label for="timeinrendering">Total time in rendering</label><br/>
         
-        <input type="checkbox" id="reqnumber">
+        <input type="checkbox" class="metric-toggle" id="reqnumber">
         <label for="reqnumber">Number of requests</label><br/>
         
-        <input type="checkbox" id="xhrnumber">
+        <input type="checkbox" class="metric-toggle" id="xhrnumber">
         <label for="xhrnumber">Number of XHR requests</label><br/>
         
-        <input type="checkbox" id="pagesize">
+        <input type="checkbox" class="metric-toggle" id="pagesize">
         <label for="pagesize">Total page size</label><br/>
         
-        <input type="checkbox" id="cachablesize">
+        <input type="checkbox" class="metric-toggle" id="cachablesize">
         <label for="cachablesize">Total cachable size</label><br/>
         
-        <input type="checkbox" id="noncachablesize">
+        <input type="checkbox" class="metric-toggle" id="noncachablesize">
         <label for="noncachablesize">Total non-cachable size</label><br/>
         
-        <input type="checkbox" id="rank">
+        <input type="checkbox" class="metric-toggle" id="rank">
         <label for="rank">Overall rank</label><br/>
         
-        <input type="checkbox" id="cache">
+        <input type="checkbox" class="metric-toggle" id="cache">
         <label for="cache">Caching rank</label><br/>
         
-        <input type="checkbox" id="net">
+        <input type="checkbox" class="metric-toggle" id="net">
         <label for="net">Network rank</label><br/>
         
-        <input type="checkbox" id="server">
+        <input type="checkbox" class="metric-toggle" id="server">
         <label for="server">Server rank</label><br/>
         
-        <input type="checkbox" id="js">
+        <input type="checkbox" class="metric-toggle" id="js">
         <label for="js">JavaScript rank</label>
         </div>
     </fieldset>
@@ -337,28 +365,28 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
         <legend>DOM Monster! Metrics</legend>
         
         <div class="col">
-        <input type="checkbox" id="elements">
+        <input type="checkbox" class="metric-toggle" id="elements">
         <label for="elements">Number of elements</label><br/>
         
-        <input type="checkbox" id="nodecount">
+        <input type="checkbox" class="metric-toggle" id="nodecount">
         <label for="nodecount">Number of DOM nodes</label><br/>
         
-        <input type="checkbox" id="textnodes">
+        <input type="checkbox" class="metric-toggle" id="textnodes">
         <label for="textnodes">Number of Text nodes</label><br/>
         
-        <input type="checkbox" id="textnodesize">
+        <input type="checkbox" class="metric-toggle" id="textnodesize">
         <label for="textnodesize">Size of Text nodes</label><br/>
         
-        <input type="checkbox" id="contentpercent">
+        <input type="checkbox" class="metric-toggle" id="contentpercent">
         <label for="contentpercent">Content percentage</label><br/>
         
-        <input type="checkbox" id="average">
+        <input type="checkbox" class="metric-toggle" id="average">
         <label for="average">Average nesting depth</label><br/>
         
-        <input type="checkbox" id="domsize">
+        <input type="checkbox" class="metric-toggle" id="domsize">
         <label for="domsize">Seralized DOM size</label><br/>
         
-        <input type="checkbox" id="bodycount">
+        <input type="checkbox" class="metric-toggle" id="bodycount">
         <label for="bodycount">DOM tree serialization time</label>
         </div>
     </fieldset>
@@ -373,58 +401,5 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
     <script src="<?php echo assetURL('flot/jquery.flot.selection.js') ?>"></script>
     <script src="<?php echo assetURL('flot/jquery.flot.resize.js') ?>"></script>
     <script src="<?php echo assetURL('details/showslow.flot.js') ?>"></script>
-    <script>
-        // Event handlers to all <legend> elements
-        // to allow click hide/show of metric selections
-        $('legend').click(function () {
-            $(this).next().toggle();
-        });
-        
-        // Event handlers to all checkboxes to show/hide 
-        // individual metrics within graph
-        $('input[type="checkbox"]').each(function () {            
-            $(this).change(function () {
-                var $this = $(this),
-                    id = $this.attr('id'), // Metric
-                    pid = $this.parent().parent().attr('id'), // Provider
-                    description = $this.next().text(), // Metric Description
-                    re = /^(\w+)\-(\w+)$/i; // Regex to distinguish between YSlow and Pagespeed basic measurements
-                
-                // Distinguish between YSlow and PageSpeed basic measurements
-                if (re.test(id)) {
-                    id = id.replace(re, '$2');
-                }
-                
-                if ($this.attr('checked')) {;
-                    SS.getMetrics({
-                        url: '<?php echo $url ?>',
-                        provider: pid,
-                        metrics: id,
-                        callback: false,
-                    });
-                    $this.next().css('color', '#f00');
-                } else {
-                    SS.removeSeries(pid, id);
-                    $this.next().css('color', '');
-                }
-            });
-        });
-        
-        // Attach method to reset button
-        $('#reset').click(function () {
-            SS.resetZoomSelection();
-        });
-        
-        // Not necessary but looks nice to have an empty graph present before use
-        $.plot('#graph', [], {
-            grid: {
-                backgroundColor: {
-                    colors: ['#fff', '#ccc']
-                }
-            }
-        });
-        
-        $.plot('#overview', []);
-    </script>
 </body>
 </html>

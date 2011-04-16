@@ -49,6 +49,12 @@ $enabledMetrics = array(
 	'dommonster'	=> true
 );
 
+$defaultGraphMetrics = array(
+	'yslow' => array('o', 'w', 'r'),
+	'pagespeed' => array('o', 'l', 'r', 'w'),
+	'dynatrace' => array('rank')
+);
+
 # If set to true, drop all query strings. If array, then match prefixes.
 $dropQueryStrings = false;
 
@@ -185,10 +191,17 @@ $additionalMenuItems = array();
 # a list of admin user IDs for authentication into UserBase administration interface
 $instanceAdmins = array();
 
+# Enable Flot graphs (experimental)
+$enableFlot = false;
+
+
+
+
+
+# ======== PUT ALL THINGS THAT SHOULDN'T BE CONFIGURABLE BELOW THIS LINE ==================
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
-
-# PUT ALL THINGS THAT SHOULDN'T BE CONFIGURABLE BELOW THIS LINE
 
 # metric type constants
 define('BYTES', 0);

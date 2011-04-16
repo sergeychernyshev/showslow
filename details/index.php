@@ -61,21 +61,61 @@ if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) && ($lastupdate <= strt
 }
 
 $TITLE = 'Details for '.htmlentities($url);
-$SCRIPTS = array(
-	$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
-	$showslow_base.'timeline/timeline-api.js?bundle=true',
-	$showslow_base.'timeplot/timeplot-api.js?bundle=true',
-	'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js',
-	assetURL('details/details.js')
-);
+
+$SCRIPTS[] = 'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js';
+
+if (!$enableFlot) {
+	$SCRIPTS = array_merge($SCRIPTS, array(
+		$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
+		$showslow_base.'timeline/timeline-api.js?bundle=true',
+		$showslow_base.'timeplot/timeplot-api.js?bundle=true',
+		assetURL('details/timeplot.js')
+	));
+} else {
+	$SCRIPTS = array_merge($SCRIPTS, array(
+		'https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js',
+		assetURL('flot/jquery.flot.js'),
+		assetURL('flot/jquery.flot.crosshair.js'),
+		assetURL('flot/jquery.flot.selection.js'),
+		assetURL('flot/jquery.flot.resize.js'),
+	));
+}
+
+$SCRIPTS[] = assetURL('details/details.js');
 
 $SECTION = 'all';
 require_once(dirname(dirname(__FILE__)).'/header.php');
+
+$flot_metrics = array();
+$color = 0;
+foreach ($all_metrics as $provider_name => $provider) {
+	if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
+	{
+		foreach ($provider['metrics'] as $section_name => $section) {
+			foreach ($section as $metric) {
+				$flot_metrics[$provider_name][$metric[1]] = array(
+					'color' => $color++,
+					'label' => $metric[0].' ('.$provider['title'].')',
+					'data' => array(),
+					'yaxis' => $metric[2] + 1
+				);
+			}
+		}
+	}
+}
+
+foreach (array_keys($defaultGraphMetrics) as $provider_name) {
+	if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
+	{
+		$default_metrics[$provider_name] = $defaultGraphMetrics[$provider_name];
+	}
+}
 ?>
 <script>
-<?php
-echo 'var metrics = '.json_encode($metrics);
-?>
+var flot_metrics = <?php echo json_encode($flot_metrics); ?>;
+var url = <?php echo json_encode($url); ?>;
+var default_metrics = <?php echo json_encode($default_metrics); ?>;
+var metrics = <?php echo json_encode($metrics); ?>;
 </script>
 <style>
 .yslow1 {
@@ -93,12 +133,8 @@ echo 'var metrics = '.json_encode($metrics);
 .sectionname {
 	padding-top: 1em;
 }
-.breakdowntitle {
-	clear: both;
-	margin-bottom: 0;
-}
 .titlecol {
-	padding: 0 2em;
+	padding: 0 1em;
 }
 .value {
 	font-weight: bold;
@@ -126,6 +162,25 @@ echo 'var metrics = '.json_encode($metrics);
 	background: #A02523;
 }
 
+.metric-toggle {
+	margin-right: 0.5em;
+}
+
+fieldset {
+	border-radius: 3px;
+	margin: 1em 0;
+}
+
+legend {
+/*	cursor: pointer; */
+	border-radius: 3px;
+	font-weight: bold;
+	background-color: #f9f1cf;
+	padding: 5px 10px;
+	margin-left: 3px;
+	border: solid 1px #000;
+	font-size: 1.2em;
+}
 </style>
 <h1 style="margin: 0.3em 0 0 0;">
 <div style="float: left; margin-right: 0.5em">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
@@ -258,7 +313,7 @@ if (is_array($customTools)) {
 if (!$havemetrics)
 {
 	?>
-	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
+	<h2 style="clear: both">Measurements over time</h2>
 	<table width="100%" height="250px" style="border: 1px solid silver"><tr>
 	<td align="center" valign="middle">
 		<table cellpadding="3px">
@@ -277,84 +332,116 @@ if (!$havemetrics)
 
 if ($havemetrics)
 {
-	// Graph
-	?>
+?>
+	<a name="graph"/>
+	<h2 style="clear: both">Measurements over time</h2>
 	<script>
-	url = '<?php echo htmlentities($url) ?>';
 	ydataversion = <?php if ($enabledMetrics['yslow']) {
-		?>'<?php echo urlencode($row['yslow_timestamp']) ?>'<?php
+		echo json_encode($row['yslow_timestamp']);
 	} else {
 		?>null<?php
 	} ?>;
 	psdataversion = <?php if ($enabledMetrics['pagespeed']) {
-		?>'<?php echo urlencode($row['pagespeed_timestamp']) ?>'<?php
+		echo json_encode($row['pagespeed_timestamp']);
 	} else {
 		?>null<?php
 	} ?>;
 	dtdataversion = <?php if ($enabledMetrics['dynatrace']) {
-		?>'<?php echo urlencode($row['dynatrace_timestamp']) ?>'<?php
+		echo json_encode($row['dynatrace_timestamp']);
 	} else {
 		?>null<?php
 	} ?>;
-	eventversion = '<?php echo urlencode($eventupdate)?>';
+	eventversion = <?php echo json_encode($eventupdate)?>;
 	</script>
 
-	<a name="graph"/><h2 style="clear: both">Measurements over time</h2>
-	<div id="my-timeplot" style="height: 250px;"></div>
-	<div style="font-size: 0.9em">
-	<?php
-	if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp']))
-	{
-	?>
-	<span style="color: #D0A825">Page Size</span> (in bytes);
-	<span style="color: purple">Page Load time (YSlow)</span> (in ms);
-	<span style="color: #75CF74">Total Requests</span>;
-	<span class="yslow2">YSlow Grade</span> (0-100);
-	<?php
-	}
-
-	if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp']))
-	{
-	?>
-	<span style="color: #6F4428">Page Speed Grade</span> (0-100);
-	<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms);
-	<?php
-	}
-
-	if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp']))
-	{
-	?>
-	<span style="color: #AB0617">dynaTrace rank</span> (0-100);
-	<?php
-	}
-
-	foreach ($metrics as $name => $metric)
-	{
-		?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);
 <?php
-	}
-	?>
-	</div>
+	// Graph
+	if ($enableFlot) { ?>
+		<style>
+		#flot {
+			width: 100%;
+			height: 320px;
+			margin: 0 auto;
+		}
 
-	<?php
-	$details = json_decode($row['yslow_details'], true);
-	?>
-	<script>
-	<?php
-	$comps = array();
+		#overview {
+			width: 480px;
+			height: 60px;
+			margin: 1em auto;
+		}
 
-	if (is_array($details) && array_key_exists('g', $details)) {
-		foreach ($details['g'] as $n => $y) {
-			if (is_array($y) && array_key_exists('components', $y)) {
-				$comps['yslow_'.$n] = $y['components'];
+		.reset {
+			text-align: center;
+		}
+		</style>
+		<div id="flot"></div>
+		<div>
+			<div id="overview"></div>
+			<div class="reset">
+				<button id="reset">Reset Zoom</button>
+			</div>
+		</div>
+		<?php
+	} else {
+		?>
+
+		<div id="my-timeplot" style="height: 250px;"></div>
+		<div style="font-size: 0.9em">
+		<?php
+		if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp']))
+		{
+		?>
+		<span style="color: #D0A825">Page Size</span> (in bytes);
+		<span style="color: purple">Page Load time (YSlow)</span> (in ms);
+		<span style="color: #75CF74">Total Requests</span>;
+		<span class="yslow2">YSlow Grade</span> (0-100);
+		<?php
+		}
+
+		if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp']))
+		{
+		?>
+		<span style="color: #6F4428">Page Speed Grade</span> (0-100);
+		<span style="color: #EE4F00">Page Load time (Page Speed)</span> (in ms);
+		<?php
+		}
+
+		if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp']))
+		{
+		?>
+		<span style="color: #AB0617">dynaTrace rank</span> (0-100);
+		<?php
+		}
+
+		foreach ($metrics as $name => $metric)
+		{
+			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);
+	<?php
+		}
+		?>
+		</div>
+
+		<?php
+		$details = json_decode($row['yslow_details'], true);
+		?>
+		<script>
+		<?php
+		$comps = array();
+
+		if (is_array($details) && array_key_exists('g', $details)) {
+			foreach ($details['g'] as $n => $y) {
+				if (is_array($y) && array_key_exists('components', $y)) {
+					$comps['yslow_'.$n] = $y['components'];
+				}
 			}
 		}
-	}
-	?>
-	var details = <?php echo json_encode($comps)?>;
-	</script>
+		?>
+		var details = <?php echo json_encode($comps)?>;
+		</script>
 
-	<?php 
+	<?php
+	}
+
 	// Breakdowns for each provider
 	foreach ($all_metrics as $provider_name => $provider) {
 		if (!is_null($row[$provider_name.'_timestamp']))
@@ -363,7 +450,8 @@ if ($havemetrics)
 				continue;
 			}
 		?>
-			<a name="<?php echo $provider_name ?>"/><h2 class="breakdowntitle"><a href="<?php echo $provider['url']; ?>" target="_blank"><?php echo $provider['title']?></a> metrics</h2>
+			<a name="<?php echo $provider_name ?>"></a><fieldset id="<?php echo $provider_name ?>"><legend><a href="<?php echo $provider['url']; ?>" target="_blank"><?php echo $provider['title']?></a> metrics</legend>
+			<div class="col">
 			<?php if (array_key_exists('description', $provider)) {
 				?><p><?php echo $provider['description'] ?></p><?php
 			}?>
@@ -378,11 +466,20 @@ if ($havemetrics)
 				foreach ($metrics as $metric) {
 					if ($odd) { ?><tr><?php }
 
-					if (isset($metric[3])) {
-						?><td class="titlecol"><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a></td><?php
-					}else{
-						?><td class="titlecol"><?php echo $metric[0]?></td><?php
+					?><td class="titlecol"><?php
+					if ($enableFlot) { ?>
+					<input type="checkbox" class="metric-toggle" id="<?php echo $provider_name.'-'.$metric[1] ?>"><?php
 					}
+
+					if (isset($metric[3])) {
+						?><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a><?php
+					}else{
+						?><label for="<?php echo $provider_name.'-'.$metric[1] ?>"><?php
+						echo $metric[0];
+						?></label><?php
+					}
+					?>
+					</td><?php
 
 					$value = $row[$provider_name.'_'.$metric[1]];
 
@@ -440,7 +537,9 @@ if ($havemetrics)
 			<?php
 			}
 			?>
-		</table>	
+		</table>
+		</div>
+		</fieldset>
 	<?php 
 		}
 	}
@@ -520,6 +619,10 @@ if (count($har) > 0) {
 ?>
 	</table>
 <?php
+}
+
+if ($enableFlot) {
+	?><script src="<?php echo assetURL('details/showslow.flot.js') ?>"></script><?php
 }
 
 require_once(dirname(dirname(__FILE__)).'/footer.php');
