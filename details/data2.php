@@ -69,7 +69,7 @@ if (!$enabledMetrics[$provider_name] || is_null($provider)) {
 $metrics = array();
 
 if (array_key_exists('metrics', $_GET)) {
-	$metrics_to_show = split(',', $_GET['metrics']);
+	$metrics_to_show = explode(',', $_GET['metrics']);
 
 	$provider_has_metrics_to_show = array();
 
@@ -129,6 +129,9 @@ if (array_key_exists('start', $_GET)) {
 	if ($start !== FALSE && $start != -1) {
 		$query .= "\nAND timestamp >= FROM_UNIXTIME(".mysql_real_escape_string($start).")";
 	}
+} else {
+	// fetch last 3 months by default
+	$query .= "\nAND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)";
 }
 
 if (array_key_exists('end', $_GET)) {
@@ -137,6 +140,8 @@ if (array_key_exists('end', $_GET)) {
 		$query .= "\nAND timestamp <= FROM_UNIXTIME(".mysql_real_escape_string($end).")";
 	}
 }
+
+$query .= "\nORDER BY timestamp DESC";
 
 #echo $query; exit;
 
