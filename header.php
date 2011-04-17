@@ -221,9 +221,7 @@ document.documentElement.firstChild.appendChild(ga);
 	<a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; padding: 0.2em; margin-left: 1em; border: 0"/></a>
 	<div id="poweredby">powered by <a href="http://www.showslow.org/">showslow</a></div>
 
-	<div id="navbox">
 	<?php include(dirname(__FILE__).'/users/navbox.php'); ?>
-	</div>
 
 	<h1><a id="title" href="<?php echo $showslow_base ?>">Show Slow</a></h1>
 	<div style="clear: both"></div>
