@@ -222,17 +222,7 @@ document.documentElement.firstChild.appendChild(ga);
 	<div id="poweredby">powered by <a href="http://www.showslow.org/">showslow</a></div>
 
 	<div id="navbox">
-	<?php
-	if (!is_null($current_user))
-	{?>
-		<span id="username"><a href="<?php echo $showslow_base ?>users/edit.php" title="<?php echo htmlentities($current_user->getName())?>'s user information"><?php echo htmlentities($current_user->getName()) ?></a></span> | 
-		<span id="logout"><a href="<?php echo $showslow_base ?>users/logout.php">logout</a></span>
-	<?php }
-	else
-	{ ?>
-		<span id="signup"><a href="<?php echo $showslow_base ?>users/register.php">Sign Up Now!</a></span> |
-		<span id="login"><a href="<?php echo $showslow_base ?>users/login.php">log in</a></span>
-	<?php }?>
+	<?php include(dirname(__FILE__).'/users/navbox.php'); ?>
 	</div>
 
 	<h1><a id="title" href="<?php echo $showslow_base ?>">Show Slow</a></h1>
