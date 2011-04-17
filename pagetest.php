@@ -2,28 +2,28 @@
 require_once(dirname(__FILE__).'/global.php');
 require_once(dirname(__FILE__).'/users/users.php');
 
-if (!is_null($webPageTestKey) && array_key_exists('url', $_REQUEST))
+if (!is_null($webPageTestKey) && array_key_exists('url', $_POST))
 {
-	$url_id = getUrlId($_REQUEST['url']);
+	$url_id = getUrlId($_POST['url']);
 
-	$runtest = $webPageTestBase.'runtest.php?k='.urlencode($webPageTestKey).'&'.($webPageTestExtraParams ? $webPageTestExtraParams.'&' : '').'f=xml&r=yes&url='.urlencode($_REQUEST['url']);
+	$runtest = $webPageTestBase.'runtest.php?k='.urlencode($webPageTestKey).'&'.($webPageTestExtraParams ? $webPageTestExtraParams.'&' : '').'f=xml&r=yes&url='.urlencode($_POST['url']);
 	$location = null;
 	$private = false;
 
-	if (array_key_exists('location', $_REQUEST)) {
-		$location = $_REQUEST['location'];
+	if (array_key_exists('location', $_POST)) {
+		$location = $_POST['location'];
 		$runtest.='&location='.$location;
 	} else {
 		header('Location: '.$showslow_base.'#no-pagetest-location');
 		exit;
 	}
 
-	if (array_key_exists('private', $_REQUEST)) {
-		$private = $_REQUEST['private'];
-		$runtest.='&private='.$_REQUEST['private'];
+	if (array_key_exists('private', $_POST)) {
+		$private = $_POST['private'];
+		$runtest.='&private='.$_POST['private'];
 	}
-	if (array_key_exists('fvonly', $_REQUEST)) {
-		$runtest.='&fvonly='.$_REQUEST['fvonly'];
+	if (array_key_exists('fvonly', $_POST)) {
+		$runtest.='&fvonly='.$_POST['fvonly'];
 	}
 
 	// fetching locations only when needed

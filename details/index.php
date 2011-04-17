@@ -284,7 +284,7 @@ getPageTestLocations();
 
 if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
-	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="GET" target="_blank">
+	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="POST" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
 	Location: <select name="location">
 	<?php foreach ($webPageTestLocations as $location) {
