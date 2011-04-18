@@ -1,6 +1,10 @@
 <?php
 require_once(dirname(__FILE__).'/global.php');
-UserConfig::setDB(new mysqli( $host, $user, $pass, $db));
+
+UserConfig::$mysql_host = $host;
+UserConfig::$mysql_db = $db;
+UserConfig::$mysql_user = $user;
+UserConfig::$mysql_password = $pass;
 
 if ($facebookAPIKey) {
 	require_once(dirname(__FILE__).'/users/modules/facebook/index.php');
