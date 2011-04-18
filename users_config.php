@@ -7,17 +7,17 @@ UserConfig::$mysql_user = $user;
 UserConfig::$mysql_password = $pass;
 
 if ($facebookAPIKey) {
-	require_once(dirname(__FILE__).'/users/modules/facebook/index.php');
-	UserConfig::$modules[] = new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
+	UserConfig::loadModule('facebook');
+	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
 }
 
 if ($googleFriendConnectSiteID) {
-	require_once(dirname(__FILE__).'/users/modules/google/index.php');
-	UserConfig::$modules[] = new GoogleAuthenticationModule($googleFriendConnectSiteID);
+	UserConfig::loadModule('google');
+	new GoogleAuthenticationModule($googleFriendConnectSiteID);
 }
 
-require_once(dirname(__FILE__).'/users/modules/usernamepass/index.php');
-UserConfig::$modules[] = new UsernamePasswordAuthenticationModule();
+UserConfig::loadModule('usernamepass');
+new UsernamePasswordAuthenticationModule();
 
 // TODO - implement accounts and then switch it to true.
 UserConfig::$useAccounts = false;
