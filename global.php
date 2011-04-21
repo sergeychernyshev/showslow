@@ -279,6 +279,8 @@ $all_metrics = array(
 			'Optimize caching' => array(
 				array( 'Leverage browser caching',	'pBrowserCache',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageBrowserCaching'),
 				array( 'Leverage proxy caching',	'pCacheValid',		PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageProxyCaching'),
+				array( 'Remove query strings from static resources',	'pRemoveQuery',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageBrowserCaching'),
+				array( 'Specify a Vary: Accept-Encoding header',	'pVaryAE',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/caching.html#LeverageBrowserCaching')
 			),
 			'Minimize round-trip times' => array(
 				array( 'Minimize DNS lookups',				'pMinDns',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#MinimizeDNSLookups'),
