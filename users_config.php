@@ -44,3 +44,9 @@ define('SHOWSLOW_ACTIVITY_URL_SEARCH', 3);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_ADD_URL] = array('Added URL for monitoring', 5);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_PAGETEST_START] = array('Started WebPagetest test', 2);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_URL_SEARCH] = array('Searched a URL in the list', 1);
+
+// Features
+define('SHOWSLOW_FLOT_SUPPORT', 		1);
+// array of features
+UserConfig::$features[SHOWSLOW_FLOT_SUPPORT] = array('Flot charting library support', true, false);
+

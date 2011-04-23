@@ -32,34 +32,29 @@ if (!$result) {
 
 $data = array();
 
-header('Content-type: text/xml');
 if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
 	header('Cace-control: max-age=315569260');
 }
-$xml = new SimpleXMLElement('<data/>');
+
+header('Content-type: application/json');
+$events = array();
 
 while ($row = mysql_fetch_assoc($result)) {
-	$event = $xml->addChild('event');
-	$event->addAttribute('start', date('r', $row['s']));
-	$event->addAttribute('latestStart', date('r', $row['s']));
-	$event->addAttribute('title', ($row['type'] ? $row['type'].': ' : '').$row['title']);
-
+	$start = $row['s'];
 	$end = $row['e'];
 
-	if (!$row['e'])
-	{
-		$end = $row['s'];
+	if (!$end) {
+		$end = $start;
 	}
 
-	$event->addAttribute('end', date('r', $end));
-	$event->addAttribute('earliestEnd', date('r', $end));
-
-	if ($row['link'])
-	{
-		$event->addAttribute('link', $row['link']);
-	}
+	$events[] = array(
+		'xaxis' => array(
+			'from' => $start * 1000,
+			'to' => $end * 1000
+		)
+	);
 }
 mysql_free_result($result);
 
-echo $xml->asXML();
+echo json_encode($events);

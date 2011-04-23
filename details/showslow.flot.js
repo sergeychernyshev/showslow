@@ -110,7 +110,11 @@ var SS = (function ($) {
 			},
 			xaxis: { mode: 'time' },
 			yaxis: { ticks: [], min: 0, autoscaleMargin: 0.1 },
-			selection: { mode: 'x', color: 'blue' }
+			selection: { mode: 'x', color: 'blue' },
+			grid: {
+				markingsLineWidth: 1,
+				markingsColor: "#e51837"
+			},
 		},
 
 		data = [],
@@ -176,7 +180,7 @@ var SS = (function ($) {
 	// populate event lines
 	function _getEvents() {
 		$.ajax({
-			url: 'events.php',
+			url: 'events2.php',
 			data: 'url=' + url,
 			dataType: 'json',
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -185,6 +189,7 @@ var SS = (function ($) {
 			},
 			success: function (results) {
 				_graph_options.grid.markings = results;
+				_overview_options.grid.markings = results;
 			}
 		});
 	}

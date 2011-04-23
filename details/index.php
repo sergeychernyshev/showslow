@@ -64,6 +64,11 @@ $TITLE = 'Details for '.htmlentities($url);
 
 $SCRIPTS[] = 'http://yui.yahooapis.com/combo?2.8.1/build/yahoo/yahoo-min.js&2.8.1/build/event/event-min.js&2.8.1/build/yuiloader/yuiloader-min.js';
 
+$current_user = User::get();
+if (!$enableFlot && !is_null($current_user)) {
+	$enableFlot = $current_user->hasFeature(SHOWSLOW_FLOT_SUPPORT);
+}
+
 if (!$enableFlot) {
 	$SCRIPTS = array_merge($SCRIPTS, array(
 		$showslow_base.'ajax/simile-ajax-api.js?bundle=true',
