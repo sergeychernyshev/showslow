@@ -32,34 +32,60 @@ if (!$result) {
 
 $data = array();
 
-header('Content-type: text/xml');
 if (array_key_exists('ver', $_GET)) {
 	header('Expires: '.date('r', time() + 315569260));
 	header('Cace-control: max-age=315569260');
 }
-$xml = new SimpleXMLElement('<data/>');
+
+if ($enableFlot) {
+	header('Content-type: application/json');
+	$events = array();
+} else {
+	header('Content-type: text/xml');
+	$xml = new SimpleXMLElement('<data/>');
+}
 
 while ($row = mysql_fetch_assoc($result)) {
-	$event = $xml->addChild('event');
-	$event->addAttribute('start', date('r', $row['s']));
-	$event->addAttribute('latestStart', date('r', $row['s']));
-	$event->addAttribute('title', ($row['type'] ? $row['type'].': ' : '').$row['title']);
+	if ($enableFlot) {
+		$start = $row['s'];
+		$end = $row['e'];
 
-	$end = $row['e'];
+		if (!$end) {
+			$end = $start;
+		}
 
-	if (!$row['e'])
-	{
-		$end = $row['s'];
-	}
+		$events[] = array(
+			'xaxis' => array(
+				'from' => $start * 1000,
+				'to' => $end * 1000
+			)
+		);
+	} else {
+		$event = $xml->addChild('event');
+		$event->addAttribute('start', date('r', $row['s']));
+		$event->addAttribute('latestStart', date('r', $row['s']));
+		$event->addAttribute('title', ($row['type'] ? $row['type'].': ' : '').$row['title']);
 
-	$event->addAttribute('end', date('r', $end));
-	$event->addAttribute('earliestEnd', date('r', $end));
+		$end = $row['e'];
 
-	if ($row['link'])
-	{
-		$event->addAttribute('link', $row['link']);
+		if (!$row['e'])
+		{
+			$end = $row['s'];
+		}
+
+		$event->addAttribute('end', date('r', $end));
+		$event->addAttribute('earliestEnd', date('r', $end));
+
+		if ($row['link'])
+		{
+			$event->addAttribute('link', $row['link']);
+		}
 	}
 }
 mysql_free_result($result);
 
-echo $xml->asXML();
+if ($enableFlot) {
+	echo json_encode($events);
+} else {
+	echo $xml->asXML();
+}
