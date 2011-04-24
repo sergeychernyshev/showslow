@@ -47,6 +47,5 @@ UserConfig::$activities[SHOWSLOW_ACTIVITY_URL_SEARCH] = array('Searched a URL in
 
 // Features
 define('SHOWSLOW_FLOT_SUPPORT', 		1);
-// array of features
-UserConfig::$features[SHOWSLOW_FLOT_SUPPORT] = array('Flot charting library support', true, false);
+new Feature(SHOWSLOW_FLOT_SUPPORT, 'Flot charting library support');
 
