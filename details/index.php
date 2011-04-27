@@ -375,16 +375,19 @@ if ($havemetrics)
 			margin: 1em auto;
 		}
 
-		.reset {
+		#graphbuttons{
 			text-align: center;
+			margin: 1em;
 		}
 		</style>
 		<div id="flot"></div>
-		<div>
-			<div id="overview"></div>
-			<div class="reset">
+		<div id="graphcontrols">
+			<div id="graphbuttons">
+				<button id="default">Default Metrics</button>
+				<button id="clear">Clear Metrics</button>
 				<button id="reset">Reset Zoom</button>
 			</div>
+			<div id="overview"></div>
 		</div>
 		<?php
 	} else {

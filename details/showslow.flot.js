@@ -21,7 +21,7 @@ var SS = (function ($) {
 					lineWidth: 1
 				},
 				points: {
-					show: false
+					show: true
 				},
 				shadowSize: 1
 			},
@@ -251,23 +251,23 @@ var SS = (function ($) {
 		}
 	}
 
+	function _clearMetrics() {
+		$('.metric-toggle').each(function () {
+			$(this).attr('checked', false);
+		});
+		$('.metric-toggle').change();
+	}
 
 	function _resetZoomSelection () {
 		_graph = $.plot($('#flot'), data, _graph_options);
 		_overview = $.plot($('#overview'), data, _overview_options);
 	}
 
-	$(document).ready(function() {
-		_getEvents();
-
-		_metrics = flot_metrics;
-
-		$('.metric-toggle').each(function () {
-			$(this).attr('checked', false);
-		});
-
+	function _setDefaultMetrics () {
 //		var load_functions = [];
 //		var func_num = 0;
+
+		_clearMetrics();
 
 		for (var pid in default_metrics) {
 			for (var i=0; i < default_metrics[pid].length; i++) {
@@ -303,6 +303,15 @@ var SS = (function ($) {
 		// load first function
 //		load_functions[0]();
 
+	}
+
+	$(document).ready(function() {
+		_getEvents();
+
+		_metrics = flot_metrics;
+
+		_setDefaultMetrics();
+
 		// Event handlers to all checkboxes to show/hide
 		// individual metrics within graph
 		$('.metric-toggle').each(function () {
@@ -333,10 +342,10 @@ var SS = (function ($) {
 			});
 		});
 
-		// Attach method to reset button
-		$('#reset').click(function () {
-			SS.resetZoomSelection();
-		});
+		// Attach methods to buttons
+		$('#reset').click(_resetZoomSelection);
+		$('#clear').click(_clearMetrics);
+		$('#default').click(_setDefaultMetrics);
 
 		// Not necessary but looks nice to have an empty graph present before use
 		$.plot('#flot', [], {
