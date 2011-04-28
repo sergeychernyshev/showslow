@@ -109,8 +109,6 @@ if (array_key_exists('ranker', $_GET)) {
 	}
 }
 
-error_log("ranker: $ranker");
-
 // calculate query string
 $params = '';
 $first = true;
