@@ -12,6 +12,20 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 25
+ * Somehow missed one of the UserBase tables
+*/
+$versions[25]['up'][]	= "CREATE TABLE u_user_features (
+`user_id` INT( 10 ) UNSIGNED NOT NULL COMMENT  'User ID',
+`feature_id` INT( 2 ) UNSIGNED NOT NULL COMMENT  'Feature ID',
+PRIMARY KEY (  `user_id` ,  `feature_id` )
+) ENGINE = INNODB COMMENT = 'Keeps feature list for all users'";
+$versions[25]['up'][] = "ALTER TABLE `u_user_features`
+DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
+
+$versions[25]['down'][] = "DROP TABLE IF EXISTS u_user_features";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 24
  * Added UserBase accounts table which we never created
 */
