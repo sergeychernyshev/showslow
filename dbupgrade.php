@@ -15,7 +15,7 @@ $versions = array();
  * VERSION 25
  * Somehow missed one of the UserBase tables
 */
-$versions[25]['up'][]	= "CREATE TABLE u_user_features (
+$versions[25]['up'][]	= "CREATE TABLE IF NOT EXISTS u_user_features (
 `user_id` INT( 10 ) UNSIGNED NOT NULL COMMENT  'User ID',
 `feature_id` INT( 2 ) UNSIGNED NOT NULL COMMENT  'Feature ID',
 PRIMARY KEY (  `user_id` ,  `feature_id` )
