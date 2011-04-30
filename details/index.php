@@ -53,6 +53,28 @@ $pagespeed_last_id = $row['pagespeed_last_id'];
 $dynatrace_last_id = $row['dynatrace_last_id'];
 mysql_free_result($result);
 
+$custom_metrics = array();
+foreach ($metrics as $id => $metric) {
+	$query = sprintf("SELECT value
+		FROM metric WHERE url_id = %d AND metric_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
+		ORDER BY timestamp DESC LIMIT 1",
+		mysql_real_escape_string($urlid),
+		mysql_real_escape_string($metric['id'])
+	);
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	if ($row_metrics = mysql_fetch_assoc($result)) {
+		$custom_metrics[$metric['id']]['metric_slug'] = $id;
+		$custom_metrics[$metric['id']]['metric'] = $metric;
+		$custom_metrics[$metric['id']]['value'] = $row_metrics['value'];
+	}
+}
+
 header('Last-modified: '.date(DATE_RFC2822, $lastupdate));
 
 if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) && ($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))) {
@@ -91,35 +113,68 @@ $SCRIPTS[] = assetURL('details/details.js');
 $SECTION = 'all';
 require_once(dirname(dirname(__FILE__)).'/header.php');
 
-$flot_metrics = array();
-$color = 0;
-foreach ($all_metrics as $provider_name => $provider) {
-	if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
-	{
-		foreach ($provider['metrics'] as $section_name => $section) {
-			foreach ($section as $metric) {
-				$flot_metrics[$provider_name][$metric[1]] = array(
-					'color' => $color++,
-					'label' => $metric[0].' ('.$provider['title'].')',
-					'data' => array(),
-					'yaxis' => $metric[2] + 1
-				);
+if ($enableFlot) {
+	$flot_metrics = array();
+	$color = 0;
+
+	$custom_metric_colors = array();
+	foreach ($metrics as $slug => $custom_metric) {
+		// assume the default value is NUBER
+		if (!array_key_exists('type', $custom_metric)) {
+			$custom_metric['type'] = NUMBER;
+		}
+
+		$flot_metrics['custom'][$slug] = array(
+			'color' => $color++,
+			'label' => $custom_metric['title'].' (custom)',
+			'data' => array(),
+			'yaxis' => $custom_metric['type'] + 1
+		);
+
+		$custom_metric_colors[] = $custom_metric['color'];
+	}
+
+	foreach ($all_metrics as $provider_name => $provider) {
+		if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
+		{
+			foreach ($provider['metrics'] as $section_name => $section) {
+				foreach ($section as $metric) {
+					$flot_metrics[$provider_name][$metric[1]] = array(
+						'color' => $color++,
+						'label' => $metric[0].' ('.$provider['title'].')',
+						'data' => array(),
+						'yaxis' => $metric[2] + 1
+					);
+				}
 			}
 		}
 	}
-}
 
-foreach (array_keys($defaultGraphMetrics) as $provider_name) {
-	if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
-	{
-		$default_metrics[$provider_name] = $defaultGraphMetrics[$provider_name];
+	foreach (array_keys($defaultGraphMetrics) as $provider_name) {
+		if ($provider_name == 'custom') {
+			foreach ($defaultGraphMetrics['custom'] as $metric_name) {
+				foreach ($custom_metrics as $id => $metric) {
+					if ($metric['metric_slug'] == $metric_name) {
+						$default_metrics[$provider_name][] = $metric_name;
+						break;
+					}
+				}
+			}
+		} else if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp'])) {
+			$default_metrics[$provider_name] = $defaultGraphMetrics[$provider_name];
+		}
 	}
-}
-?>
-<script>
-var flot_metrics = <?php echo json_encode($flot_metrics); ?>;
+
+	?>
+
+	<script>
+	var flot_metrics = <?php echo json_encode($flot_metrics); ?>;
+	var default_metrics = <?php echo json_encode($default_metrics); ?>;
+	var custom_metric_colors = <?php echo json_encode($custom_metric_colors); ?>;
+<?php } else { ?>
+	<script>
+<?php } ?>
 var url = <?php echo json_encode($url); ?>;
-var default_metrics = <?php echo json_encode($default_metrics); ?>;
 var metrics = <?php echo json_encode($metrics); ?>;
 </script>
 <style>
@@ -245,6 +300,8 @@ while ($pagetest_row = mysql_fetch_assoc($result)) {
 	$pagetest[] = $pagetest_row;
 }
 mysql_free_result($result);
+
+$data = array();
 
 $havemetrics = false;
 if ($row) {
@@ -447,6 +504,106 @@ if ($havemetrics)
 		var details = <?php echo json_encode($comps)?>;
 		</script>
 
+	<?php
+	}
+
+	// Custom metrics
+	if (count($custom_metrics) > 0) {
+		?><a name="custom"></a><fieldset id="custom"><legend>Custom metrics</legend>
+
+		<div class="col">
+		Metrics defined for this instance
+		<table>
+		<?php
+		$odd = true;
+		foreach ($custom_metrics as $id => $data) {
+			$metric = $data['metric'];
+
+			// assume the default value is NUBER
+			if (!array_key_exists('type', $metric)) {
+				$metric['type'] = NUMBER;
+			}
+
+			if ($odd) { ?><tr><?php }
+
+			?><td class="titlecol"><?php
+			if ($enableFlot) { ?>
+			<input type="checkbox" class="metric-toggle" id="custom-<?php echo $data['metric_slug']?>"><?php
+			}
+
+			?><label for="custom-<?php echo $data['metric_slug'] ?>"><?php
+			echo $metric['title'];
+
+			if ($metric['type'] == NUMBER) {
+				if (array_key_exists('min', $metric) && array_key_exists('max', $metric)) {
+					echo ' ('.$metric['min'].' - '.$metric['max'].')';
+				} else if (array_key_exists('min', $metric)) {
+					echo ' ('.$metric['min'].' and up)';
+				} else if (array_key_exists('max', $metric)) {
+					echo ' (Under '.$metric['max'].')';
+				}
+			}
+
+			?></label>
+			</td>
+			<?php
+
+			$value = $data['value'];
+
+			if (is_null($value)) {
+				?><td colspan="3" class="na">n/a</td><?php
+			} else {
+				if ($metric['type'] == PERCENT_GRADE){
+					$pretty_score = prettyScore($value);
+				?>
+					<td class="value"><?php echo $pretty_score?> (<i><?php echo htmlentities($value)?></i>%)</td>
+					<td><div class="gbox" title="Current <?php echo $metric['title']?>: <?php echo $pretty_score?> (<?php echo $value?>%)"><div class="bar c<?php echo scoreColorStep($value)?>" style="width: <?php echo $value+1?>px"/></div></td><?php
+				} else {
+					?><td colspan="3" class="value"><?php
+
+					if (array_key_exists('levels', $metric)) {
+						?><div class="levelbox-<?php
+						if ($value < $metric['levels'][0]) {
+							echo 'low';
+						} else if ($value < $metric['levels'][1]) {
+							echo 'mid';
+						} else {
+							echo 'high';
+						}
+						?>"></div><?php
+					} else if (array_key_exists('reverselevels', $metric)) {
+						?><div class="levelbox-<?php
+						if ($value < $metric['reverselevels'][0]) {
+							echo 'high';
+						} else if ($value < $metric['reverselevels'][1]) {
+							echo 'mid';
+						} else {
+							echo 'low';
+						}
+						?>"></div><?php
+					}
+
+					if ($metric['type'] == BYTES) {
+						?><span title="<?php echo $value ?> bytes"><?php echo floor($value/1000) ?>KB</span><?php	
+					} else {
+						echo $value.$metric_types[$metric['type']]['units'];
+					}
+
+					?></td><?php
+				}
+			}
+
+			if (!$odd) { ?></tr><?php }
+
+			$odd = !$odd;
+		?>
+		</tr>
+		<?php
+		}
+		?>
+		</table>
+		</div>
+		</fieldset>
 	<?php
 	}
 

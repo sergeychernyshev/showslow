@@ -48,64 +48,121 @@ mysql_free_result($result);
 $query = "SELECT UNIX_TIMESTAMP(timestamp) as timestamp";
 
 $provider_name = $_GET['provider'];
-$provider = $all_metrics[$provider_name];
-
-if (!$enabledMetrics[$provider_name] || is_null($provider)) {
-	header('HTTP/1.0 400 Bad Request');
-
-	?><html>
-<head>
-<title>Bad Request: provider is not supported</title>
-</head>
-<body>
-<h1>Bad Request: provider is not supported</h1>
-<p>Data for this provider is not stored in this instance</p>
-</body></html>
-<?php 
-	exit;
-}
 
 # contains all metrics (not only names) to return
-$metrics = array();
+$result_metrics = array();
 
-if (array_key_exists('metrics', $_GET)) {
-	$metrics_to_show = explode(',', $_GET['metrics']);
-
-	$provider_has_metrics_to_show = array();
-
-	# lets go through all metrics that we know for this provider
-	foreach ($provider['metrics'] as $section_name => $section) {
-		foreach ($section as $metric) {
-			$index = array_search($metric[1], $metrics_to_show);
-
-			# if metric was requested, lets add it to $metrics array
-			if (is_array($metrics_to_show) && $index !== FALSE) {
-				$metrics[$index] = $metric;
-				$provider_has_metrics_to_show[] = $metric[1];
-			}
-		}
-	}
-
-	# if we have more metrics requested, then we have, let's errror out
-	$leftover = array_diff($metrics_to_show, $provider_has_metrics_to_show);
-	if (count($leftover) > 0) {
+if ($provider_name == 'custom') {
+	if (count($metrics) == 0) {
 		header('HTTP/1.0 400 Bad Request');
 
 		?><html>
 	<head>
-	<title>Bad Request: metrics are not supported</title>
+	<title>Bad Request: no custom metrics specified</title>
 	</head>
 	<body>
-	<h1>Bad Request: metrics are not supported</h1>
-	<p>Metric(s) <b><?php echo implode(', ', $leftover) ?></b> not stored for <b><?php echo $provider['title']?></b></p>
+	<h1>Bad Request: no custom metrics specified</h1>
+	<p>No custom metrics are stored by this instance</p>
+	</body></html>
+	<?php
+		exit;
+
+	}
+
+	if (!array_key_exists('metrics', $_GET)) {
+		?><html>
+		<head>
+		<title>Bad Request: custom metric is not specified</title>
+		</head>
+		<body>
+		<h1>Bad Request: custom metric is not specified</h1>
+		<p>Custom metric name must be specified</p>
+		</body></html>
+		<?php
+		exit;
+	}
+
+	$custom_metric_slug = $_GET['metrics'];
+
+	if (!array_key_exists($custom_metric_slug, $metrics)) {
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+	<head>
+	<title>Bad Request: custom metric is not supported</title>
+	</head>
+	<body>
+	<h1>Bad Request: custom metric is not supported</h1>
+	<p>Custom metric <b><?php echo htmlentities($custom_metric_slug) ?></b> is not stored in this instance</p>
 	</body></html>
 	<?php
 		exit;
 	}
+
+	$custom_metric = $metrics[$custom_metric_slug];
+	// assume the default value is NUBER
+	if (!array_key_exists('type', $custom_metric)) {
+		$custom_metric['type'] = NUMBER;
+	}
+
+	// faking regular metric entry
+	$result_metrics[] = array($custom_metric['title'], $custom_metric_slug, $custom_metric['type']);
 } else {
-	foreach (array_values($provider['metrics']) as $section) {
-		foreach ($section as $metric) {
-			$metrics[] = $metric;
+	$provider = $all_metrics[$provider_name];
+
+	if (!$enabledMetrics[$provider_name] || is_null($provider)) {
+		header('HTTP/1.0 400 Bad Request');
+
+		?><html>
+	<head>
+	<title>Bad Request: provider is not supported</title>
+	</head>
+	<body>
+	<h1>Bad Request: provider is not supported</h1>
+	<p>Data for this provider is not stored in this instance</p>
+	</body></html>
+	<?php
+		exit;
+	}
+	if (array_key_exists('metrics', $_GET)) {
+		$metrics_to_show = explode(',', $_GET['metrics']);
+
+		$provider_has_metrics_to_show = array();
+
+		# lets go through all metrics that we know for this provider
+		foreach ($provider['metrics'] as $section_name => $section) {
+			foreach ($section as $metric) {
+				$index = array_search($metric[1], $metrics_to_show);
+
+				# if metric was requested, lets add it to $result_metrics array
+				if (is_array($metrics_to_show) && $index !== FALSE) {
+					$result_metrics[$index] = $metric;
+					$provider_has_metrics_to_show[] = $metric[1];
+				}
+			}
+		}
+
+		# if we have more metrics requested, then we have, let's errror out
+		$leftover = array_diff($metrics_to_show, $provider_has_metrics_to_show);
+		if (count($leftover) > 0) {
+			header('HTTP/1.0 400 Bad Request');
+
+			?><html>
+		<head>
+		<title>Bad Request: metrics are not supported</title>
+		</head>
+		<body>
+		<h1>Bad Request: metrics are not supported</h1>
+		<p>Metric(s) <b><?php echo htmlentities(implode(', ', $leftover)) ?></b> are not stored for <b><?php echo $provider['title']?></b></p>
+		</body></html>
+		<?php
+			exit;
+		}
+	} else {
+		foreach (array_values($provider['metrics']) as $section) {
+			foreach ($section as $metric) {
+				$result_metrics[] = $metric;
+			}
 		}
 	}
 }
@@ -113,16 +170,24 @@ if (array_key_exists('metrics', $_GET)) {
 # a list of result columns to smooth if requested
 $to_smooth = array();
 
-for ($i = 0; $i < count($metrics); $i++) {
-	$metric = $metrics[$i];
+if ($provider_name == 'custom') {
+	$query .= ",\n\t\tvalue AS ".$custom_metric_slug;
+	$query .= "\nFROM metric";
+	$query .= "\nWHERE url_id = ".mysql_real_escape_string($urlid);
+	$query .= "\nAND metric_id = ".mysql_real_escape_string($custom_metric['id']);
 
-	$to_smooth[] = $metric[1];
-	$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$metric[1];
+} else {
+	for ($i = 0; $i < count($result_metrics); $i++) {
+		$metric = $result_metrics[$i];
+
+		$to_smooth[] = $metric[1];
+		$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$metric[1];
+	}
+
+	$query .= "\nFROM ".$provider['table'];
+
+	$query .= "\nWHERE ".$provider['table'].".url_id = ".mysql_real_escape_string($urlid);
 }
-
-$query .= "\nFROM ".$provider['table'];
-
-$query .= "\nWHERE ".$provider['table'].".url_id = ".mysql_real_escape_string($urlid);
 
 if (array_key_exists('start', $_GET)) {
 	$start = strtotime($_GET['start']);
@@ -191,8 +256,8 @@ header('Content-disposition: '.(array_key_exists('download', $_GET) ? 'attachmen
 
 if ($format == 'csv') {
 	echo '# Measurement time';
-	for ($i = 0; $i < count($metrics); $i++) {
-		$metric = $metrics[$i];
+	for ($i = 0; $i < count($result_metrics); $i++) {
+		$metric = $result_metrics[$i];
 		$units = $metric_types[$metric[2]]['legend'];
 		echo ', ['.$metric[1].'] '.$metric[0].($units !== '' ? ' ('.$units.')' : '');
 	}
@@ -201,8 +266,8 @@ if ($format == 'csv') {
 	foreach ($rows as $row) {
 		echo date('c', $row['timestamp']);
 
-		for ($i = 0; $i < count($metrics); $i++) {
-			$metric = $metrics[$i];
+		for ($i = 0; $i < count($result_metrics); $i++) {
+			$metric = $result_metrics[$i];
 			echo ','.$row[$metric[1]];
 		}
 
@@ -216,8 +281,8 @@ if ($format == 'csv') {
 		# JS timestamp (used by flot) - milliseconds since January 1, 1970 00:00:00 UTC
 		$jsondata[$i][] = $rows[$i]['timestamp'] * 1000;
 
-		for ($j = 0; $j < count($metrics); $j++) {
-			$jsondata[$i][] = $rows[$i][$metrics[$j][1]];
+		for ($j = 0; $j < count($result_metrics); $j++) {
+			$jsondata[$i][] = $rows[$i][$result_metrics[$j][1]];
 		}
 	}
 	echo json_encode($jsondata);

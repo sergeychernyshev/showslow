@@ -237,9 +237,6 @@ $enableFlot = false;
 
 # ======== PUT ALL THINGS THAT SHOULDN'T BE CONFIGURABLE BELOW THIS LINE ==================
 
-# config will override defaults above
-require_once(dirname(__FILE__).'/config.php');
-
 # metric type constants
 define('BYTES', 0);
 define('PERCENT_GRADE', 1);
@@ -256,6 +253,9 @@ $metric_types = array(
 	NUMBER =>		array( 'legend'	=> '',		'units'	=> ''),
 	PERCENTS =>		array( 'legend'	=> '0-100',	'units'	=> '%')
 );
+
+# config will override defaults above
+require_once(dirname(__FILE__).'/config.php');
 
 # a list of metrics (excluding custom metrics) available to be displayed on the graph
 $all_metrics = array(
