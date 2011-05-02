@@ -12,6 +12,23 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 26
+ * Adding some indexes for faster loads
+*/
+$versions[26]['up'][] = "ALTER TABLE `dynatrace` ADD INDEX (`url_id`)";
+$versions[26]['up'][] = "ALTER TABLE `har` ADD INDEX (`url_id`)";
+$versions[26]['up'][] = "ALTER TABLE `dommonster` ADD INDEX (`url_id`)";
+$versions[26]['up'][] = "ALTER TABLE `metric` ADD INDEX (`url_id`)";
+$versions[26]['up'][] = "ALTER TABLE `dynatrace` ADD INDEX (`url_id`)";
+
+$versions[26]['down'][] = "ALTER TABLE `pagetest` DROP INDEX (`url_id`)";
+$versions[26]['down'][] = "ALTER TABLE `metric` DROP INDEX (`url_id`)";
+$versions[26]['down'][] = "ALTER TABLE `dommonster` DROP INDEX (`url_id`)";
+$versions[26]['down'][] = "ALTER TABLE `har` DROP INDEX (`url_id`)";
+$versions[26]['down'][] = "ALTER TABLE `dynatrace` DROP INDEX (`url_id`)";
+
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 25
  * Somehow missed one of the UserBase tables
 */
