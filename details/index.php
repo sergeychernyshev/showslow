@@ -115,7 +115,7 @@ require_once(dirname(dirname(__FILE__)).'/header.php');
 
 if ($enableFlot) {
 	$flot_metrics = array();
-	$color = 0;
+	$color = 49;
 
 	$custom_metric_colors = array();
 	foreach ($metrics as $slug => $custom_metric) {
@@ -140,7 +140,6 @@ if ($enableFlot) {
 			foreach ($provider['metrics'] as $section_name => $section) {
 				foreach ($section as $metric) {
 					$flot_metrics[$provider_name][$metric[1]] = array(
-						'color' => $color++,
 						'label' => $metric[0].' ('.$provider['title'].')',
 						'data' => array(),
 						'yaxis' => $metric[2] + 1
@@ -436,13 +435,14 @@ if ($havemetrics)
 			text-align: center;
 			margin: 1em;
 		}
+
 		</style>
 		<div id="flot"></div>
 		<div id="graphcontrols">
 			<div id="graphbuttons">
 				<button id="default">Default Metrics</button>
 				<button id="clear">Clear Metrics</button>
-				<button id="reset">Reset Zoom</button>
+				<button id="reset" disabled="disabled">Reset Zoom</button>
 			</div>
 			<div id="overview"></div>
 		</div>

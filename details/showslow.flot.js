@@ -28,7 +28,7 @@ var SS = (function ($) {
 
 			legend: {
 				show: true,
-				position: 'sw',
+				position: 'sw'
 			},
 
 			grid: {
@@ -41,7 +41,7 @@ var SS = (function ($) {
 				markingsColor: "#e51837"
 			},
 
-			colors: custom_metric_colors.concat(['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#000000','#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#808080','#C00000', '#00C000', '#0000C0', '#C0C000', '#C000C0', '#00C0C0', '#C0C0C0','#400000', '#004000', '#000040', '#404000', '#400040', '#004040', '#404040','#200000', '#002000', '#000020', '#202000', '#200020', '#002020', '#202020','#600000', '#006000', '#000060', '#606000', '#600060', '#006060', '#606060','#A00000', '#00A000', '#0000A0', '#A0A000', '#A000A0', '#00A0A0', '#A0A0A0','#E00000', '#00E000', '#0000E0', '#E0E000', '#E000E0', '#00E0E0', '#E0E0E0']),
+			colors: ['#F00', '#0F0', '#00F', '#FF0', '#F0F', '#0FF', '#D00', '#0D0', '#00D', '#DD0', '#D0D', '#0DD', '#B00', '#0B0', '#00B', '#BB0', '#B0B', '#0BB', '#A00', '#0A0', '#00A', '#AA0', '#A0A', '#0AA', '#900', '#090', '#009', '#990', '#909', '#099', '#800', '#080', '#008', '#880', '#808', '#088', '#600', '#060', '#006', '#660', '#606', '#066', '#400', '#040', '#004', '#440', '#404', '#044', '#000'].concat(custom_metric_colors),
 
 			crosshair: {
 				mode: 'x',
@@ -69,8 +69,8 @@ var SS = (function ($) {
 				},
 				{// Scores/Grades (Percentage) (2)
 					label: 'Scores/Grades',
-					min: 0,
-					max: 100
+//					min: 0,
+//					max: 100
 				},
 				{// Milliseconds (3)
 					position: 'right',
@@ -132,12 +132,14 @@ var SS = (function ($) {
 						  xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
 					  }));
 		_overview.setSelection(ranges, true);
+		$('#reset').removeAttr('disabled');
 	});
 
 
 	// Perform zooming on big graph based on little graph selection
 	$("#overview").bind("plotselected", function (event, ranges) {
 		_graph.setSelection(ranges);
+		$('#reset').removeAttr('disabled');
 	});
 
 	$("#overview").bind("plotunselected", function () {
@@ -170,10 +172,11 @@ var SS = (function ($) {
 			display: 'none',
 			top: y + 5,
 			left: x + 5,
-			border: '1px solid #fdd',
-			padding: '2px',
-			'background-color': '#fee',
-			opacity: 0.80
+			border: '1px solid black',
+			padding: '0.7em',
+			'background-color': 'black',
+			'color': 'white',
+			opacity: 0.90
 		}).appendTo("body").fadeIn(200);
 	}
 
@@ -205,6 +208,11 @@ var SS = (function ($) {
 				return;
 			},
 			success: function (results) {
+				// reordering the array values from earliest to latest
+				results.sort(function(a, b) {
+					return (a[0] - b[0]);
+				});
+
 				var metrics_in_order = options.metrics.split(','), // Order matters
 					i = 0, j = 0,
 					results_max = results.length,
@@ -234,6 +242,8 @@ var SS = (function ($) {
 				_graph = $.plot($('#flot'), data, _graph_options);
 				_overview = $.plot($('#overview'), data, _overview_options);
 
+				$('#clear').removeAttr('disabled');
+
 				if (callback) { callback(results); }
 			}
 		});
@@ -256,11 +266,14 @@ var SS = (function ($) {
 			$(this).attr('checked', false);
 		});
 		$('.metric-toggle').change();
+
+		$('#clear').attr('disabled', 'disabled');
 	}
 
 	function _resetZoomSelection () {
 		_graph = $.plot($('#flot'), data, _graph_options);
 		_overview = $.plot($('#overview'), data, _overview_options);
+		$('#reset').attr('disabled', 'disable');
 	}
 
 	function _setDefaultMetrics () {
@@ -272,6 +285,7 @@ var SS = (function ($) {
 		for (var pid in default_metrics) {
 			for (var i=0; i < default_metrics[pid].length; i++) {
 				var checkbox = $('#' + pid + '-' + default_metrics[pid][i]);
+
 				checkbox.attr('checked', 'true');
 				checkbox.next().css('color', '#f00');
 
@@ -317,6 +331,61 @@ var SS = (function ($) {
 //		load_functions[0]();
 
 	}
+
+	var updateLegendTimeout = null;
+	var latestPosition = null;
+
+	function updateLegend() {
+		var legends = $("#flot .legendLabel");
+
+		updateLegendTimeout = null;
+
+		var pos = latestPosition;
+
+		var axes = _graph.getAxes();
+		if (pos.x < axes.xaxis.min ||
+			pos.x > axes.xaxis.max ||
+			pos.y < axes.yaxis.min ||
+			pos.y > axes.yaxis.max
+		) {
+			return;
+		}
+
+		var i, j, dataset = _graph.getData();
+		for (i = 0; i < dataset.length; ++i) {
+			var series = dataset[i];
+
+			// find the nearest points, x-wise
+			for (j = 0; j < series.data.length; ++j) {
+				var index = j;
+				if (series.data[0][0] > series.data[series.data.length - 1][0]) {
+					// if we're working in revere order, then start from the other end
+					index = series.data.length - 1 - j;
+				}
+
+				if (series.data[j][0] > pos.x) {
+					break;
+				}
+			}
+
+			// using previous point
+			var y, p1 = series.data[j - 1], p2 = series.data[j];
+			if (p1 == null) {
+				y = p2[1];
+			} else {
+				y = p1[1];
+			}
+
+			legends.eq(i).text(series.label + ': ' + series.yaxis.tickFormatter(y, series.yaxis));
+		}
+	}
+
+	$("#flot").bind("plothover",  function (event, pos, item) {
+		latestPosition = pos;
+		if (!updateLegendTimeout) {
+			updateLegendTimeout = setTimeout(updateLegend, 50);
+		}
+	});
 
 	$(document).ready(function() {
 		_getEvents();

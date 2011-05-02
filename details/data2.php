@@ -277,13 +277,21 @@ if ($format == 'csv') {
 	# flat array with no keys - order is the same as specified in metrics parameter
 	$jsondata = array();
 
+	echo '[';
+
+	$first = true;
 	for ($i = 0; $i < count($rows); $i++) {
+		echo $first ? '' : ',';
+		$first = false;
+
 		# JS timestamp (used by flot) - milliseconds since January 1, 1970 00:00:00 UTC
-		$jsondata[$i][] = $rows[$i]['timestamp'] * 1000;
+		echo '['.$rows[$i]['timestamp'] * 1000;
 
 		for ($j = 0; $j < count($result_metrics); $j++) {
-			$jsondata[$i][] = $rows[$i][$result_metrics[$j][1]];
+			echo ','.$rows[$i][$result_metrics[$j][1]];
 		}
+
+		echo ']';
 	}
-	echo json_encode($jsondata);
+	echo ']';
 }
