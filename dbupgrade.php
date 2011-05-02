@@ -19,7 +19,7 @@ $versions[26]['up'][] = "ALTER TABLE `dynatrace` ADD INDEX (`url_id`)";
 $versions[26]['up'][] = "ALTER TABLE `har` ADD INDEX (`url_id`)";
 $versions[26]['up'][] = "ALTER TABLE `dommonster` ADD INDEX (`url_id`)";
 $versions[26]['up'][] = "ALTER TABLE `metric` ADD INDEX (`url_id`)";
-$versions[26]['up'][] = "ALTER TABLE `dynatrace` ADD INDEX (`url_id`)";
+$versions[26]['up'][] = "ALTER TABLE `pagetest` ADD INDEX (`url_id`)";
 
 $versions[26]['down'][] = "ALTER TABLE `pagetest` DROP INDEX (`url_id`)";
 $versions[26]['down'][] = "ALTER TABLE `metric` DROP INDEX (`url_id`)";
