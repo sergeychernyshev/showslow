@@ -284,7 +284,7 @@ while ($har_row = mysql_fetch_assoc($result)) {
 }
 
 // checking if there were PageTest tests ran
-$query = sprintf("SELECT pagetest.timestamp as t, test_url, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
+$query = sprintf("SELECT pagetest.timestamp as t, test_id, test_url, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
 	mysql_real_escape_string($urlid)
 );
 
@@ -738,8 +738,17 @@ if (count($pagetest) > 0) {
 	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table cellpadding="5" cellspacing="0" border="1">
+
+	<form action="<?php echo $showslow_base ?>/pagetestcompare.php" method="POST">
+
 	<tr>
-	<th>Time</th>
+	<th>
+		<div style="font-size: xx-small; text-align: left">
+		<input type="submit" name="go" value="Compare"/>
+		<input type="checkbox" name="repeat" value="true" id="wptrepeat"/>
+		<label for="wptrepeat">repeat view</label>
+		</div>
+	</th>
 	<th>Location</th>
 	<th>PageTest</th>
 	</tr>
@@ -750,13 +759,18 @@ if (count($pagetest) > 0) {
 			$pagetestentry['location'];
 ?>
 	<tr>
-	<td><?php echo htmlentities($pagetestentry['t'])?></td>
+	<td>
+		<input id="wpttest<?php echo htmlentities($pagetestentry['test_id']) ?>" type="checkbox" name="compare[]" value="<?php echo htmlentities($pagetestentry['test_id']) ?>" />
+		<input type="hidden" name="label[]" value="<?php echo htmlentities($pagetestentry['t']) ?>" />
+
+		<label for="wpttest<?php echo htmlentities($pagetestentry['test_id']) ?>" type="checkbox" name="compare[]"><?php echo htmlentities($pagetestentry['t'])?></label></td>
 	<td><?php echo htmlentities($location)?></td>
 	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
 	</tr>
 <?php
 	}
 ?>
+	</form>
 	</table>
 <?php
 }
