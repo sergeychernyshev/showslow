@@ -204,6 +204,7 @@ _gaq.push(['_setAccount', '<?php echo $googleAnalyticsProfile ?>']);
 _gaq.push(['_setAllowAnchor', true]);
 _gaq.push(['_setCustomVar', 1, 'User Type', <?php if (is_null($current_user)) { ?>'Anonymous'<?php }else{ ?>'Member'<?php } ?>, 2]);
 _gaq.push(['_trackPageview']);
+_gaq.push(['_trackPageLoadTime']);
 
 (function() {
 var ga = document.createElement('script');
