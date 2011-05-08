@@ -115,12 +115,15 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
 		$yslow = true;
+		$cols += 1;
 	}
 	if ($enabledMetrics['pagespeed'] && !$pagespeed && !is_null($row['ps_o'])) {
 		$pagespeed = true;
+		$cols += 1;
 	}
 	if ($enabledMetrics['dynatrace'] && !$dynatrace && !is_null($row['dt_o'])) {
 		$dynatrace = true;
+		$cols += 1;
 	}
 }
 
