@@ -288,7 +288,12 @@ if ($format == 'csv') {
 		echo '['.$rows[$i]['timestamp'] * 1000;
 
 		for ($j = 0; $j < count($result_metrics); $j++) {
-			echo ','.$rows[$i][$result_metrics[$j][1]];
+			$val = $rows[$i][$result_metrics[$j][1]];
+			if (is_numeric($val)) {
+				echo ','.$rows[$i][$result_metrics[$j][1]];
+			} else {
+				echo ',null';
+			}
 		}
 
 		echo ']';
