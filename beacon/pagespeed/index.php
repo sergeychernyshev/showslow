@@ -15,14 +15,7 @@ function updateUrlAggregates($url_id, $measurement_id)
 	}
 }
 
-if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
-	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('o', $_GET) && filter_var($_GET['o'], FILTER_VALIDATE_FLOAT) !== false
-	&& array_key_exists('l', $_GET) && filter_var($_GET['l'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('r', $_GET) && filter_var($_GET['r'], FILTER_VALIDATE_INT) !== false
-	&& array_key_exists('t', $_GET) && filter_var($_GET['t'], FILTER_VALIDATE_INT) !== false
-	)
-{
+if (array_key_exists('u', $_GET)) {
 	$url_id = getUrlId($_GET['u']);
 
 	$metrics = array(
@@ -58,86 +51,292 @@ if (array_key_exists('v', $_GET) && array_key_exists('u', $_GET)
 		'pVaryAE'
 	);
 
-	$metric_renames = array(
-		'pSpecifyCharsetEarly'				=> 'pCharsetEarly',
-		'pProxyCache'					=> 'pCacheValid',
-		'pPutCssInTheDocumentHead'			=> 'pCssInHead',
-		'pOptimizeTheOrderOfStylesAndScripts'		=> 'pCssJsOrder',
-		'pMinimizeRequestSize'				=> 'pMinReqSize',
-		'pParallelizeDownloadsAcrossHostnames'		=> 'pParallelDl',
-		'pServeStaticContentFromACookielessDomain'	=> 'pNoCookie',
-		'pAvoidBadRequests'				=> 'pBadReqs',
-		'pLeverageBrowserCaching'			=> 'pBrowserCache',
-		'pRemoveQueryStringsFromStaticResources'	=> 'pRemoveQuery',
-		'pServeScaledImages'				=> 'pScaleImgs',
-		'pSpecifyACacheValidator'			=> 'pCacheValid',
-		'pSpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE',
-		'pSpecifyImageDimensions' 			=> 'pImgDims'
-	);
+	// array to store core metrics:
+	// w	total size of all resources loaded by the page
+	//		htmlResponseBytes
+	//		textResponseBytes
+	//		cssResponseBytes
+	//		imageResponseBytes
+	//		javascriptResponseBytes
+	//		flashResponseBytes
+	//		otherResponseBytes
+	// o	score
+	// l	-
+	// r	numberResources
+	// t	-
+	$core_metrics = array();
 
-	$data_version = preg_replace('/[^0-9\.]+.*/', '', $_GET['v']);
+	// processed data will be stored in this array
+	$rules = array();
 
-	foreach ($metrics as $metric) {
-		$param = $metric;
+	// indicates if data was successfully gathered and we can store it
+	$got_data = false;
 
-		foreach (array_reverse($metric_renames) as $from => $to) {
-			if ($metric == $to
-				&& !array_key_exists($metric, $_GET)
-				&& array_key_exists($from, $_GET))
-			{
-				$param = $from;
-			}
+	$sdk_version = null;
+
+	if (!is_null($pageSpeedOnlineAPIKey) && array_key_exists('api', $_GET) ) {
+		// map of rule => metric relationships
+		$rule_metric_map = array(
+			'AvoidBadRequests'				=> 'pBadReqs',
+			'LeverageBrowserCaching'			=> 'pBrowserCache',
+			'SpecifyACacheValidator'			=> 'pCacheValid',
+			'SpecifyCharsetEarly'				=> 'pCharsetEarly',
+			'CombineExternalCSS'				=> 'pCombineCSS',
+			'CombineExternalJavaScript'			=> 'pCombineJS',
+			'AvoidCssImport'				=> 'pCssImport',
+			'PutCssInTheDocumentHead'			=> 'pCssInHead',
+			'OptimizeTheOrderOfStylesAndScripts'		=> 'pCssJsOrder',
+			'AvoidDocumentWrite'				=> 'pDocWrite',
+			'ServeResourcesFromAConsistentUrl'		=> 'pDupeRsrc',
+			'EnableGzipCompression'				=> 'pGzip',
+			'SpecifyImageDimensions'			=> 'pImgDims',
+			'MinimizeDnsLookups'				=> 'pMinDns',
+			'MinifyCss'					=> 'pMinifyCSS',
+			'MinifyHTML'					=> 'pMinifyHTML',
+			'MinifyJavaScript'				=> 'pMinifyJS',
+			'MinimizeRedirects'				=> 'pMinRedirect',
+			'MinimizeRequestSize'				=> 'pMinReqSize',
+			'ServeStaticContentFromACookielessDomain'	=> 'pNoCookie',
+			'OptimizeImages'				=> 'pOptImgs',
+			'ParallelizeDownloadsAcrossHostnames'		=> 'pParallelDl',
+			'PreferAsyncResources'				=> 'pPreferAsync',
+			'RemoveQueryStringsFromStaticResources'		=> 'pRemoveQuery',
+			'ServeScaledImages'				=> 'pScaleImgs',
+			'SpriteImages'					=> 'pSprite',
+			'SpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE'
+		);
+
+		// making an API call
+		$apicall = 'https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url='.urlencode(validateURL($_GET['u'])).'&key='.$pageSpeedOnlineAPIKey;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $apicall);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$output = curl_exec($ch);
+
+		if (empty($output)) {
+			$err = curl_error($ch);
+			curl_close($ch);
+			failWithMessage("API call ($apicall) failed: ".$err);
 		}
 
-		if (array_key_exists($param, $_GET) && $_GET[$param] > 0) {
-			$value = filter_var($_GET[$param], FILTER_VALIDATE_FLOAT);
-			if ($value !== false) {
-				$beacon[$metric] = $value;
-			}
+		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if ($code != 200) {
+			curl_close($ch);
+			failWithMessage("API returns error code other then 200: $code");
 		}
-	}
+		curl_close($ch);
 
-	$names = array();
-	$values = array();
+		$response = json_decode($output, true);
 
-	foreach ($beacon as $metric => $value) {
-		$names[] = $metric;
-		$values[] = "'".mysql_real_escape_string($value)."'";
-	}
+		if (!array_key_exists('responseCode', $response)
+			|| !array_key_exists('kind', $response)
+			|| $response['kind'] != 'pagespeedonline#result'
+		) {
+			failWithMessage("API returns data in the wrong format");
+		}
 
-	# adding new entry
-	$query = sprintf("INSERT INTO pagespeed (
-		`ip` , `user_agent` , `url_id` ,
-		`w` , `o` , `l`, `r` , `t`, `v` ,
-		%s
-	)
-	VALUES (inet_aton('%s'), '%s', '%d',
-		'%d', '%f', '%d', '%d', '%d', '%s',
-		%s
-	)",
-		implode(', ', $names),
-		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($_GET['w']),
-		mysql_real_escape_string($_GET['o']),
-		mysql_real_escape_string($_GET['l']),
-		mysql_real_escape_string($_GET['r']),
-		mysql_real_escape_string($_GET['t']),
-		mysql_real_escape_string($_GET['v']),
-		implode(', ', $values)
-	);
+		if ($response['responseCode'] != 200) {
+			failWithMessage("URL tested returns bad response code: ".$response['responseCode']);
+		}
 
-	if (!mysql_query($query))
+		// core metrics
+		if (!array_key_exists('score', $response)
+			|| ($core_metrics['o'] = filter_var($response['score'], FILTER_VALIDATE_INT)) === false
+		) {
+			failWithMessage("No score returned");
+		}
+
+		if (!array_key_exists('pageStats', $response) || !is_array($response['pageStats'])) {
+			failWithMessage("No page statistics returned");
+		}
+
+		$stats = $response['pageStats'];
+
+		#error_log(var_export($stats, true));
+
+		$h = $t = $c = $i = $j = $f = $o = 0;
+
+		if ((array_key_exists('htmlResponseBytes', $stats)
+			&& ($h = filter_var($stats['htmlResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('textResponseBytes', $response['pageStats'])
+			&& ($t = filter_var($stats['textResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('cssResponseBytes', $response['pageStats'])
+			&& ($c = filter_var($stats['cssResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('imageResponseBytes', $response['pageStats'])
+			&& ($i = filter_var($stats['imageResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('javascriptResponseBytes', $response['pageStats'])
+			&& ($j = filter_var($stats['javascriptResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('flashResponseBytes', $response['pageStats'])
+			&& ($f = filter_var($stats['flashResponseBytes'], FILTER_VALIDATE_INT)) === false)
+			|| (array_key_exists('otherResponseBytes', $response['pageStats'])
+			&& ($o = filter_var($stats['otherResponseBytes'], FILTER_VALIDATE_INT)) === false)
+		) {
+			failWithMessage("One of response size statistics is invalid");
+		}
+
+		$core_metrics['w'] = $h + $t + $c + $i + $j + $f + $o;
+
+		if (!array_key_exists('numberResources', $stats)
+			|| ($core_metrics['r'] = filter_var($stats['numberResources'], FILTER_VALIDATE_INT)) === false
+		) {
+			failWithMessage("Number of resources is not returned");
+		}
+
+		// TODO replace these with reasonable values or make them optional
+		$core_metrics['t'] = 0;
+		$core_metrics['l'] = 0;
+
+		// rules
+		if (!array_key_exists('formattedResults', $response) || !is_array($response['formattedResults'])
+			|| !array_key_exists('ruleResults', $response['formattedResults'])
+				|| !is_array($response['formattedResults']['ruleResults'])
+		) {
+			failWithMessage("Data structure is not recognized");
+		}
+
+		foreach ($response['formattedResults']['ruleResults'] as $rule => $data) {
+			if (!array_key_exists($rule, $rule_metric_map)) {
+				error_log('Unrecognized rule: '.$rule.' (skipping)');
+				continue;
+			}
+
+			$metric = $rule_metric_map[$rule];
+
+			if (!array_key_exists('ruleScore', $data)) {
+				error_log('Rule score is not specified: '.$rule.' (skipping)');
+				continue;
+			}
+
+			$value = filter_var($data['ruleScore'], FILTER_VALIDATE_INT);
+
+			if ($value === false) {
+				error_log('Rule score is not an integer: '.$rule.' = '.$data['ruleScore'].' (skipping)');
+				continue;
+			}
+
+			$rules[$metric] = $value;
+		}
+
+		if (!array_key_exists('version', $response) || !is_array($response['version'])
+			|| !array_key_exists('major', $response['version'])
+			|| $major = filter_var($response['version']['major'], FILTER_VALIDATE_INT) === false
+			|| !array_key_exists('minor', $response['version'])
+			|| $minor = filter_var($response['version']['minor'], FILTER_VALIDATE_INT) === false
+		) {
+			failWithMessage("Number of resources is not returned");
+		}
+
+		$sdk_version = "$major.$minor";
+
+		$got_data = true;
+	} else if (array_key_exists('v', $_GET)
+		&& array_key_exists('w', $_GET)
+			&& ($core_metrics['w'] = filter_var($_GET['w'], FILTER_VALIDATE_INT)) !== false
+		&& array_key_exists('o', $_GET)
+			&& ($core_metrics['o'] = filter_var($_GET['o'], FILTER_VALIDATE_FLOAT)) !== false
+		&& array_key_exists('l', $_GET)
+			&& ($core_metrics['l'] = filter_var($_GET['l'], FILTER_VALIDATE_INT)) !== false
+		&& array_key_exists('r', $_GET)
+			&& ($core_metrics['r'] = filter_var($_GET['r'], FILTER_VALIDATE_INT)) !== false
+		&& array_key_exists('t', $_GET)
+			&& ($core_metrics['t'] = filter_var($_GET['t'], FILTER_VALIDATE_INT)) !== false
+		)
 	{
-		beaconError(mysql_error());
+		$sdk_version = $_GET['v'];
+
+		// list of old metric names that should still be suported
+		$metric_renames = array(
+			'pSpecifyCharsetEarly'				=> 'pCharsetEarly',
+			'pProxyCache'					=> 'pCacheValid',
+			'pPutCssInTheDocumentHead'			=> 'pCssInHead',
+			'pOptimizeTheOrderOfStylesAndScripts'		=> 'pCssJsOrder',
+			'pMinimizeRequestSize'				=> 'pMinReqSize',
+			'pParallelizeDownloadsAcrossHostnames'		=> 'pParallelDl',
+			'pServeStaticContentFromACookielessDomain'	=> 'pNoCookie',
+			'pAvoidBadRequests'				=> 'pBadReqs',
+			'pLeverageBrowserCaching'			=> 'pBrowserCache',
+			'pRemoveQueryStringsFromStaticResources'	=> 'pRemoveQuery',
+			'pServeScaledImages'				=> 'pScaleImgs',
+			'pSpecifyACacheValidator'			=> 'pCacheValid',
+			'pSpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE',
+			'pSpecifyImageDimensions' 			=> 'pImgDims'
+		);
+
+		foreach ($metrics as $metric) {
+			$param = $metric;
+
+			foreach (array_reverse($metric_renames) as $from => $to) {
+				// if legacy parameter name is sent, use it to get the value
+				if ($metric == $to
+					&& !array_key_exists($metric, $_GET)
+					&& array_key_exists($from, $_GET))
+				{
+					$param = $from;
+				}
+			}
+
+			// if value is passed and it's a float number, store it
+			if (array_key_exists($param, $_GET)) {
+				$value = filter_var($_GET[$param], FILTER_VALIDATE_FLOAT);
+				if ($value !== false) {
+					$rules[$metric] = $value;
+				}
+			}
+		}
+
+		$got_data = true;
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
-} else {
-	header('HTTP/1.0 400 Bad Request');
+	if ($got_data) {
+		$values = array();
 
-	?><html>
+		foreach ($rules as $metric => $value) {
+			$names[] = $metric;
+			$values[] = "'".mysql_real_escape_string($value)."'";
+		}
+
+		# adding new entry
+		$query = sprintf("INSERT INTO pagespeed (
+			`ip` , `user_agent` , `url_id` , `v`,
+			`w` , `o` , `l`, `r` , `t`,
+			%s
+		)
+		VALUES (inet_aton('%s'), '%s', '%d', '%s',
+			'%d', '%f', '%d', '%d', '%d',
+			%s
+		)",
+			implode(', ', $names),
+
+			mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
+			mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
+			mysql_real_escape_string($url_id),
+			mysql_real_escape_string($sdk_version),
+
+			mysql_real_escape_string($core_metrics['w']),
+			mysql_real_escape_string($core_metrics['o']),
+			mysql_real_escape_string($core_metrics['l']),
+			mysql_real_escape_string($core_metrics['r']),
+			mysql_real_escape_string($core_metrics['t']),
+
+			implode(', ', $values)
+		);
+
+		if (!mysql_query($query))
+		{
+			beaconError(mysql_error());
+		}
+
+		updateUrlAggregates($url_id, mysql_insert_id());
+
+		header('HTTP/1.0 204 Data accepted');
+		exit;
+	}
+}
+
+header('HTTP/1.0 400 Bad Request');
+
+?><html>
 <head>
 <title>Bad Request: Page Speed beacon</title>
 </head>
@@ -159,8 +358,3 @@ Set these two Firefox parameters on <b>about:config</b> page:</p>
 <p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 
 </body></html>
-<?php
-	exit;
-}
-
-header('HTTP/1.0 204 Data accepted');

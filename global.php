@@ -130,6 +130,9 @@ $cleanOldYSlowBeaconDetails = false;
 
 $homePageMetaTags = '';
 
+# PageSpeed Online API key (https://code.google.com/apis/console/b/0/#access)
+$pageSpeedOnlineAPIKey = null;
+
 # this enables a form to run a test on WebPageTest.org
 $webPageTestKey = null; # must be set to something to not null to enable
 $webPageTestBase = 'http://www.webpagetest.org/';
