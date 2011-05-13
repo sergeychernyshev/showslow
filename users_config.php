@@ -5,6 +5,7 @@ UserConfig::$mysql_host = $host;
 UserConfig::$mysql_db = $db;
 UserConfig::$mysql_user = $user;
 UserConfig::$mysql_password = $pass;
+UserConfig::$mysql_port = $port;
 
 if ($facebookAPIKey) {
 	UserConfig::loadModule('facebook');

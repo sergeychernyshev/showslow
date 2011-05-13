@@ -4,6 +4,7 @@ $db = 'showslow';
 $user = 'showslow';
 $pass = '... database-password ...';
 $host = 'localhost';
+$port = 3306;
 
 $sessionSecret = '...................................................';
 
