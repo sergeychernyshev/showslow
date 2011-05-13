@@ -21,8 +21,8 @@ function getShowSlowBase() {
 	}
 	else
 	{
-		error_log("[ShowSlow config] Warning: Can't determine site's host name, using www.example.com");
-		$host = 'www.example.com';
+		$host = gethostname();
+		error_log("[ShowSlow config] Warning: Can't determine site's host name, using $host");
 	}
 
 	$protocol = 'http';
