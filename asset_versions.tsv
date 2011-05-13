@@ -5,7 +5,7 @@ bff5aee7	clock.png
 3b1d6b9b	collecting.gif
 b91953b0	details/compare.js
 116a7cb2	details/details.js
-1e463bc9	details/showslow.flot.js
+0f4c7d7f	details/showslow.flot.js
 14df75ca	details/timeplot.js
 65baaa63	favicon.ico
 e6e1722c	flot/excanvas.js
@@ -14,7 +14,7 @@ e6e1722c	flot/excanvas.js
 7645d629	flot/jquery.flot.crosshair.js
 2544177b	flot/jquery.flot.fillbetween.js
 66214e82	flot/jquery.flot.image.js
-c68e63f0	flot/jquery.flot.js
+786f1c57	flot/jquery.flot.js
 b602a729	flot/jquery.flot.navigate.js
 4550623f	flot/jquery.flot.pie.js
 a652a145	flot/jquery.flot.resize.js
