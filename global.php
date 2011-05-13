@@ -1012,7 +1012,7 @@ function ellipsis($string, $maxlength, $margin = 2) {
 	return $string;
 }
 
-mysql_connect($host, $user, $pass);
+mysql_connect("$host:$port", $user, $pass);
 mysql_select_db($db);
 
 # setting up connection settings to make MySQL communication more strict

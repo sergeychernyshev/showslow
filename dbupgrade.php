@@ -718,6 +718,6 @@ $versions[1]['down'][] = "DROP TABLE yslow2";
 require_once(dirname(__FILE__).'/global.php');
 
 // creating DBUpgrade object with your database credentials and $versions defined above
-$dbupgrade = new DBUpgrade(new mysqli( $host, $user, $pass, $db), $versions);
+$dbupgrade = new DBUpgrade(new mysqli($host, $user, $pass, $db, $port), $versions);
 
 require_once(dirname(__FILE__).'/dbupgrade/client.php');
