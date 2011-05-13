@@ -257,6 +257,10 @@ $metric_types = array(
 	PERCENTS =>		array( 'legend'	=> '0-100',	'units'	=> '%')
 );
 
+# defaults values for MySQL host and port
+$host = 'localhost';
+$port = 3306;
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 
