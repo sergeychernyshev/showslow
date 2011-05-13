@@ -19,3 +19,6 @@
 [submodule "flot"]
 	path = flot
 	url = git://github.com/flot/flot.git
+[submodule "users"]
+	path = users
+	url = git://github.com/sergeychernyshev/UserBase.git
