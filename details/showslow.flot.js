@@ -148,6 +148,8 @@ var SS = (function ($) {
 
 	// Track hovering over items to display tooltip
 	$("#flot").bind("plothover", function (event, pos, item) {
+		$("#eventtooltip").remove();
+
 		if (item) {
 			if (previous_point != item.dataIndex) {
 				previous_point = item.dataIndex;
@@ -163,8 +165,33 @@ var SS = (function ($) {
 		} else {
 			$("#tooltip").remove();
 			previous_point = null;
+
+			var markings = _graph_options.grid.markings;
+			var mark_num = markings.length;
+			for (var i = 0; i < mark_num; i += 1) {
+				var marking = markings[i];
+
+				if (pos.x >= markings[i].xaxis.from && pos.x <= marking.xaxis.to) {
+					showEventTooltip(pos.pageX, pos.pageY,
+						marking.type + ': ' + marking.title);
+				}
+			}
 		}
 	});
+
+	function showEventTooltip(x, y, contents) {
+		$('<div id="eventtooltip">' + contents + '</div>').css( {
+			position: 'absolute',
+			display: 'none',
+			top: y + 5,
+			left: x + 5,
+			border: '1px solid #3b5999',
+			padding: '0.7em',
+			'background-color': '#3b5999',
+			'color': 'white',
+			opacity: 0.90
+		}).appendTo("body").fadeIn(200);
+	}
 
 	function showTooltip(x, y, contents) {
 		$('<div id="tooltip">' + contents + '</div>').css( {

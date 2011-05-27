@@ -52,7 +52,10 @@ while ($row = mysql_fetch_assoc($result)) {
 		'xaxis' => array(
 			'from' => $start * 1000,
 			'to' => $end * 1000
-		)
+		),
+		'type' => $row['type'],
+		'title' => $row['title'],
+		'link' => $row['link']
 	);
 }
 mysql_free_result($result);
