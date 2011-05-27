@@ -1,0 +1,14 @@
+<html>
+<head>
+<script>
+	function redirect() {
+		var url = location.href;
+		var query = url.substring(url.indexOf('?') + 1);
+		var redir = decodeURIComponent(query);
+		location.href = redir;
+	}
+</script>
+</head>
+<body onload="redirect();">
+</body>
+</html>
