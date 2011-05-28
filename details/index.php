@@ -100,6 +100,7 @@ if (!$enableFlot) {
 	));
 } else {
 	$SCRIPTS = array_merge($SCRIPTS, array(
+		array('condition' => 'if IE', 'url' => assetURL('flot/excanvas.js')),
 		'https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js',
 		assetURL('flot/jquery.flot.js'),
 		assetURL('flot/jquery.flot.crosshair.js'),

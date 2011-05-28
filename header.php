@@ -153,7 +153,15 @@ if (isset($STYLES)) {
 
 if (isset($SCRIPTS)) {
 	foreach ($SCRIPTS as $_script) {
-		?><script type="text/javascript" src="<?php echo $_script; ?>"></script><?php
+		if (is_array($_script)) {
+			if (array_key_exists('condition', $_script)) {
+				?><!--[<?php echo $_script['condition'] ?>]><script type="text/javascript" src="<?php echo $_script['url']; ?>"></script><![endif]-->
+<?php
+			}
+		} else {
+			?><script type="text/javascript" src="<?php echo $_script; ?>"></script>
+<?php
+		}
 	}
 }
 

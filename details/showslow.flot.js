@@ -1,3 +1,4 @@
+/*global custom_metric_colors: true, url: true, default_metrics: true, flot_metrics: true, jQuery: false */
 var SS = (function ($) {
 	var	formatter = {
 			bytes: function (val, axis) {
@@ -68,7 +69,7 @@ var SS = (function ($) {
 					tickFormatter: formatter.bytes
 				},
 				{// Scores/Grades (Percentage) (2)
-					label: 'Scores/Grades',
+					label: 'Scores/Grades'
 //					min: 0,
 //					max: 100
 				},
@@ -89,8 +90,7 @@ var SS = (function ($) {
 					max: 100,
 					tickFormatter: formatter.percent
 				}
-			],
-
+			]
 		},
 
 		_overview,
@@ -114,7 +114,7 @@ var SS = (function ($) {
 			grid: {
 				markingsLineWidth: 1,
 				markingsColor: "#e51837"
-			},
+			}
 		},
 
 		data = [],
@@ -124,75 +124,6 @@ var SS = (function ($) {
 
 	// Ensure identical colors on both graphs
 	_overview_options.colors = _graph_options.colors;
-
-	// Perform selection on little graph based on big graph selection
-	$("#flot").bind("plotselected", function (event, ranges) {
-		_graph = $.plot($("#flot"), data,
-					  $.extend(true, {}, _graph_options, {
-						  xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
-					  }));
-		_overview.setSelection(ranges, true);
-		$('#reset').removeAttr('disabled');
-	});
-
-
-	// Perform zooming on big graph based on little graph selection
-	$("#overview").bind("plotselected", function (event, ranges) {
-		_graph.setSelection(ranges);
-		$('#reset').removeAttr('disabled');
-	});
-
-	$("#overview").bind("plotunselected", function () {
-		_resetZoomSelection();
-        });
-
-	// Track hovering over items to display tooltip
-	$("#flot").bind("plothover", function (event, pos, item) {
-		$("#eventtooltip").remove();
-
-		if (item) {
-			if (previous_point != item.dataIndex) {
-				previous_point = item.dataIndex;
-
-				$("#tooltip").remove();
-				var date = new Date(item.datapoint[0]).toUTCString(),
-					value = item.datapoint[1],
-					content = '';
-
-				content = '<span>' + date + '</span><br/><br/><span>' + item.series.label + ': ' + value + '</span>';
-				showTooltip(item.pageX, item.pageY, content);
-			}
-		} else {
-			$("#tooltip").remove();
-			previous_point = null;
-
-			var marking;
-			var marking_start_coords;
-			var marking_end_coords;
-
-			var cursor_coords = _graph.pointOffset(pos);
-
-			var markings = _graph_options.grid.markings;
-			var mark_num = markings.length;
-			for (var i = 0; i < mark_num; i += 1) {
-				marking = markings[i];
-
-				marking_start_coords = _graph.pointOffset({ x: marking.xaxis.from, y: 0 });
-				marking_end_coords = _graph.pointOffset({ x: marking.xaxis.to, y: 0 });
-
-				if (cursor_coords.left >= marking_start_coords.left - 2
-					&& cursor_coords.left <= marking_end_coords.left + 2
-				) {
-					showEventTooltip(pos.pageX, pos.pageY,
-						$('<div/>').text(marking.type).html() +
-						': <b>' + $('<div/>').text(marking.title).html() + '</b>'
-					);
-
-					break; // try to show only first tooltip
-				}
-			}
-		}
-	});
 
 	function showEventTooltip(x, y, contents) {
 		$('<div id="eventtooltip">' + contents + '</div>').css( {
@@ -240,7 +171,7 @@ var SS = (function ($) {
 	}
 
 	function _getMetrics (options, callback) {
-		if (typeof callback !== 'function') { callback = false; }
+		if (typeof(callback) !== 'function') { callback = false; }
 
 		$.ajax({
 			url: 'data2.php',
@@ -292,7 +223,7 @@ var SS = (function ($) {
 	}
 
 	function _removeSeries (provider, metric) {
-		if (typeof dataset[provider + '-' + metric] !== 'undefined') {
+		if (typeof(dataset[provider + '-' + metric]) !== 'undefined') {
 			delete dataset[provider + '-' + metric];
 			data = [];
 			$.each(dataset, function (key, val) {
@@ -312,60 +243,62 @@ var SS = (function ($) {
 		$('#clear').attr('disabled', 'disabled');
 	}
 
-	function _resetZoomSelection () {
+	function _resetZoomSelection() {
 		_graph = $.plot($('#flot'), data, _graph_options);
 		_overview = $.plot($('#overview'), data, _overview_options);
 		$('#reset').attr('disabled', 'disable');
 	}
 
-	function _setDefaultMetrics () {
+	function _setDefaultMetrics() {
 //		var load_functions = [];
 //		var func_num = 0;
 
 		_clearMetrics();
 
 		for (var pid in default_metrics) {
-			for (var i=0; i < default_metrics[pid].length; i++) {
-				var checkbox = $('#' + pid + '-' + default_metrics[pid][i]);
+			if (default_metrics.hasOwnProperty(pid)) {
+				for (var i=0; i < default_metrics[pid].length; i++) {
+					var checkbox = $('#' + pid + '-' + default_metrics[pid][i]);
 
-				checkbox.attr('checked', 'true');
-				checkbox.next().css('color', '#f00');
+					checkbox.attr('checked', 'true');
+					checkbox.next().css('color', '#f00');
 
-				// loading custom metrics one by one
-				if (pid == 'custom') {
+					// loading custom metrics one by one
+					if (pid == 'custom') {
+						SS.getMetrics({
+							url: url,
+							provider: pid,
+							metrics: default_metrics[pid][i],
+							callback: false
+						});
+					}
+				}
+
+				if (pid != 'custom') {
 					SS.getMetrics({
 						url: url,
 						provider: pid,
-						metrics: default_metrics[pid][i],
+						metrics: default_metrics[pid].join(','),
 						callback: false
 					});
 				}
+
+				// this can be used to load data sequentially
+/*				load_functions[func_num] = (function(provider_id, next_func) {
+					return function() {
+						SS.getMetrics({
+							url: url,
+							provider: provider_id,
+							metrics: default_metrics[provider_id].join(','),
+							callback: false
+						}, load_functions[next_func]);
+					};
+				})(pid, func_num + 1);
+
+				func_num += 1;
+ */
 			}
-
-			if (pid != 'custom') {
-				SS.getMetrics({
-					url: url,
-					provider: pid,
-					metrics: default_metrics[pid].join(','),
-					callback: false
-				});
-			}
-
-			// this can be used to load data sequentially
-/*
-			load_functions[func_num] = (function(provider_id, next_func) {
-				return function() {
-					SS.getMetrics({
-						url: url,
-						provider: provider_id,
-						metrics: default_metrics[provider_id].join(','),
-						callback: false
-					}, load_functions[next_func]);
-				};
-			})(pid, func_num + 1);
-
-			func_num += 1;
- */		}
+		}
 
 //		load_functions[func_num] = false;
 //
@@ -412,7 +345,7 @@ var SS = (function ($) {
 
 			// using previous point
 			var y, p1 = series.data[j - 1], p2 = series.data[j];
-			if (typeof p1 === 'undefined') {
+			if (typeof(p1) === 'undefined') {
 				y = p2[1];
 			} else {
 				y = p1[1];
@@ -421,6 +354,75 @@ var SS = (function ($) {
 			legends.eq(i).text(series.label + ': ' + series.yaxis.tickFormatter(y, series.yaxis));
 		}
 	}
+
+	// Track hovering over items to display tooltip
+	$("#flot").bind("plothover", function (event, pos, item) {
+		$("#eventtooltip").remove();
+
+		if (item) {
+			if (previous_point != item.dataIndex) {
+				previous_point = item.dataIndex;
+
+				$("#tooltip").remove();
+				var date = new Date(item.datapoint[0]).toUTCString(),
+					value = item.datapoint[1],
+					content = '';
+
+				content = '<span>' + date + '</span><br/><br/><span>' + item.series.label + ': ' + value + '</span>';
+				showTooltip(item.pageX, item.pageY, content);
+			}
+		} else {
+			$("#tooltip").remove();
+			previous_point = null;
+
+			var marking;
+			var marking_start_coords;
+			var marking_end_coords;
+
+			var cursor_coords = _graph.pointOffset(pos);
+
+			var markings = _graph_options.grid.markings;
+			var mark_num = markings.length;
+			for (var i = 0; i < mark_num; i += 1) {
+				marking = markings[i];
+
+				marking_start_coords = _graph.pointOffset({ x: marking.xaxis.from, y: 0 });
+				marking_end_coords = _graph.pointOffset({ x: marking.xaxis.to, y: 0 });
+
+				if (cursor_coords.left >= marking_start_coords.left - 2 &&
+					cursor_coords.left <= marking_end_coords.left + 2
+				) {
+					showEventTooltip(pos.pageX, pos.pageY,
+						$('<div/>').text(marking.type).html() +
+						': <b>' + $('<div/>').text(marking.title).html() + '</b>'
+					);
+
+					break; // try to show only first tooltip
+				}
+			}
+		}
+	});
+
+	// Perform selection on little graph based on big graph selection
+	$("#flot").bind("plotselected", function (event, ranges) {
+		_graph = $.plot($("#flot"), data,
+					  $.extend(true, {}, _graph_options, {
+						  xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+					  }));
+		_overview.setSelection(ranges, true);
+		$('#reset').removeAttr('disabled');
+	});
+
+	// Perform zooming on big graph based on little graph selection
+	$("#overview").bind("plotselected", function (event, ranges) {
+		_graph.setSelection(ranges);
+		$('#reset').removeAttr('disabled');
+	});
+
+	$("#overview").bind("plotunselected", function () {
+		_resetZoomSelection();
+        });
+
 
 	$("#flot").bind("plothover",  function (event, pos, item) {
 		latestPosition = pos;
@@ -456,7 +458,7 @@ var SS = (function ($) {
 						url: url,
 						provider: pid,
 						metrics: id,
-						callback: false,
+						callback: false
 					});
 					$this.next().css('color', '#f00');
 				} else {
