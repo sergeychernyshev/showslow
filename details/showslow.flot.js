@@ -4,7 +4,7 @@ var SS = (function ($) {
 				return val / 1000 + ' Kb';
 			},
 			msec: function (val, axis) {
-				return val / 1000 + ' sec';
+				return val + ' msec';
 			},
 			percent: function (val, axis) {
 				return val + '%';
@@ -75,10 +75,9 @@ var SS = (function ($) {
 				{// Milliseconds (3)
 					position: 'right',
 					min: 0,
-					max: 30000,
+					//max: 30000,
 					minTickSize: 1000,
-					//tickSize: 1000,
-					//tickFormatter: formatter.msec
+					tickFormatter: formatter.msec
 				},
 				{// Numbers (4)
 					position: 'right',
@@ -398,7 +397,7 @@ var SS = (function ($) {
 
 			// using previous point
 			var y, p1 = series.data[j - 1], p2 = series.data[j];
-			if (p1 == null) {
+			if (p1 === null) {
 				y = p2[1];
 			} else {
 				y = p1[1];
@@ -437,7 +436,7 @@ var SS = (function ($) {
 					id = id.replace(re, '$2');
 				}
 
-				if ($this.attr('checked')) {;
+				if ($this.attr('checked')) {
 					SS.getMetrics({
 						url: url,
 						provider: pid,
@@ -481,5 +480,5 @@ var SS = (function ($) {
 		resetZoomSelection: function () {
 			_resetZoomSelection();
 		}
-	}
+	};
 })(jQuery);
