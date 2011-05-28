@@ -82,19 +82,19 @@ YAHOO.util.Event.onDOMReady(function() {
 		var yDataTable = new YAHOO.widget.ScrollingDataTable("measurementstable", yColumnDefs, yDataSource,
 		{
 			height: "15em",
-			initialRequest: "url=" + url + "&ver=" + ydataversion
+			initialRequest: "url=" + encodeURIComponent(url) + "&ver=" + ydataversion
 		});
 
 		var psDataTable = new YAHOO.widget.ScrollingDataTable("ps_measurementstable", psColumnDefs, psDataSource,
 		{
 			height: "15em",
-			initialRequest: "url=" + url + "&ver=" + psdataversion
+			initialRequest: "url=" + encodeURIComponent(url) + "&ver=" + psdataversion
 		});
 
 		var dtDataTable = new YAHOO.widget.ScrollingDataTable("dt_measurementstable", dtColumnDefs, dtDataSource,
 		{
 			height: "15em",
-			initialRequest: "url=" + url + "&ver=" + dtdataversion
+			initialRequest: "url=" + encodeURIComponent(url) + "&ver=" + dtdataversion
 		});
 	    }
 	});

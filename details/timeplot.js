@@ -136,21 +136,21 @@ YAHOO.util.Event.onDOMReady(function() {
 	}
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-	timeplot.loadXML('events.php?url=' + url + '&ver=' + eventversion, showslowevents);
+	timeplot.loadXML('events.php?url=' + encodeURIComponent(url) + '&ver=' + eventversion, showslowevents);
 	if (ydataversion) {
-		timeplot.loadText('data.php?smooth=yes&subset=graph&profile=ydefault&url=' + url + '&ver=' + ydataversion, ",", eventSource2);
+		timeplot.loadText('data.php?smooth=yes&subset=graph&profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + ydataversion, ",", eventSource2);
 	}
 
 	if (psdataversion) {
-		timeplot.loadText('data_pagespeed.php?smooth=yes&subset=graph&url=' + url + '&ver=' + psdataversion, ",", pagespeed);
+		timeplot.loadText('data_pagespeed.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + psdataversion, ",", pagespeed);
 	}
 
 	if (dtdataversion) {
-		timeplot.loadText('data_dynatrace.php?smooth=yes&subset=graph&url=' + url + '&ver=' + dtdataversion, ",", dynatrace);
+		timeplot.loadText('data_dynatrace.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + dtdataversion, ",", dynatrace);
 	}
 
 	for (var name in metrics) {
-		timeplot.loadText('data_metric.php?smooth=yes&metric=' + name + '&url=' + url, ",", metrics[name].source);
+		timeplot.loadText('data_metric.php?smooth=yes&metric=' + name + '&url=' + encodeURIComponent(url), ",", metrics[name].source);
 	}
 })
 
