@@ -75,9 +75,10 @@ var SS = (function ($) {
 				{// Milliseconds (3)
 					position: 'right',
 					min: 0,
+					max: 30000,
 					minTickSize: 1000,
-					tickSize: 1000,
-					tickFormatter: formatter.msec
+					//tickSize: 1000,
+					//tickFormatter: formatter.msec
 				},
 				{// Numbers (4)
 					position: 'right',
