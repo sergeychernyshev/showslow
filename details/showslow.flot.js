@@ -166,14 +166,29 @@ var SS = (function ($) {
 			$("#tooltip").remove();
 			previous_point = null;
 
+			var marking;
+			var marking_start_coords;
+			var marking_end_coords;
+
+			var cursor_coords = _graph.pointOffset(pos);
+
 			var markings = _graph_options.grid.markings;
 			var mark_num = markings.length;
 			for (var i = 0; i < mark_num; i += 1) {
-				var marking = markings[i];
+				marking = markings[i];
 
-				if (pos.x >= markings[i].xaxis.from && pos.x <= marking.xaxis.to) {
+				marking_start_coords = _graph.pointOffset({ x: marking.xaxis.from, y: 0 });
+				marking_end_coords = _graph.pointOffset({ x: marking.xaxis.to, y: 0 });
+
+				if (cursor_coords.left >= marking_start_coords.left - 2
+					&& cursor_coords.left <= marking_end_coords.left + 2
+				) {
 					showEventTooltip(pos.pageX, pos.pageY,
-						marking.type + ': ' + marking.title);
+						$('<div/>').text(marking.type).html() +
+						': <b>' + $('<div/>').text(marking.title).html() + '</b>'
+					);
+
+					break; // try to show only first tooltip
 				}
 			}
 		}
@@ -397,7 +412,7 @@ var SS = (function ($) {
 
 			// using previous point
 			var y, p1 = series.data[j - 1], p2 = series.data[j];
-			if (p1 === null) {
+			if (typeof p1 === 'undefined') {
 				y = p2[1];
 			} else {
 				y = p1[1];
