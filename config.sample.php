@@ -12,6 +12,9 @@ $sessionSecret = '...................................................';
 #$supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
 #$supportEmailReplyTo = 'showslow@example.com';
 
+# Enable Flot graphs (experimental)
+#$enableFlot = true;
+
 # Custom metrics supported
 #$metrics['bouncerate'] = array(
 #	'id' => 1,
