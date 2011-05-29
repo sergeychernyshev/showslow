@@ -73,7 +73,7 @@ clean: noassets
 
 assets:
 	# generating crc32 hashes of all assets that should be versioned
-	find ./ -type f | grep -v -E '^./(timeline|timeplot|ajax|users|svn-assets|flot\/examples)/' | grep -E '\.(png|jpg|css|js|gif|ico)$$' | sort | xargs -n10 php crc32.php | sed -e 's/\t\.\//\t/' > asset_versions.tsv
+	find ./ -type f | grep -v -E '^./(timeline|timeplot|ajax|users|svn-assets|flot\/examples)/' | grep -E '\.(png|jpg|js|gif|ico)$$' | sort | xargs -n10 php crc32.php | sed -e 's/\t\.\//\t/' > asset_versions.tsv
 
 # uncomment next line when we'll have any CSS files to process
 #find ./ -name '*.css' -not -wholename "./timeplot/*" -not -wholename "./timeline/*" -not -wholename "./ajax/*" -not -wholename "./users/*" | xargs -n1 php svn-assets/cssurlrewrite.php
