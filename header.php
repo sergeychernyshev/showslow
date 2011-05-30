@@ -156,11 +156,16 @@ td, th { white-space: nowrap; }
 <div class="stack">
 	<div id="header">
 		<div class="stackContent">
-			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" alt="Show Slow" /></a> Is your website <b>getting faster</b>? <a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a></h1>
+			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
+<?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?> 
+</h1>
 
+<?php if ($enableMyURLs) {?>
 			<ul id="headerNav">
 				<?php include(dirname(__FILE__).'/users/navbox.php'); ?>
 			</ul>
+<?php } ?>
+
 		</div><!-- stackContent -->
 	</div><!-- header -->
 
@@ -213,7 +218,33 @@ foreach ($additionalMenuItems as $menu_item) {
 		</div><!-- stackContent -->
 	</div><!-- topNav -->
 
-<?php if ($SECTION == 'home') { echo $ShowSlowIntro; } ?>
+	<div id="message">
+		<div class="stackContent">
+		</div><!-- stackContent -->
+	</div><!-- message -->
+
+<?php if ($enableMyURLs && $SECTION == 'home') { ?>
+	<div id="feature">
+		<div class="stackContent">
+			<form action="<?php echo $showslow_base ?>/my.php" method="GET">
+			<h3>
+			<label>Add your URL to be monitored: <input type="text" size="60" name="url"/></label>
+			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"/>
+			</h3>
+			</form>
+		</div><!-- stackContent -->
+	</div><!-- feature -->
+<?php } ?>
+
+<?php if ($SECTION == 'home' && !is_null($ShowSlowIntro)) { ?>
+	<div id="writeUp">
+		<div class="stack">
+			<div class="stackContent">
+				<?php echo $ShowSlowIntro ?>
+			</div><!-- stackContent -->
+		</div><!-- stack -->
+	</div><!-- writeUp -->
+<?php } ?>
 
 <div id="main">
 <div class="stackContent">

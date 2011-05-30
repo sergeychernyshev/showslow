@@ -195,32 +195,7 @@ require_once(dirname(__FILE__).'/svn-assets/asset_functions.php');
 loadAssetVersionsTSV(dirname(__FILE__).'/asset_versions.tsv');
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
-$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">Page Speed</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
-
-<p><a href="http://www.showslow.com/">www.ShowSlow.com</a> is a demonstration site that continuously measures the performance of a few reference web pages. It also allows for public metrics reporting.</p>
-
-<p>If you want to make your measurements publicly available on this page, see the instructions in <a href="configure.php">Configuring YSlow / Page Speed</a>. If you want to keep your measurements private, <b><a href="http://code.google.com/p/showslow/source/checkout">download Show Slow</a></b> from the SVN repository and install it on your own server.</p>
-
-<p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
-
-<table cellpadding="0" cellspacing="0" border="0"><tr>
-<td valign="top"><style>
-#twitterbutton {
-	margin-right: 7px;
-	width: 58px;
-	height: 23px;
-	display: block;
-	background-image: url('.assetURL('follow.png').');
-	background-position: 0px 0px;
-}
-#twitterbutton:hover {
-	background-position: 0px -46px;
-}
-</style><a id="twitterbutton" href="http://twitter.com/showslow" target="_blank" title="follow @showslow on twitter"/></a></td>
-<td valign="top">
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%253A%252F%252Fwww.showslow.com%252F&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=recommend&amp;font&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:23px;" allowTransparency="true"></iframe>
-</td>
-</tr></table>';
+$ShowSlowIntro = null;
 
 # configuring tabs
 $customLists = array();
