@@ -66,7 +66,7 @@ $TITLE = $customLists[$_GET['id']]['title'];
 $SECTION = 'custom_list_'.$_GET['id'];
 require_once(dirname(__FILE__).'/header.php');
 ?>
-<h1 style="margin-bottom: 0"><?php echo htmlentities($customLists[$_GET['id']]['title'])?></h1>
+<h2 style="margin-bottom: 0"><?php echo htmlentities($customLists[$_GET['id']]['title'])?></h2>
 <p style="margin-top: 0.2em"><?php echo $customLists[$_GET['id']]['description'] ?></p>
 
 <?php if (!is_null($addThisProfile)) {?>

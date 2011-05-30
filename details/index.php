@@ -242,11 +242,11 @@ legend {
 	font-size: 1.2em;
 }
 </style>
-<h1 style="margin: 0.3em 0 0 0;">
-<div style="float: left; margin-right: 0.5em">Details for <a href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
+<h2 style="margin: 0.3em 0 0 0;">
+<div style="float: left; margin-right: 0.5em">Details for <a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
 
 <div style="clear: both"></div>
-</h1>
+</h2>
 <?php if (!is_null($addThisProfile)) {?>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">

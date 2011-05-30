@@ -24,7 +24,7 @@ require_once(dirname(__FILE__).'/header.php');
 	color: black;
 }
 </style>
-<h1>URLs measured</h1>
+<h2>URLs measured</h2>
 <?php
 
 if (array_key_exists('group', $_GET)) {

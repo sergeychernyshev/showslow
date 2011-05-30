@@ -159,7 +159,7 @@ require_once(dirname(dirname(__FILE__)).'/header.php');
 }
 </style>
 
-<h1 style="margin-bottom: 0">Compare rankings</h1>
+<h2 style="margin-bottom: 0">Compare rankings</h2>
 <?php
 
 // only display menu if user picked the ranker specifically
