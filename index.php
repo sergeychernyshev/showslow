@@ -5,7 +5,6 @@ require_once(dirname(__FILE__).'/users/users.php');
 $SECTION = 'home';
 require_once(dirname(__FILE__).'/header.php');
 ?>
-<hr size="1"/>
 <div style="width: 100%; overflow: hidden">
 <?php 
 $query = sprintf("SELECT url, last_update,

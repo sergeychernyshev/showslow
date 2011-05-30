@@ -1,0 +1,168 @@
+* {font-family: sans-serif; margin: 0; padding: 0;}
+
+html,
+body {height: 100%;}
+
+body {font-size: 13px;}
+
+a {color: #333;}
+a img {border: 0;}
+input,
+select,
+textarea,
+button {font-size: 1em; padding: .382em;}
+select {padding: 0;}
+button {background: #EEE; border: 1px outset #555;}
+
+/* layout */
+.stack {min-height: 100%; position:relative;}
+
+#header .stackContent,
+#topNav .stackContent {min-width: 1000px;}
+
+/* layout */
+
+
+
+/* header */
+#header {background: url(../img/header-bg-fade.png) repeat-x 0 bottom #444;}
+#header .stackContent {height: 7em; margin: 0 4.236em; padding-top: 2em; position: relative;}
+h1 {color: #FFF; font-size: 2em; font-weight: normal; left: 0; }
+h1 img {margin-right: .236em; vertical-align: middle;}
+h1 a {color: #FFF; font-weight: normal;}
+h1 b {color: #F60;  font-weight: normal;}
+
+#headerNav {list-style: none; position: absolute; right: 0; top: .618em;}
+#headerNav li {display: inline;}
+#headerNav a {color: #CCC;}
+#headerNav a:hover {color: #FFF;}
+
+#topNav {border-bottom: 2px solid #ff8c40; border-top: 1px solid #E5E5E5; background: #DDD; float: left; width: 100%;}
+#topNav .stackContent {float:right; left: -50%; position: relative; text-align: left;}
+#topNav ul {left: 50%; list-style: none; position: relative;}
+#topNav li {float: left; position: relative; }
+#topNav li a {border-left: 1px solid #F1F1F1; border-right: 1px solid #C6C6C6; float: left; padding: .82em; text-decoration: none;}
+#topNav li a:hover {background: #FBD259;}
+
+/* end header */
+
+
+
+/* feature */
+#feature {clear: both; background: url(../img/stripe.png) #FFE069; border-top: 1px solid #EFD059; border-bottom: 2px solid #444;}
+#feature .stackContent {margin: 0 auto; padding: 2em 0; text-align: center; width: 76em;}
+
+/* feature */
+
+
+
+/* message */
+#message {display: none; clear: both; background: url(../img/stripe-message.png) #FFE069; border-bottom: 1px solid #ad4e13;}
+#message .stackContent {margin: 0 auto; padding: 2em 0; text-align: center; width: 76em;}
+
+/* message */
+
+
+
+/* writeUp */
+#writeUp {clear: both; margin: 0em 4.236em; padding: 1em;}
+#writeUp .stack2of3 .stackContent {border-right: 1px solid #CCC; padding-right: 2em;}
+#writeUp .stack1of3 .stackContent {padding-left: 2em;}
+#writeUp p {margin-bottom: 1em;}
+/* writeUp */
+
+
+
+/* main */
+#main {padding: 1em 4.236em 5em; border-top: 2px solid #444;} 
+/* end main */
+
+
+
+/* grades */
+.grade {background: #F6F6F6; margin-top: .618em; padding: .618em 0 .618em .382em;}
+.grade.alt {background: #EEE;}
+.grade h4 {font-size: 1em; margin-bottom: .382em; overflow: hidden; white-space: nowrap;}
+.grade h4 b {color: #FF6600;}
+.grade p b {background: #444; color: #FFF; float: left; height: 1em; padding: .236em 0; text-align: center; width: 3.82em;}
+.gbox {background: #999; display: block; margin: 0 1em 0 4em;}
+.gbox span {display: block; height: 1em; padding: .236em;}
+.gbox .bar {color: #FFF;}
+
+.c1 {
+	background: #EE0000;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EE0000), to(#CF0000));
+	background: -moz-linear-gradient(top, #EE0000, #CF0000);
+}
+.c2 {
+	background: #EE2800;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EE2800), to(#CF2200));
+	background: -moz-linear-gradient(top, #EE2800, #CF2200);
+}
+.c3 {
+	background: #EE4F00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EE4F00), to(#CF4400));
+	background: -moz-linear-gradient(top, #EE4F00, #CF4400);
+}
+.c4 {
+	background: #EE7700;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EE7700), to(#CF6600));
+	background: -moz-linear-gradient(top, #EE7700, #CF6600);
+}
+.c5 {
+	background: #EE9F00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EE9F00), to(#CF8800));
+	background: -moz-linear-gradient(top, #EE9F00, #CF8800);
+}
+.c6 {
+	background: #EEC600;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EEC600), to(#CFAA00));
+	background: -moz-linear-gradient(top, #EEC600, #CFAA00);
+}
+.c7 {
+	background: #EEEE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EEEE00), to(#CDCF00));
+	background: -moz-linear-gradient(top, #EEEE00, #CDCF00);
+}
+.c8 {
+	background: #C6EE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#C6EE00), to(#ABCF00));
+	background: -moz-linear-gradient(top, #C6EE00, #ABCF00);
+}
+.c9 {
+	background: #9FEE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#9FEE00), to(#89CF00));
+	background: -moz-linear-gradient(top, #9FEE00, #89CF00);
+}
+.c10 {
+	background: #77EE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#77EE00), to(#67CF00));
+	background: -moz-linear-gradient(top, #77EE00, #67CF00);
+}
+.c11 {
+	background: #4FEE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#4FEE00), to(#45CF00));
+	background: -moz-linear-gradient(top, #4FEE00, #45CF00);
+}
+.c12 {
+	background: #28EE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#28EE00), to(#23CF00));
+	background: -moz-linear-gradient(top, #28EE00, #23CF00);
+}
+.c13 {
+	background: #00EE00;
+	background: -webkit-gradient(linear, left top, left bottom, from(#00EE00), to(#01CF00));
+	background: -moz-linear-gradient(top, #00EE00, #01CF00);
+}
+/* grades */
+
+
+
+/* footer */
+#footer {background: #444; bottom: 0; color: #FFF; height: 2.618em; left: 0; padding-top: 1em; position: absolute; width: 100%;}
+#footer p {text-align: center;}
+#footer a {color: #ff8c40;}
+/* footer */
+
+
+
