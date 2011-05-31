@@ -15,6 +15,9 @@ $sessionSecret = '...................................................';
 # Enable Flot graphs (experimental)
 #$enableFlot = true;
 
+# PageSpeed Online API key (https://code.google.com/apis/console/#access)
+#$pageSpeedOnlineAPIKey = '...';
+
 # Custom metrics supported
 #$metrics['bouncerate'] = array(
 #	'id' => 1,
