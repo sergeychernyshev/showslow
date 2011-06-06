@@ -6,7 +6,7 @@ $TITLE = 'Configuring YSlow / Page Speed';
 $SECTION = 'configure';
 require_once(dirname(__FILE__).'/header.php');
 ?>
-<p><b style="color: #CC14BE">WARNING! Only use this if you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
+<p><b style="color: #F60">WARNING! Only use this if you're OK with all your measurements to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 <p>Set these Firefox preferences on <b>about:config</b> page:</p>
 <h2>YSlow</h2>

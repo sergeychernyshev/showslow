@@ -289,11 +289,9 @@ if ($SECTION == 'all') { ?>
 
 if ($SECTION == 'home' && !is_null($ShowSlowIntro)) { ?>
 	<div id="writeUp">
-		<div class="stack">
-			<div class="stackContent">
-				<?php echo $ShowSlowIntro ?>
-			</div><!-- stackContent -->
-		</div><!-- stack -->
+		<div class="stackContent">
+			<?php echo $ShowSlowIntro ?>
+		</div><!-- stackContent -->
 	</div><!-- writeUp -->
 <?php } ?>
 
