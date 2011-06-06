@@ -11,6 +11,10 @@ if (!isset($current_user)) {
 	$current_user = User::get();
 }
 
+if (!isset($noMoreURLs)) {
+	$noMoreURLs = false;
+}
+
 ?><!DOCTYPE HTML>
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns:og="http://opengraphprotocol.org/schema/"
@@ -218,18 +222,39 @@ foreach ($additionalMenuItems as $menu_item) {
 		</div><!-- stackContent -->
 	</div><!-- topNav -->
 
-	<div id="message">
-		<div class="stackContent">
-		</div><!-- stackContent -->
-	</div><!-- message -->
+<?php
+if (!isset($MESSAGES)) {
+	$MESSAGES = null;
+}
 
-<?php if ($enableMyURLs && $SECTION == 'home') { ?>
+if (is_array($MESSAGES) && count($MESSAGES > 0)) {
+	?><div id="messages">
+	<?php
+	foreach ($MESSAGES as $message) {
+		$messagetype = '';
+		if (is_array($message)) {
+			$messagetype = $message[0];
+			$message = $message[1];
+		}
+		?>
+		<div class="message<?php echo $messagetype ?>">
+			<div class="stackContent">
+				<h3><?php echo $message ?></h3>
+			</div><!-- stackContent -->
+		</div><!-- message -->
+		<?php
+	}
+	?></div><!-- messages -->
+	<?php
+}
+
+if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) { ?>
 	<div id="feature">
 		<div class="stackContent">
-			<form action="<?php echo $showslow_base ?>/my.php" method="GET">
+			<form action="<?php echo $showslow_base ?>my.php" method="GET">
 			<h3>
-			<label>Add your URL to be monitored: <input type="text" size="60" name="url"/></label>
-			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"/>
+			<label>Add your URL to be monitored: <input type="text" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/></label>
+			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
 			</h3>
 			</form>
 		</div><!-- stackContent -->

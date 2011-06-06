@@ -177,76 +177,7 @@ if ($enableFlot) {
 var url = <?php echo json_encode($url); ?>;
 var metrics = <?php echo json_encode($metrics); ?>;
 </script>
-<style>
-.yslow1 {
-	color: #55009D;
-}
-
-.yslow2 {
-	color: #2175D9;
-}
-
-.details {
-	cursor: help;
-}
-
-.sectionname {
-	padding-top: 1em;
-}
-.titlecol {
-	padding: 0 1em;
-}
-.value {
-	font-weight: bold;
-}
-
-.levelbox-low {
-	float: left;
-	width: 1em;
-	height: 1em;
-	margin-right: 0.3em;
-	background: #80E41F;
-}
-.levelbox-mid {
-	float: left;
-	width: 1em;
-	height: 1em;
-	margin-right: 0.3em;
-	background: #E8871D;
-}
-.levelbox-high {
-	float: left;
-	width: 1em;
-	height: 1em;
-	margin-right: 0.3em;
-	background: #A02523;
-}
-
-.metric-toggle {
-	margin-right: 0.5em;
-}
-
-fieldset {
-	border-radius: 3px;
-	margin: 1em 0;
-}
-
-legend {
-/*	cursor: pointer; */
-	border-radius: 3px;
-	font-weight: bold;
-	background-color: #f9f1cf;
-	padding: 5px 10px;
-	margin-left: 3px;
-	border: solid 1px #000;
-	font-size: 1.2em;
-}
-</style>
-<h2 style="margin: 0.3em 0 0 0;">
-<div style="float: left; margin-right: 0.5em">Details for <a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></div>
-
-<div style="clear: both"></div>
-</h2>
+<h2>Details for <a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h2>
 <?php if (!is_null($addThisProfile)) {?>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">
@@ -714,21 +645,21 @@ if ($havemetrics)
 if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
 	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
-	<div id="measurementstable"></div>
+	<div id="measurementstable" class="measurementstable"></div>
 	<?php 
 }
 
 if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
 	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
-	<div id="ps_measurementstable"></div>
+	<div id="ps_measurementstable" class="measurementstable"></div>
 <?php 
 }
 
 if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
 	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
-	<div id="dt_measurementstable"></div>
+	<div id="dt_measurementstable" class="measurementstable"></div>
 <?php 
 }
 
@@ -738,11 +669,11 @@ if (count($pagetest) > 0) {
 
 	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
-	<table cellpadding="5" cellspacing="0" border="1">
+	<table id="wpttable">
 
 	<form action="<?php echo $showslow_base ?>/pagetestcompare.php" method="POST">
 
-	<tr>
+	<tr class="yui-dt-hd">
 	<th>
 		<div style="font-size: xx-small; text-align: left">
 		<input type="submit" name="go" value="Compare"/>
@@ -785,7 +716,7 @@ if (count($har) > 0) {
 
 	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo urlencode($har_url) ?>" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
 
-	<table cellpadding="5" cellspacing="0" border="1">
+	<table id="hartable">
 	<tr><th>Time</th><th>HAR</th></tr>
 <?php
 	foreach ($har as $harentry) {

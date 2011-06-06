@@ -56,11 +56,14 @@ h1 b {color: #F60;  font-weight: normal;}
 
 
 
-/* message */
-#message {display: none; clear: both; background: url(../img/stripe-message.png) #FFE069; border-bottom: 1px solid #ad4e13;}
-#message .stackContent {margin: 0 auto; padding: 2em 0; text-align: center; width: 76em;}
+/* messages */
+.message {clear: both; background: url(../img/stripe-message.png) #7199bc; color: white; border-bottom: 2px solid #446e93;}
+.messageerror {clear: both; background: url(../img/stripe-error.png) #FFE069; color: yellow; border-bottom: 2px solid #ad4e13;}
+.messagesuccess {clear: both; background: url(../img/stripe-success.png) #69E06F; color: black; border-bottom: 2px solid #40bc44;}
 
-/* message */
+.messageerror .stackContent, .message .stackContent, .messagesuccess .stackContent {margin: 0 auto; padding: 1.618em 0; text-align: center; width: 76em;}
+
+/* messages */
 
 
 
@@ -165,4 +168,136 @@ h1 b {color: #F60;  font-weight: normal;}
 /* footer */
 
 
+/* HAR table */
+#hartable {
+	border: 1px solid black;
+	margin-top: 0.618em;
+}
+#hartable td {
+	padding: 0.618em;
+	border: 1px solid gray;
+	margin: 0;
+}
+#hartable th {
+	padding: 0.618em;
+	border: 1px solid gray;
+	margin: 0;
+	background: #DDD;
+}
+/* HAR table */
 
+
+/* WPT table */
+#wpttable {
+	border: 1px solid black;
+	margin-top: 0.618em;
+}
+#wpttable td {
+	padding: 0.618em;
+	border: 1px solid gray;
+	margin: 0;
+}
+#wpttable th {
+	padding: 0.618em;
+	border: 1px solid gray;
+	margin: 0;
+	background: #DDD;
+}
+/* WPT table */
+
+
+/* measurements history tables */
+.measurementstable {
+	border: 1px solid black;
+	margin-top: 0.618em;
+}
+.measurementstable td {
+	padding: 0.618em;
+	border: 1px solid gray;
+	margin: 0;
+}
+.measurementstable th {
+	padding: 0.618em;
+	margin: 0;
+}
+
+.measurementstable .yui-dt-hd {
+	background: #DDD;
+	border: 1px solid gray;
+}
+/* measurements history tables */
+
+
+/* sections */
+h2 {
+	padding-top: 1em;
+}
+/* sections */
+
+
+/* details page */
+.yslow1 {
+	color: #55009D;
+}
+
+.yslow2 {
+	color: #2175D9;
+}
+
+.details {
+	cursor: help;
+}
+
+.sectionname {
+	padding-top: 1em;
+}
+.titlecol {
+	padding: 0 1em;
+}
+.value {
+	font-weight: bold;
+}
+
+.levelbox-low {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #80E41F;
+}
+.levelbox-mid {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #E8871D;
+}
+.levelbox-high {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-right: 0.3em;
+	background: #A02523;
+}
+
+.metric-toggle {
+	margin-right: 0.5em;
+}
+
+fieldset {
+	border-radius: 3px;
+	margin: 1em 0;
+	padding: 0.618em;
+}
+
+legend {
+/*	cursor: pointer; */
+	border-radius: 3px;
+	font-weight: bold;
+	background-color: #f9f1cf;
+	padding: 5px 10px;
+	margin-left: 3px;
+	border: solid 1px #000;
+	font-size: 1.2em;
+}
+/* details page */

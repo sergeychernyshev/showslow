@@ -295,7 +295,7 @@ if (!is_null($ranker)) {
 ?>
 
 <form action="" method="GET">
-<h3>Enter URL to compare:</h3>
+<h2>Enter URL to compare:</h2>
 <?php if ($enough_data) { ?>
 <p>Enter up to 5 URLs in the form below:</p>
 <?php
