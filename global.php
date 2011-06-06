@@ -207,7 +207,7 @@ $additionalMenuItems = array();
 $instanceAdmins = array();
 
 # Enable Flot graphs (experimental)
-$enableFlot = false;
+$enableFlot = true;
 
 
 
