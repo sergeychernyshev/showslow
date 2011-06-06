@@ -273,7 +273,7 @@ if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) {
 if ($SECTION == 'all') { ?>
 	<div id="search">
 		<div class="stackContent">
-			<form name="searchform" action="" method="GET">
+			<form name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
 			<h3>
 			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/></label>
 			<input type="submit" value="search"/>
