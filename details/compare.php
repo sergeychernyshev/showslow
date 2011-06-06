@@ -159,7 +159,7 @@ require_once(dirname(dirname(__FILE__)).'/header.php');
 }
 </style>
 
-<h1 style="margin-bottom: 0">Compare rankings</h1>
+<h2 style="margin-bottom: 0">Compare rankings</h2>
 <?php
 
 // only display menu if user picked the ranker specifically
@@ -295,7 +295,7 @@ if (!is_null($ranker)) {
 ?>
 
 <form action="" method="GET">
-<h3>Enter URL to compare:</h3>
+<h2>Enter URL to compare:</h2>
 <?php if ($enough_data) { ?>
 <p>Enter up to 5 URLs in the form below:</p>
 <?php

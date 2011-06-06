@@ -11,6 +11,18 @@ if (!isset($current_user)) {
 	$current_user = User::get();
 }
 
+if (!isset($noMoreURLs)) {
+	$noMoreURLs = false;
+}
+
+if (array_key_exists('group', $_GET)) {
+	$current_group = $_GET['group'];
+} else if (!is_null($DefaultURLGroup)) {
+	$current_group = $DefaultURLGroup;
+} else {
+	$current_group = '__show_all__';
+}
+
 ?><!DOCTYPE HTML>
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns:og="http://opengraphprotocol.org/schema/"
@@ -18,131 +30,11 @@ if (!isset($current_user)) {
 >
 <head>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
-<?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
-<link rel="icon" type="image/vnd.microsoft.icon" href="<?php echo assetURL('favicon.ico')?>"> 
-<link rel="apple-touch-icon" href="<?php echo assetURL('showslow_iphone_icon.png')?>" /> 
-
-<style type="text/css">
-/*
-Copyright (c) 2010, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.com/yui/license.html
-version: 2.8.1
-*/
-body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea,button{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
-
-body {
-	margin:0;
-	background-color: #98993D;
-}
-
-#header {
-	padding: 1px;
-	height: 60px;
-	border-bottom: 2px solid black;
-	margin: 0;
-}
-
-#header a {
-	color: #403300;
-}
-
-#menu {
-	background-color: #261F00;
-	border-bottom: 2px solid black;
-}
-
-#menu a {
-	color: #FFDE4C;
-	padding: 0.6em;
-	text-decoration: none;
-	font-weight: bold;
-	white-space: nowrap;
-}
-
-#menu a:hover {
-	background-color: #7F6F26;
-	color: black;
-}
-
-#menu a.current {
-	background-color: #7F6F26;
-	color: white;
-}
-
-#menu td {
-	padding: 0.1em 0.1em;
-}
-
-#footer {
-	border-top: 2px solid black;
-	padding: 5px;
-	font-size: smaller;
-}
-
-#title {
-	color: black; 
-	text-decoration: none;
-	padding: 0 0.5em;
-}
-
-#main {
-	padding: 1px 1em 1em 1em;
-	background: white;
-}
-
-#poweredby {
-	float: right;
-}
-
-#navbox {
-	float: right;
-	margin-right: 1em;
-}
-
-td, th { white-space: nowrap; }
-
-.score {
-	text-align: right;
-	padding: 0 10px 0 10px;
-}
-
-.gbox {
-	background-color: #EFEFEF;
-	background: -webkit-gradient(linear, left top, left bottom, from(#EFEFEF), to(#CFCFCF));
-	background: -moz-linear-gradient(top, #EFEFEF, #CFCFCF);
-	width: 101px;	
-}
-
-.moreinfo {
-	width: 14px;
-	height: 14px;
-	background-image: url('<?php echo assetURL('info.png')?>');
-}
-.ccol {
-	background-image: url('<?php echo assetURL('collecting.gif')?>')
-}
-
-.url {
-	padding-left:10px;
-}
-
-.bar {
-	height: 15px;
-}
-
-h2 {
-	margin: 0.5em 0 0.3em 0;
-}
-
-<?php for($i=1; $i<=count($colorSteps); $i++) {?>
-.c<?php echo $i; ?> {
-	background: #<?php echo $colorSteps[$i-1]; ?>;
-	background: -webkit-gradient(linear, left top, left bottom, from(#<?php echo $colorSteps[$i-1]; ?>), to(#<?php echo $colorStepShades[$i-1]; ?>));
-	background: -moz-linear-gradient(top, #<?php echo $colorSteps[$i-1]; ?>, #<?php echo $colorStepShades[$i-1]; ?>);
-}
-<?php } ?>
-</style>
+<link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout.css')?>" />
+<!--[if lte IE 7]>
+<link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout_lte_ie7.css')?>" />
+<![endif]-->
+<link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/loader.css')?>" />
 
 <?php
 if (isset($STYLES)) {
@@ -224,22 +116,78 @@ document.documentElement.firstChild.appendChild(ga);
 })();
 </script>
 <?php }?>
+
+<style type="text/css">
+
+td, th { white-space: nowrap; }
+
+.score {
+	text-align: right;
+	padding: 0 10px 0 10px;
+}
+
+.gbox {
+	background-color: #EFEFEF;
+	background: -webkit-gradient(linear, left top, left bottom, from(#EFEFEF), to(#CFCFCF));
+	background: -moz-linear-gradient(top, #EFEFEF, #CFCFCF);
+	width: 101px;
+}
+
+.moreinfo {
+	width: 14px;
+	height: 14px;
+	background-image: url('<?php echo assetURL('info.png')?>');
+}
+.ccol {
+	background-image: url('<?php echo assetURL('collecting.gif')?>')
+}
+
+.url {
+	padding-left:10px;
+}
+
+.bar {
+	height: 15px;
+}
+
+<?php for($i=1; $i<=count($colorSteps); $i++) {?>
+.c<?php echo $i; ?> {
+	background: #<?php echo $colorSteps[$i-1]; ?>;
+	background: -webkit-gradient(linear, left top, left bottom, from(#<?php echo $colorSteps[$i-1]; ?>), to(#<?php echo $colorStepShades[$i-1]; ?>));
+	background: -moz-linear-gradient(top, #<?php echo $colorSteps[$i-1]; ?>, #<?php echo $colorStepShades[$i-1]; ?>);
+}
+<?php } ?>
+</style>
+
+<?php if ($homePageMetaTags && $SECTION == 'home') { echo $homePageMetaTags; } ?>
+<link rel="icon" type="image/vnd.microsoft.icon" href="<?php echo assetURL('favicon.ico')?>">
+<link rel="apple-touch-icon" href="<?php echo assetURL('showslow_iphone_icon.png')?>" />
+
 </head>
-<body class="yui-skin-sam">
-<div id="header">
-	<a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('showslow_icon.png')?>" style="float: right; padding: 0.2em; margin-left: 1em; border: 0"/></a>
-	<div id="poweredby">powered by <a href="http://www.showslow.org/">showslow</a></div>
+<body>
+<div class="stack">
+	<div id="header">
+		<div class="stackContent">
+			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
+<?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?> 
+</h1>
 
-	<?php include(dirname(__FILE__).'/users/navbox.php'); ?>
+<?php if ($enableMyURLs) {?>
+			<ul id="headerNav">
+				<?php include(dirname(__FILE__).'/users/navbox.php'); ?>
+			</ul>
+<?php } ?>
 
-	<h1><a id="title" href="<?php echo $showslow_base ?>">Show Slow</a></h1>
-	<div style="clear: both"></div>
-</div>
-<div id="menu">
-<table><tr>
-<?php if ($enableMyURLs) { ?><td><a <?php if ($SECTION == 'my') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>my.php">+ add URL</a></td><?php } ?>
-<td><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last measurements</td>
-<td><a <?php if ($SECTION == 'all') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>all.php">URLs measured</a></td>
+		</div><!-- stackContent -->
+	</div><!-- header -->
+
+	<div id="topNav">
+		<div class="stackContent">
+			<ul>
+
+<?php if ($enableMyURLs) { ?><li><a <?php if ($SECTION == 'my') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>my.php">+ Add a URL</a></li><?php } ?>
+<li><a <?php if ($SECTION == 'home') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>">Last measurements</a></li>
+<li><a <?php if ($SECTION == 'all') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>all.php">URLs measured</a></li>
 <?php
 $compareParams = '';
 if (is_array($defaultURLsToCompare)) {
@@ -261,22 +209,91 @@ if (is_array($defaultURLsToCompare)) {
 	}
 }
 ?>
-<td><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></td>
+<li><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></li>
 <?php 
 foreach ($customLists as $list_id => $list) {
 	if (array_key_exists('hidden', $list) && $list['hidden']) {
 		continue;
 	}
 
-	?><td><a <?php if ($SECTION == 'custom_list_'.$list_id) {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>list.php?id=<?php echo $list_id; ?>"><?php echo $list['title'] ?></td><?php
+	?><li><a <?php if ($SECTION == 'custom_list_'.$list_id) {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>list.php?id=<?php echo $list_id; ?>"><?php echo $list['title'] ?></a></li><?php
 }
 
 foreach ($additionalMenuItems as $menu_item) {
-	?><td><a href="<?php echo htmlentities($menu_item['url']) ?>"><?php echo htmlentities($menu_item['title']) ?></td><?php
+	?><li><a href="<?php echo htmlentities($menu_item['url']) ?>"><?php echo htmlentities($menu_item['title']) ?></a></li><?php
 }
 ?>
-<td><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring ranking tools</a></td>
-<td><a href="https://github.com/sergeychernyshev/showslow/downloads">Download ShowSlow</a></td>
-</tr></table>
-</div>
+<li><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring ranking tools</a></li>
+<li><a href="https://github.com/sergeychernyshev/showslow/downloads">Download ShowSlow</a></li>
+
+			</ul>
+		</div><!-- stackContent -->
+	</div><!-- topNav -->
+
+<?php
+if (!isset($MESSAGES)) {
+	$MESSAGES = null;
+}
+
+if (is_array($MESSAGES) && count($MESSAGES > 0)) {
+	?><div id="messages">
+	<?php
+	foreach ($MESSAGES as $message) {
+		$messagetype = '';
+		if (is_array($message)) {
+			$messagetype = $message[0];
+			$message = $message[1];
+		}
+		?>
+		<div class="message<?php echo $messagetype ?>">
+			<div class="stackContent">
+				<h3><?php echo $message ?></h3>
+			</div><!-- stackContent -->
+		</div><!-- message -->
+		<?php
+	}
+	?></div><!-- messages -->
+	<?php
+}
+
+if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) { ?>
+	<div id="feature">
+		<div class="stackContent">
+			<form action="<?php echo $showslow_base ?>my.php" method="GET">
+			<h3>
+			<label>Add your URL to be monitored: <input type="text" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/></label>
+			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
+			</h3>
+			</form>
+		</div><!-- stackContent -->
+	</div><!-- feature -->
+<?php
+}
+
+if ($SECTION == 'all') { ?>
+	<div id="search">
+		<div class="stackContent">
+			<form name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
+			<h3>
+			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/></label>
+			<input type="submit" value="search"/>
+			<?php if ($DefaultURLGroup != $current_group) { ?>
+			<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
+			<?php } ?>
+			<input type="button" value="clear" onclick="document.getElementById('urlsearch').value=''; document.searchform.submit()">
+			</form>
+		</div><!-- stackContent -->
+	</div><!-- feature -->
+<?php
+}
+
+if ($SECTION == 'home' && !is_null($ShowSlowIntro)) { ?>
+	<div id="writeUp">
+		<div class="stackContent">
+			<?php echo $ShowSlowIntro ?>
+		</div><!-- stackContent -->
+	</div><!-- writeUp -->
+<?php } ?>
+
 <div id="main">
+<div class="stackContent">

@@ -198,21 +198,20 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
-	?><html>
-<head>
-<title>Bad Request: YSlow beacon</title>
-</head>
-<body>
-<h1>YSlow beacon</h1>
+	$TITLE = 'Bad Request: YSlow beacon';
+
+	require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
+	?>
+<h2>YSlow beacon</h2>
 <p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
 
-<h1>Configure your YSlow</h1>
+<h2>Configure your YSlow</h2>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your YSlow data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 <p>Set these two Firefox parameters on <b>about:config</b> page:</p>
 
 </ul>
-<h2>Yslow 2.x</h2>
+<h3>Yslow 2.x</h3>
 <ul>
 <li>extensions.yslow.beaconUrl = <b style="color: blue"><?php echo $showslow_base?>beacon/yslow/</b></li>
 <li>extensions.yslow.beaconInfo = <b style="color: blue">grade</b></li>
@@ -221,8 +220,9 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 
 <hr/>
 <p><a href="../">&lt;&lt; back to the list of beacons</a></p>
-</body></html>
 <?php
+require_once(dirname(dirname(dirname(__FILE__))).'/footer.php');
+
 	exit;
 }
 
