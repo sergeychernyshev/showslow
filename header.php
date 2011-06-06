@@ -15,6 +15,14 @@ if (!isset($noMoreURLs)) {
 	$noMoreURLs = false;
 }
 
+if (array_key_exists('group', $_GET)) {
+	$current_group = $_GET['group'];
+} else if (!is_null($DefaultURLGroup)) {
+	$current_group = $DefaultURLGroup;
+} else {
+	$current_group = '__show_all__';
+}
+
 ?><!DOCTYPE HTML>
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns:og="http://opengraphprotocol.org/schema/"
@@ -259,9 +267,27 @@ if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) {
 			</form>
 		</div><!-- stackContent -->
 	</div><!-- feature -->
-<?php } ?>
+<?php
+}
 
-<?php if ($SECTION == 'home' && !is_null($ShowSlowIntro)) { ?>
+if ($SECTION == 'all') { ?>
+	<div id="search">
+		<div class="stackContent">
+			<form name="searchform" action="" method="GET">
+			<h3>
+			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/></label>
+			<input type="submit" value="search"/>
+			<?php if ($DefaultURLGroup != $current_group) { ?>
+			<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
+			<?php } ?>
+			<input type="button" value="clear" onclick="document.getElementById('urlsearch').value=''; document.searchform.submit()">
+			</form>
+		</div><!-- stackContent -->
+	</div><!-- feature -->
+<?php
+}
+
+if ($SECTION == 'home' && !is_null($ShowSlowIntro)) { ?>
 	<div id="writeUp">
 		<div class="stack">
 			<div class="stackContent">

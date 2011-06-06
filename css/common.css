@@ -55,9 +55,15 @@ h1 b {color: #F60;  font-weight: normal;}
 /* feature */
 
 
+/* search */
+#search {clear: both; background: url(../img/stripe.png) #FFE069; border-top: 1px solid #EFD059; border-bottom: 2px solid #444;}
+#search .stackContent {margin: 0 auto; padding: 2em 0; text-align: center; width: 76em;}
+
+/* feature */
+
 
 /* messages */
-.message {clear: both; background: url(../img/stripe-message.png) #7199bc; color: white; border-bottom: 2px solid #446e93;}
+.message {clear: both; background: url(../img/stripe-message.png) #7ca0bf; color: white; border-bottom: 2px solid #446e93;}
 .messageerror {clear: both; background: url(../img/stripe-error.png) #FFE069; color: yellow; border-bottom: 2px solid #ad4e13;}
 .messagesuccess {clear: both; background: url(../img/stripe-success.png) #69E06F; color: black; border-bottom: 2px solid #40bc44;}
 
@@ -77,7 +83,8 @@ h1 b {color: #F60;  font-weight: normal;}
 
 
 /* main */
-#main {padding: 1em 4.236em 5em; border-top: 2px solid #DDD;} 
+#main {clear: both; padding: 1em 4.236em 5em; border-top: 2px solid #DDD;}
+#main ul {margin-left: 2.618em; margin-bottom: 1em;}
 /* end main */
 
 
@@ -230,7 +237,8 @@ h1 b {color: #F60;  font-weight: normal;}
 
 /* sections */
 h2 {
-	padding-top: 1em;
+	padding-top: 0.618em;
+	padding-bottom: 0.382em;
 }
 /* sections */
 
