@@ -236,7 +236,7 @@ h1 b {color: #F60;  font-weight: normal;}
 
 
 /* sections */
-h2 {
+h2, h3 {
 	padding-top: 0.618em;
 	padding-bottom: 0.382em;
 }
@@ -302,7 +302,6 @@ legend {
 /*	cursor: pointer; */
 	border-radius: 3px;
 	font-weight: bold;
-	background-color: #f9f1cf;
 	padding: 5px 10px;
 	margin-left: 3px;
 	border: solid 1px #000;
