@@ -18,7 +18,7 @@ $SECTION = 'all';
 require_once(dirname(__FILE__).'/header.php');
 ?>
 <style>
-.current {
+.paginator .current {
 	text-decoration: none;
 	font-weight: bold;
 	color: black;

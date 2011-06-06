@@ -43,6 +43,7 @@ h1 b {color: #F60;  font-weight: normal;}
 #topNav li {float: left; position: relative; }
 #topNav li a {border-left: 1px solid #F1F1F1; border-right: 1px solid #C6C6C6; float: left; padding: .82em; text-decoration: none;}
 #topNav li a:hover {background: #FBD259;}
+#topNav .current {background: #c6c6c6; font-weight: bold;}
 
 /* end header */
 
