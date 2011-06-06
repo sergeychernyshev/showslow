@@ -261,8 +261,8 @@ if ($havemetrics)
 			$pretty_score = prettyScore($score);
 		?>
 		<td valign="top" align="center" class="<?php echo $provider_name ?>">
-		<img src="http://chart.apis.google.com/chart?chs=225x108&cht=gom&chd=t:<?php echo urlencode($score)?>&chl=<?php echo urlencode($pretty_score.' ('.$score.')') ?>" alt="<?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)" title="Current <?php echo $provider['title'] ?> <?php echo $provider['score_name'] ?>: <?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)"/>
-		<div>Current <a target="_blank" href="<?php echo $provider['url'] ?>"><?php echo $provider['title'] ?></a> <?php echo $provider['score_name'] ?>: <b><?php echo $pretty_score ?> (<i><?php echo htmlentities($score)?></i>)</b></div>
+		<a href="#<?php echo $provider_name ?>"><img src="http://chart.apis.google.com/chart?chs=225x108&cht=gom&chd=t:<?php echo urlencode($score)?>&chl=<?php echo urlencode($pretty_score.' ('.$score.')') ?>" alt="<?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)" title="Current <?php echo $provider['title'] ?> <?php echo $provider['score_name'] ?>: <?php echo $pretty_score ?> (<?php echo htmlentities($score)?>)" border="0"/></a>
+		<div>Current <a target="_blank" href="#<?php echo $provider_name ?>"><?php echo $provider['title'] ?></a> <?php echo $provider['score_name'] ?>: <b><?php echo $pretty_score ?> (<i><?php echo htmlentities($score)?></i>)</b></div>
 		</td>
 		<?php
 		}
@@ -287,8 +287,8 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	?>
 		<option <?php echo htmlentities($location['default']) ? 'selected ' : ''?>value="<?php echo htmlentities($location['id'])?>"><?php echo htmlentities($location['title'])?></option>
 	<?php } ?></select>
-	<input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/><label for="wpt_private">Private</label>
-	<input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/><label for="wpt_fvonly">First View Only</label>
+	<label><input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/> Private</label>
+	<label><input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/> First View Only</label>
 	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
