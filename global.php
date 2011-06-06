@@ -206,7 +206,7 @@ $additionalMenuItems = array();
 # a list of admin user IDs for authentication into UserBase administration interface
 $instanceAdmins = array();
 
-# Enable Flot graphs (experimental)
+# Enable Flot graphs (default now)
 $enableFlot = true;
 
 

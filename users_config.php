@@ -47,6 +47,7 @@ UserConfig::$activities[SHOWSLOW_ACTIVITY_PAGETEST_START] = array('Started WebPa
 UserConfig::$activities[SHOWSLOW_ACTIVITY_URL_SEARCH] = array('Searched a URL in the list', 1);
 
 // Features
+
+// Flot support is now enabled using $enableFlot and this feature flag is not used
 define('SHOWSLOW_FLOT_SUPPORT', 		1);
 new Feature(SHOWSLOW_FLOT_SUPPORT, 'Flot charting library support');
-
