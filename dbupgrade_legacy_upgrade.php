@@ -100,17 +100,65 @@ $versions[26]['down'][] = "ALTER TABLE `dynatrace` DROP INDEX `url_id`";
 
 
 /* -------------------------------------------------------------------------------------------------------
- * VERSION 24-25, 14-15
- * removed userbase database setup - leave it to userbase's scripts
+ * VERSION 25
+ * Somehow missed one of the UserBase tables
 */
-$versions[25]['up'][]		= "SELECT 1";
-$versions[25]['udown'][]	= "SELECT 1";
-$versions[24]['up'][]		= "SELECT 1";
-$versions[24]['udown'][]	= "SELECT 1";
-$versions[15]['up'][]		= "SELECT 1";
-$versions[15]['udown'][]	= "SELECT 1";
-$versions[14]['up'][]		= "SELECT 1";
-$versions[14]['udown'][]	= "SELECT 1";
+$versions[25]['up'][]	= "CREATE TABLE IF NOT EXISTS u_user_features (
+`user_id` INT( 10 ) UNSIGNED NOT NULL COMMENT  'User ID',
+`feature_id` INT( 2 ) UNSIGNED NOT NULL COMMENT  'Feature ID',
+PRIMARY KEY (  `user_id` ,  `feature_id` )
+) ENGINE = INNODB COMMENT = 'Keeps feature list for all users'";
+$versions[25]['up'][] = "ALTER TABLE `u_user_features`
+DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
+
+$versions[25]['down'][] = "DROP TABLE IF EXISTS u_user_features";
+
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 24
+ * Added UserBase accounts table which we never created
+*/
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_accounts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `plan` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Payment plan ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_account_users` (
+  `account_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `role` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  KEY `user_account` (`account_id`),
+  KEY `account_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+$versions[24]['up'][] = "ALTER TABLE `u_account_users`
+  ADD CONSTRAINT `account_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `u_account_users_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `u_accounts` (`id`),
+  ADD CONSTRAINT `u_account_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`)";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_account_features` (
+  `account_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `feature_id` int(2) unsigned NOT NULL COMMENT 'Feature ID',
+  PRIMARY KEY (`account_id`,`feature_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Keeps feature list for all users'";
+
+$versions[24]['up'][] = "CREATE TABLE IF NOT EXISTS `u_user_preferences` (
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `current_account_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `preference_current_account` (`current_account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1";
+
+$versions[24]['up'][] = "ALTER TABLE `u_user_preferences`
+  ADD CONSTRAINT `preference_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_preferences_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`),
+  ADD CONSTRAINT `user_preferences_ibfk_2` FOREIGN KEY (`current_account_id`) REFERENCES `u_accounts` (`id`)";
+
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_user_preferences";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_account_features";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_account_users";
+$versions[24]['down'][] = "DROP TABLE IF EXISTS u_accounts";
 
 /* -------------------------------------------------------------------------------------------------------
  * VERSION 23
@@ -286,6 +334,33 @@ $versions[16]['down'][]	= "ALTER TABLE `pagetest`
   DROP `f_domTime`,
   DROP `r_domTime`;";
 
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 15
+ * UserBase will now use it's own DBUpgrade instance
+ * let's create base version for it since all tables were maintained here
+*/
+$versions[15]['up'][]	= "CREATE TABLE `3f7f6ece338d68f7fbd069377de434e0_db_version` (
+  `version` int(10) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`version`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+";
+$versions[15]['down'][]	= "DROP TABLE `3f7f6ece338d68f7fbd069377de434e0_db_version`";
+
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 14
+ * Added basic UserBase activity tracking
+*/
+$versions[14]['up'][]	= "CREATE TABLE `u_activity` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time of activity',
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `activity_id` int(2) unsigned NOT NULL COMMENT 'Activity ID',
+  KEY `time` (`time`),
+  KEY `user_id` (`user_id`),
+  KEY `activity_id` (`activity_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores user activities'
+";
+$versions[14]['down'][]	= "DROP TABLE `u_activity`";
+
 /* version 13
  *
  * PageSpeed 1.9 support
@@ -406,6 +481,38 @@ $versions[7]['down'][] = "ALTER TABLE urls MODIFY last_update TIMESTAMP ON UPDAT
  *
  * Adding userbase instance
 */
+$versions[6]['up'][] = "CREATE TABLE `u_users` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `regtime` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'Time of registration',
+  `name` text NOT NULL,
+  `username` varchar(25) default NULL,
+  `email` varchar(255) default NULL,
+  `pass` varchar(40) NOT NULL COMMENT 'Password digest',
+  `salt` varchar(13) NOT NULL COMMENT 'Salt',
+  `temppass` varchar(13) default NULL COMMENT 'Temporary password used for password recovery',
+  `temppasstime` timestamp NULL default NULL COMMENT 'Temporary password generation time',
+  `requirespassreset` tinyint(1) NOT NULL default '0' COMMENT 'Flag indicating that user must reset their password before using the site',
+  `fb_id` bigint(20) unsigned default NULL COMMENT 'Facebook user ID',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `fb_id` (`fb_id`)
+) ENGINE=InnoDB;";
+$versions[6]['up'][] = "CREATE TABLE `u_googlefriendconnect` (
+  `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
+  `google_id` varchar(255) NOT NULL COMMENT 'Google Friend Connect ID',
+  `userpic` text NOT NULL COMMENT 'Google Friend Connect User picture',
+  PRIMARY KEY  (`user_id`,`google_id`),
+  CONSTRAINT `gfc_user` FOREIGN KEY (`user_id`) REFERENCES `u_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;";
+$versions[6]['up'][] = "CREATE TABLE `u_invitation` (
+  `code` char(10) NOT NULL COMMENT 'Code',
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT 'When invitation was created',
+  `issuedby` bigint(10) unsigned NOT NULL default '1' COMMENT 'User who issued the invitation. Default is Sergey.',
+  `sentto` text COMMENT 'Note about who this invitation was sent to',
+  `user` bigint(10) unsigned default NULL COMMENT 'User name',
+  PRIMARY KEY  (`code`)
+) ENGINE=InnoDB;";
 $versions[6]['up'][] = "CREATE TABLE `user_urls` (
   `user_id` int(10) unsigned NOT NULL COMMENT 'User ID',
   `url_id` bigint(20) unsigned NOT NULL COMMENT 'URL ID to measure',
@@ -413,6 +520,9 @@ $versions[6]['up'][] = "CREATE TABLE `user_urls` (
 ) ENGINE=MyISAM;";
 
 $versions[6]['down'][] = "DROP TABLE IF EXISTS `user_urls`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_googlefriendconnect`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_invitation`";
+$versions[6]['down'][] = "DROP TABLE IF EXISTS `u_users`";
 
 /* version 5
  *
