@@ -25,10 +25,13 @@ require_once(dirname(__FILE__).'/header.php');
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
 </ul>
 
-<h2>dynaTrace AJAX Edition 2.0 Beta 1</h2>
-<p><a href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> is configured to upload send metrics to <a href="http://www.showslow.com/">showslow.com</a> when clicking on the <b><i>Upload your results to showslow.com</i></b> link in the dynaTrace AJAX Performance Report.</p>
-<p>The uploaded beacon contains information about the dynaTrace AJAX Ranks which includes overall page rank and rankings for Browser Caching, Network, JavaScript and Server-Side Activities.</p>
-<p>As for the Beta 1, the upload URL is not configurable to a different instance than www.showslow.com. It is expected to change in Beta 2, which is expected to be released in September, 2010.</p>
+<h2>dynaTrace AJAX Edition</h2>
+<p><a href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> is configured to upload metrics to <a href="http://www.showslow.com/">showslow.com</a> when clicking on the <b><i>Upload to showslow.com</i></b> context menu in the dynaTrace AJAX Performance Report.</p>
+<p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, open <b>dtajax.ini</b> file in the root of dynaTrace AJAX installation folder and add the following two lines to it:</p>
+<ul>
+<li>-Dcom.dynatrace.diagnostics.ajax.beacon.uploadurl=<b style="color: blue"><?php echo $showslow_base?>beacon/dynatrace/</b></li>
+<li>-Dcom.dynatrace.diagnostics.ajax.beacon.portalurl=<b style="color: blue"><?php echo $showslow_base?></b></li>
+</ul>
 
 <h2>More metrics</h2>
 <p>For more information about different beacons supported by this instance of ShowSlow, see <a href="beacon/">beacons page</a></p>
