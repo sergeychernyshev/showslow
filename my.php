@@ -154,7 +154,7 @@ td, th { white-space: nowrap; }
 if (count($rows))
 {
 ?>
-<div style="width: 100%; overflow: hidden">
+<form action="" method="POST" style="width: 100%; overflow: hidden">
 	<table border="0" style="margin-top: 1em">
 	<tr style="font-size: smaller; font-weight: bold">
 	<td style="text-align: left; padding-right: 0.7em">Timestamp</td>
@@ -232,7 +232,7 @@ if (count($rows))
 	mysql_free_result($result);
 	?>
 	</table>
-	</div>
+	</form>
 <?php 
 }
 
