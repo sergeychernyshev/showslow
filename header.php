@@ -223,7 +223,7 @@ foreach ($additionalMenuItems as $menu_item) {
 	?><li><a href="<?php echo htmlentities($menu_item['url']) ?>"><?php echo htmlentities($menu_item['title']) ?></a></li><?php
 }
 ?>
-<li><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring ranking tools</a></li>
+<li><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring tools</a></li>
 <li><a href="https://github.com/sergeychernyshev/showslow/downloads">Download ShowSlow</a></li>
 
 			</ul>
