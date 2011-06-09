@@ -120,9 +120,10 @@ $showFeedbackButton = true;
 $addThisProfile = null;
 
 # how old should data be for deletion (in days)
+# also used to determine how much data to show on the graph
 # anything >0 will delete old data
 # don't forget to add a cron job to run deleteolddata.php
-$oldDataInterval = 60;
+$oldDataInterval = 180;
 
 # Enable this if you'd like to clean old yslow beacon details to conserve space
 # (beacon details are currently only used for tooltips for latest yslow breakdown)
