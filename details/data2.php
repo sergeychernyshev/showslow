@@ -196,7 +196,7 @@ if (array_key_exists('start', $_GET)) {
 	}
 } else {
 	// fetch last 3 months by default
-	$query .= "\nAND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)";
+	$query .= "\nAND timestamp > DATE_SUB(now(), INTERVAL $oldDataInterval DAY)";
 }
 
 if (array_key_exists('end', $_GET)) {
