@@ -275,7 +275,7 @@ if ($SECTION == 'all') { ?>
 		<div class="stackContent">
 			<form name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
 			<h3>
-			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo is_null($searchstring) ? '' : htmlentities(trim($_GET['search']))?>"/></label>
+			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo array_key_exists('search', $_GET) ? htmlentities(trim($_GET['search'])) : ''?>"/></label>
 			<input type="submit" value="search"/>
 			<?php if ($DefaultURLGroup != $current_group) { ?>
 			<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
