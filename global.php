@@ -404,6 +404,7 @@ $all_metrics = array(
 		'description' => 'Data sent from WebPageTest instance located at <a href="'.$webPageTestBase.'" target="_blank">'.$webPageTestBase.'</a>',
 		'url' => 'http://www.webpagetest.org/',
 		'table' => 'pagetest',
+		'score_name' => 'score',
 		'metrics' => array(
 			'First view' => array(
 				array( 'Load Time',			'f_LoadTime',		MS),
