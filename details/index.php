@@ -116,6 +116,7 @@ require_once(dirname(dirname(__FILE__)).'/header.php');
 
 if ($enableFlot) {
 	$flot_metrics = array();
+	$flot_versions = array();
 	$color = 49;
 
 	$custom_metric_colors = array();
@@ -138,6 +139,8 @@ if ($enableFlot) {
 	foreach ($all_metrics as $provider_name => $provider) {
 		if ($enabledMetrics[$provider_name] && !is_null($row[$provider_name.'_timestamp']))
 		{
+			$flot_versions[$provider_name] = $row[$provider_name.'_timestamp'];			
+
 			foreach ($provider['metrics'] as $section_name => $section) {
 				foreach ($section as $metric) {
 					$flot_metrics[$provider_name][$metric[1]] = array(
@@ -169,6 +172,7 @@ if ($enableFlot) {
 
 	<script>
 	var flot_metrics = <?php echo json_encode($flot_metrics); ?>;
+	var flot_versions = <?php echo json_encode($flot_versions); ?>;
 	var default_metrics = <?php echo json_encode($default_metrics); ?>;
 	var custom_metric_colors = <?php echo json_encode($custom_metric_colors); ?>;
 <?php } else { ?>

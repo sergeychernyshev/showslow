@@ -157,8 +157,9 @@ var SS = (function ($) {
 	function _getEvents() {
 		$.ajax({
 			url: 'events2.php',
-			data: 'url=' + url,
+			data: 'url=' + url + '&ver=' + eventversion,
 			dataType: 'json',
+			cache: true,
 			error: function (jqXHR, textStatus, errorThrown) {
 				alert('There was a problem with events request:\n\n' + errorThrown + ' : ' + textStatus);
 				return;
@@ -175,7 +176,9 @@ var SS = (function ($) {
 
 		$.ajax({
 			url: 'data2.php',
-			data: 'url=' + options.url + '&provider=' + options.provider + '&metrics=' + options.metrics + '&format=json',
+			dataType: 'json',
+			cache: true,
+			data: 'url=' + options.url + '&provider=' + options.provider + '&metrics=' + options.metrics + '&format=json&ver=' + flot_versions[options.provider],
 			error: function (jqXHR, textStatus, errorThrown) {
 				alert('There was a problem with the request:\n\n' + errorThrown + ' : ' + textStatus);
 				return;
