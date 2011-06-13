@@ -71,15 +71,13 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_POST))
 	}
 
 	$testId = $xml->data->testId;
-	$userUrl = $xml->data->userUrl;
 
 	if (!$private || $keepPrivatePageTests) {
 		# adding new entry
-		$query = sprintf("INSERT INTO pagetest (url_id, test_id, test_url, location)
-			VALUES ('%d', '%s', '%s', '%s')",
+		$query = sprintf("INSERT INTO pagetest (url_id, test_id, location)
+			VALUES ('%d', '%s', '%s')",
 			mysql_real_escape_string($url_id),
 			mysql_real_escape_string($testId),
-			mysql_real_escape_string($userUrl),
 			mysql_real_escape_string($location)
 		);
 
@@ -100,7 +98,7 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_POST))
 		$current_user->recordActivity(SHOWSLOW_ACTIVITY_PAGETEST_START);
 	}
 
-	header('Location: '.$userUrl);
+	header('Location: '.$webPageTestBase.'result/'.$testId.'/');
 	exit;
 }
 

@@ -216,7 +216,7 @@ while ($har_row = mysql_fetch_assoc($result)) {
 }
 
 // checking if there were PageTest tests ran
-$query = sprintf("SELECT pagetest.timestamp as t, test_id, test_url, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
+$query = sprintf("SELECT pagetest.timestamp as t, test_id, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
 	mysql_real_escape_string($urlid)
 );
 
@@ -556,7 +556,7 @@ if ($havemetrics)
 			<?php
 			foreach ($provider['metrics'] as $section_name => $metrics)
 			{
-				?><tr><td colspan="6" class="sectionname"><b><?php echo $section_name ?></b></td></tr><?php
+				?><tr><td colspan="8" class="sectionname"><b><?php echo $section_name ?></b></td></tr><?php
 
 				$odd = true;
 				
@@ -667,7 +667,7 @@ if (count($pagetest) > 0) {
 ?>
 	<a name="pagetest-table"/><h2>WebPageTest data collected</h2>
 
-	<p>You can see latest <a href="<?php echo htmlentities($pagetest[0]['test_url']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
+	<p>You can see latest <a href="<?php echo $webPageTestBase.'result/'.htmlentities($pagetest[0]['test_id']).'/' ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table id="wpttable">
 
@@ -697,7 +697,7 @@ if (count($pagetest) > 0) {
 
 		<label for="wpttest<?php echo htmlentities($pagetestentry['test_id']) ?>" type="checkbox" name="compare[]"><?php echo htmlentities($pagetestentry['t'])?></label></td>
 	<td><?php echo htmlentities($location)?></td>
-	<td><a href="<?php echo htmlentities($pagetestentry['test_url'])?>" target="_blank">view PageTest report</a></td>
+	<td><a href="<?php echo $webPageTestBase.'result/'.htmlentities($pagetest[0]['test_id']).'/' ?>" target="_blank">view PageTest report</a></td>
 	</tr>
 <?php
 	}

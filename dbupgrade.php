@@ -12,6 +12,102 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 28
+ * Adding more WebPageTest fields
+*/
+$versions[28]['up'][] = "ALTER TABLE `pagetest`
+DROP test_url,
+ADD `version` VARCHAR( 255 ) NULL COMMENT 'WPT version' AFTER `url_id`,
+ADD `r_aft` MEDIUMINT(3) UNSIGNED NULL COMMENT '[first view] Above The Fold Time (ms)' AFTER r_TTFB,
+ADD `f_aft` MEDIUMINT(3) UNSIGNED NULL COMMENT '[repeat view] Above The Fold Time (ms)' AFTER r_TTFB,
+ADD `r_domElements` SMALLINT(2) UNSIGNED NULL COMMENT '[repeat view] Number of DOM Elements' AFTER r_render,
+ADD `f_domElements` SMALLINT(2) UNSIGNED NULL COMMENT '[first view] Number of DOM Elements' AFTER r_render,
+ADD `r_connections` SMALLINT(2) UNSIGNED NULL COMMENT '[repeat view] Number of connections' AFTER r_requestsDoc,
+ADD `f_connections` SMALLINT(2) UNSIGNED NULL COMMENT '[first view] Number of connections' AFTER r_requestsDoc,
+ADD f_score_cache TINYINT(1) UNSIGNED NULL COMMENT 'Cache Static',
+ADD r_score_cache TINYINT(1) UNSIGNED NULL COMMENT 'Cache Static',
+ADD f_score_cdn TINYINT(1) UNSIGNED NULL COMMENT 'Use a CD',
+ADD r_score_cdn TINYINT(1) UNSIGNED NULL COMMENT 'Use a CD',
+ADD f_score_gzip TINYINT(1) UNSIGNED NULL COMMENT 'GZIP text',
+ADD r_score_gzip TINYINT(1) UNSIGNED NULL COMMENT 'GZIP text',
+ADD f_score_cookies TINYINT(1) UNSIGNED NULL COMMENT 'Cookies',
+ADD r_score_cookies TINYINT(1) UNSIGNED NULL COMMENT 'Cookies',
+ADD f_score_keep_alive TINYINT(1) UNSIGNED NULL COMMENT 'Persistent connections (keep-alive)',
+ADD r_score_keep_alive TINYINT(1) UNSIGNED NULL COMMENT 'Persistent connections (keep-alive)',
+ADD f_score_minify TINYINT(1) UNSIGNED NULL COMMENT 'Minify JavaScript',
+ADD r_score_minify TINYINT(1) UNSIGNED NULL COMMENT 'Minify JavaScript',
+ADD f_score_combine TINYINT(1) UNSIGNED NULL COMMENT 'Combine CSS/JS',
+ADD r_score_combine TINYINT(1) UNSIGNED NULL COMMENT 'Combine CSS/JS',
+ADD f_score_compress TINYINT(1) UNSIGNED NULL COMMENT 'Compress Images',
+ADD r_score_compress TINYINT(1) UNSIGNED NULL COMMENT 'Compress Images',
+ADD f_score_etags TINYINT(1) UNSIGNED NULL COMMENT 'No Etags',
+ADD r_score_etags TINYINT(1) UNSIGNED NULL COMMENT 'No Etags',
+ADD f_gzip_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of compressible text',
+ADD r_gzip_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of compressible text',
+ADD f_gzip_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential text compression savings',
+ADD r_gzip_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential text compression savings',
+ADD f_minify_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of minifiable text',
+ADD r_minify_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of minifiable text',
+ADD f_minify_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential text minification savings',
+ADD r_minify_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential text minification savings',
+ADD f_image_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of compressible images',
+ADD r_image_total MEDIUMINT(3) UNSIGNED NULL COMMENT 'Total size of compressible images',
+ADD f_image_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential image compression savings',
+ADD r_image_savings MEDIUMINT(3) UNSIGNED NULL COMMENT 'Potential image compression savings',
+ADD UNIQUE (`test_id`)
+";
+
+$versions[28]['up'][] = "ALTER TABLE urls
+ADD pagetest_last_id BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Last measurement ID for WebPageTest beacon' AFTER har_last_id,
+ADD pagetest_refresh_request TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT 0 COMMENT  'Set it to one when WebPageTest score needs refreshing' AFTER dt_refresh_request
+";
+
+$versions[28]['down'][] = "ALTER TABLE urls
+DROP pagetest_last_id,
+DROP pagetest_refresh_request";
+$versions[28]['down'][] = "ALTER TABLE `pagetest`
+DROP `version`,
+DROP f_aft,
+DROP r_aft,
+DROP f_connections,
+DROP r_connections,
+DROP f_domElements,
+DROP r_domElements,
+DROP f_score_cache,
+DROP r_score_cache,
+DROP f_score_cdn,
+DROP r_score_cdn,
+DROP f_score_gzip,
+DROP r_score_gzip,
+DROP f_score_cookies,
+DROP r_score_cookies,
+DROP f_score_keep_alive,
+DROP r_score_keep_alive,
+DROP f_score_minify,
+DROP r_score_minify,
+DROP f_score_combine,
+DROP r_score_combine,
+DROP f_score_compress,
+DROP r_score_compress,
+DROP f_score_etags,
+DROP r_score_etags,
+DROP f_gzip_total,
+DROP r_gzip_total,
+DROP f_gzip_savings,
+DROP r_gzip_savings,
+DROP f_minify_total,
+DROP r_minify_total,
+DROP f_minify_savings,
+DROP r_minify_savings,
+DROP f_image_total,
+DROP r_image_total,
+DROP f_image_savings,
+DROP r_image_savings,
+ADD `test_url` BLOB NOT NULL COMMENT 'PageTest result URL to redirect to' AFTER test_id,
+DROP INDEX (`test_id`)
+";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 27
  * Making PageSpeed metrics optional in case some rules didn't run or didn't produce valid result
 */
@@ -284,7 +380,8 @@ $versions[16]['down'][]	= "ALTER TABLE `pagetest`
   DROP `f_docTime`,
   DROP `r_docTime`,
   DROP `f_domTime`,
-  DROP `r_domTime`;";
+  DROP `r_domTime`
+";
 
 /* version 13
  *

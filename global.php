@@ -83,13 +83,15 @@ $enabledMetrics = array(
 	'yslow'		=> true,
 	'pagespeed'	=> true,
 	'dynatrace'	=> true,
+	'webpagetest'	=> true,
 	'dommonster'	=> true
 );
 
 $defaultGraphMetrics = array(
 	'yslow' => array('o', 'w', 'r'),
 	'pagespeed' => array('o', 'l', 'r', 'w'),
-	'dynatrace' => array('rank')
+	'dynatrace' => array('rank'),
+	'webpagetest' => array('f_aft')
 );
 
 # If set to true, drop all query strings. If array, then match prefixes.
@@ -395,6 +397,97 @@ $all_metrics = array(
 				array( 'DOM tree serialization time',	'bodycount',		MS,
 					null, 'levels', array(500, 1000))
 			)
+		)
+	),
+	'webpagetest' => array(
+		'title' => 'WebPageTest',
+		'description' => 'Data sent from WebPageTest instance located at <a href="'.$webPageTestBase.'" target="_blank">'.$webPageTestBase.'</a>',
+		'url' => 'http://www.webpagetest.org/',
+		'table' => 'pagetest',
+		'metrics' => array(
+			'First view' => array(
+				array( 'Load Time',			'f_LoadTime',		MS),
+				array( 'Time to first byte',		'f_TTFB',		MS),
+				array( 'Time to first render',		'f_render',		MS),
+				array( 'Above the fold time',		'f_aft',		MS),
+				array( 'Number of DOM elements',	'f_domElements',	NUMBER),
+				array( 'Number of connections',		'f_connections',	NUMBER)
+			),
+			'First view (Document Complete)' => array(
+				array( 'Load Time',			'f_docTime',		MS),
+				array( 'Number of requests',		'f_requestsDoc',	NUMBER),
+				array( 'Bytes In',			'f_bytesInDoc',		BYTES),
+			),
+			'First view (Fully Loaded)' => array(
+				array( 'Load Time',			'f_fullyLoaded',	MS),
+				array( 'Number of requests',		'f_requests',		NUMBER),
+				array( 'Bytes In',			'f_bytesIn',		BYTES)
+			),
+			'First view Rankings Scores' => array(
+				array( 'Persistent connections (keep-alive)',
+									'f_score_keep_alive',	PERCENT_GRADE),
+				array( 'GZIP text',			'f_score_gzip',		PERCENT_GRADE),
+				array( 'Total size of compressible text',
+									'f_gzip_total',		BYTES),
+				array( 'Potential text compression savings',
+									'f_gzip_savings',	BYTES),
+				array( 'Compress Images',		'f_score_compress',	PERCENT_GRADE),
+				array( 'Total size of compressible images',
+									'f_image_total',	BYTES),
+				array( 'Potential image compression savings',
+									'f_image_savings',	BYTES),
+				array( 'Cache Static',			'f_score_cache',	PERCENT_GRADE),
+				array( 'Combine CSS/JS',		'r_score_combine',	PERCENT_GRADE),
+				array( 'Use a CDN',			'f_score_cdn',		PERCENT_GRADE),
+				array( 'Minify JavaScript',		'f_score_minify',	PERCENT_GRADE),
+				array( 'Total size of minifiable text',	'f_minify_total',	BYTES),
+				array( 'Potential text minification savings',
+									'f_minify_savings',	BYTES),
+				array( 'No cookies for static assets',	'f_score_cookies',	PERCENT_GRADE),
+				array( 'No Etags',			'f_score_etags',	PERCENT_GRADE)
+			),
+
+			'Repeat view' => array(
+				array( 'Load Time',			'r_LoadTime',		MS),
+				array( 'Time to first byte',		'r_TTFB',		MS),
+				array( 'Time to first render',		'r_render',		MS),
+				array( 'Above the fold time',		'r_aft',		MS),
+				array( 'Number of DOM elements',	'r_domElements',	NUMBER),
+				array( 'Number of connections',		'f_connections',	NUMBER)
+			),
+			'Repeat view (Document Complete)' => array(
+				array( 'Load Time',			'r_docTime',		MS),
+				array( 'Number of requests',		'r_requestsDoc',	NUMBER),
+				array( 'Bytes In',			'r_bytesInDoc',		BYTES)
+			),
+			'Repeat view (Fully Loaded)' => array(
+				array( 'Load Time',			'r_fullyLoaded',	MS),
+				array( 'Number of requests',		'r_requests',		NUMBER),
+				array( 'Bytes In',			'r_bytesIn',		BYTES)
+			),
+			'Repeat view Rankings Scores' => array(
+				array( 'Persistent connections (keep-alive)',
+									'f_score_keep_alive',	PERCENT_GRADE),
+				array( 'GZIP text',			'f_score_gzip',		PERCENT_GRADE),
+				array( 'Total size of compressible text',
+									'f_gzip_total',		BYTES),
+				array( 'Potential text compression savings',
+									'f_gzip_savings',	BYTES),
+				array( 'Compress Images',		'f_score_compress',	PERCENT_GRADE),
+				array( 'Total size of compressible images',
+									'f_image_total',	BYTES),
+				array( 'Potential image compression savings',
+									'f_image_savings',	BYTES),
+				array( 'Cache Static',			'f_score_cache',	PERCENT_GRADE),
+				array( 'Combine CSS/JS',		'r_score_combine',	PERCENT_GRADE),
+				array( 'Use a CDN',			'f_score_cdn',		PERCENT_GRADE),
+				array( 'Minify JavaScript',		'f_score_minify',	PERCENT_GRADE),
+				array( 'Total size of minifiable text',	'f_minify_total',	BYTES),
+				array( 'Potential text minification savings',
+									'f_minify_savings',	BYTES),
+				array( 'No cookies for static assets',	'f_score_cookies',	PERCENT_GRADE),
+				array( 'No Etags',			'f_score_etags',	PERCENT_GRADE)
+			),
 		)
 	)
 );
