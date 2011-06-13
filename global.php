@@ -22,7 +22,10 @@ function getShowSlowBase() {
 	else
 	{
 		$host = gethostname();
-		error_log("[ShowSlow config] Warning: Can't determine site's host name, using $host");
+		// if not running from command line, send warning to the log file
+		if (php_sapi_name() !== 'cli') {
+			error_log("[ShowSlow config] Warning: Can't determine site's host name, using $host");
+		}
 	}
 
 	$protocol = 'http';
