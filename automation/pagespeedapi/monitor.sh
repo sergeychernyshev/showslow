@@ -1,8 +1,8 @@
 #!/bin/bash
 
-SHOWSLOWBASE='http://www.showslow.com'
+SHOWSLOWBASE='... put your instance URL here ...' # e.g. 'http://www.showslow.com'
 
-URLS=`wget $SHOWSLOWBASE/monitor.php?new -O - -q`
+URLS=`wget $SHOWSLOWBASE/monitor.php -O - -q`
 
 for URL in $URLS
 do
