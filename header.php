@@ -34,7 +34,7 @@ if (array_key_exists('group', $_GET)) {
 <!--[if lte IE 7]>
 <link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout_lte_ie7.css')?>" />
 <![endif]-->
-<link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/loader.css')?>" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/common.css')?>" />
 
 <?php
 if (isset($STYLES)) {
