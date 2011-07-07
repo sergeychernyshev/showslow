@@ -157,7 +157,7 @@ var SS = (function ($) {
 	function _getEvents() {
 		$.ajax({
 			url: 'events2.php',
-			data: 'url=' + url + '&ver=' + eventversion,
+			data: 'url=' + encodeURIComponent(url) + '&ver=' + encodeURIComponent(eventversion),
 			dataType: 'json',
 			cache: true,
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -178,7 +178,7 @@ var SS = (function ($) {
 			url: 'data2.php',
 			dataType: 'json',
 			cache: true,
-			data: 'url=' + options.url + '&provider=' + options.provider + '&metrics=' + options.metrics + '&format=json&ver=' + flot_versions[options.provider],
+			data: 'url=' + encodeURIComponent(options.url) + '&provider=' + encodeURIComponent(options.provider) + '&metrics=' + encodeURIComponent(options.metrics) + '&format=json&ver=' + encodeURIComponent(flot_versions[options.provider]),
 			error: function (jqXHR, textStatus, errorThrown) {
 				alert('There was a problem with the request:\n\n' + errorThrown + ' : ' + textStatus);
 				return;
