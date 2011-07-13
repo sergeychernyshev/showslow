@@ -703,7 +703,7 @@ function validateURL($url, $outputerror = true) {
 </head>
 <body>
 <h1>Bad Request: ShowSlow beacon</h1>
-<p>URL doesn't match any URLs allowed allowed to this instance.</p>
+<p>URL doesn't match any <a href="http://www.showslow.org/Advanced_configuration_options#Limit_URLs_accepted">URLs allowed</a> by this instance.</p>
 </body></html>
 <?php 
 		exit;
