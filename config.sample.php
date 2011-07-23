@@ -12,9 +12,6 @@ $sessionSecret = '...................................................';
 #$supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
 #$supportEmailReplyTo = 'showslow@example.com';
 
-# Enable Flot graphs (experimental)
-#$enableFlot = true;
-
 # PageSpeed Online API key (https://code.google.com/apis/console/#access)
 #$pageSpeedOnlineAPIKey = '...';
 
