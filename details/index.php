@@ -77,7 +77,9 @@ foreach ($metrics as $id => $metric) {
 
 header('Last-modified: '.date(DATE_RFC2822, $lastupdate));
 
-if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) && ($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))) {
+if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) &&
+	($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))
+) {
 	header('HTTP/1.0 304 Not Modified');
 	exit;
 }
