@@ -77,7 +77,9 @@ foreach ($metrics as $id => $metric) {
 
 header('Last-modified: '.date(DATE_RFC2822, $lastupdate));
 
-if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) && ($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))) {
+if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) &&
+	($lastupdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']))
+) {
 	header('HTTP/1.0 304 Not Modified');
 	exit;
 }
@@ -101,7 +103,7 @@ if (!$enableFlot) {
 } else {
 	$SCRIPTS = array_merge($SCRIPTS, array(
 		array('condition' => 'if IE', 'url' => assetURL('flot/excanvas.js')),
-		'https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js',
+		'http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js',
 		assetURL('flot/jquery.flot.js'),
 		assetURL('flot/jquery.flot.crosshair.js'),
 		assetURL('flot/jquery.flot.selection.js'),
