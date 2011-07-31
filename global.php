@@ -5,10 +5,11 @@ $showslow_root = dirname(__FILE__).'/';
 # function to generate URL from current showslow_root
 function getShowSlowBase() {
 	global $showslow_root;
+	$showslow_root = str_replace(DIRECTORY_SEPARATOR, '/', $showslow_root);
 
 	// Chopping of trailing slash which is not supposed to be there in Apache config
 	// See: http://httpd.apache.org/docs/2.0/mod/core.html#documentroot
-	$docroot = $_SERVER['DOCUMENT_ROOT'];
+	$docroot = str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['DOCUMENT_ROOT']);
 	if (substr($docroot, -1) == '/') {
 		$docroot = substr($docroot, 0, -1);
 	}
