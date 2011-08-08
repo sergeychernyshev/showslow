@@ -22,6 +22,18 @@ if (!is_null($post) && array_key_exists('url', $post) && array_key_exists('id', 
 {
 	$url_id = getUrlId(urldecode($post['url']));
 
+	// fixing up -1 into nulls
+	foreach (array_keys($post['first']) as $metric) {
+		if ($post['first'][$metric] == -1) {
+			$post['first'][$metric] = null;
+		}
+	}
+	foreach (array_keys($post['repeat']) as $metric) {
+		if ($post['repeat'][$metric] == -1) {
+			$post['repeat'][$metric] = null;
+		}
+	}
+
 	# adding new entry
 	$query = sprintf("/* WPT POST */ REPLACE INTO pagetest (
 		timestamp, url_id, test_id, location, version,
@@ -151,13 +163,11 @@ if (!is_null($post) && array_key_exists('url', $post) && array_key_exists('id', 
 
 	require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
 	?>
-<h2>YSlow beacon</h2>
+<h2><a href="../">Beacons</a>: WebPageTest</h2>
 <p>This is <a href="http://www.webpagetest.org/">WebPageTest</a> beacon entry point.</p>
 
 <h2>Configure your WebPageTest instance</h2>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your WebPageTest data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
-
-<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
 
 <?php
 require_once(dirname(dirname(dirname(__FILE__))).'/footer.php');
