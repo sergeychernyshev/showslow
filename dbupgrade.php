@@ -12,6 +12,13 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 29
+ * Switching to INNODB engine for better performance
+*/
+$versions[29]['up'][] = 'ALTER TABLE user_urls ENGINE = INNODB';
+$versions[29]['down'][] = 'ALTER TABLE user_urls ENGINE = MyISAM';
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 28
  * Adding more WebPageTest fields
 */
