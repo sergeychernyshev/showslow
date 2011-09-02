@@ -181,6 +181,10 @@ $noMaxURLsForUsers = array();
 # how long should monitoring scripts wait between measurements (in hours).
 $monitoringPeriod = 24;
 
+# disable paged browsing (which kills database and is quite useless anyway)
+# useful for instances with many urls
+$disableUnfilteredURLList = false;
+
 # Facebook connect properties, configure them here:
 # http://www.facebook.com/developers/createapp.php
 $facebookAPIKey = null;

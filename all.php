@@ -16,6 +16,10 @@ if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
 $TITLE = 'URLs measured';
 $SECTION = 'all';
 require_once(dirname(__FILE__).'/header.php');
+
+if ($disableUnfilteredURLList && is_null($searchstring)) { // start show only filtered results
+	?><p align="center"><i>Use form above to search URLs</i></p><?php
+} else {
 ?>
 <style>
 .paginator .current {
@@ -116,6 +120,7 @@ if (is_array($URLGroups) && count($URLGroups) > 0) {
 </style>
 <div style="width: 100%; overflow: hidden">
 <?php
+
 $perPage = 50;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) {
@@ -269,6 +274,8 @@ mysql_free_result($result);
 } else {
 	?><p>No data is gathered yet</p><?php
 }
+
+} // end show only filtered results
 ?>
 
 </div>
