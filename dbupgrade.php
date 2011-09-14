@@ -12,6 +12,27 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 31
+ * Switching metric tables to INNODB engine for better performance
+*/
+$versions[31]['up'][] = 'ALTER TABLE yslow2 ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE pagetest ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE metric ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE har ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE event ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE dynatrace ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE dommonster ENGINE = INNODB';
+$versions[31]['up'][] = 'ALTER TABLE pagespeed ENGINE = INNODB';
+$versions[31]['down'][] = 'ALTER TABLE pagespeed ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE dommonster ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE dynatrace ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE event ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE har ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE metric ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE pagetest ENGINE = MyISAM';
+$versions[31]['down'][] = 'ALTER TABLE yslow2 ENGINE = MyISAM';
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 30
  * Switching urls table to INNODB engine for better performance
 */
