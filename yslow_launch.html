@@ -2,11 +2,15 @@
 <head>
 <script>
 	function redirect() {
-		var url = location.href;
-		var query = url.substring(url.indexOf('?') + 1);
-		var redir = decodeURIComponent(query);
-		location.href = redir;
+		location.href = getParamByName('url');
 	}
+
+  function getParamByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)')
+                    .exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }
+
 </script>
 </head>
 <body onload="redirect();">
