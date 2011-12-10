@@ -264,7 +264,7 @@ sub start_task {
         last unless defined $url;
         my $clock = time();
         my $task = POE::Wheel::Run->new(
-            Program		=> [ "DISPLAY=$x11_display $firefox -no-remote -profile $profile $url" ],
+            Program		=> [ "DISPLAY=$x11_display $firefox -no-remote -profile $profile '$url'" ],
             StdoutEvent         => "task_result",
             StderrEvent         => "task_debug",
             CloseEvent          => "task_done",

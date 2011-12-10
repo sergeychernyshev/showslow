@@ -79,7 +79,8 @@ $ignoreURLs = array(
 	'http://172.28.',
 	'http://172.29.',
 	'http://172.30.',
-	'http://172.31.'
+	'http://172.31.',
+	'/showslowIgnore=1/',
 );
 
 # Enabling display and collection of data
