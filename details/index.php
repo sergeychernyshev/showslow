@@ -2,21 +2,50 @@
 require_once(dirname(dirname(__FILE__)).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/users/users.php');
 
-if (!array_key_exists('url', $_GET) || ($url = filter_var($_GET['url'], FILTER_VALIDATE_URL)) === false) {
-?><html>
-<head>
-<title>Error - no URL specified</title>
-</head>
-<body>
-<h1>Error - no URL specified</h1>
-<p><a href="../">Go back</a> and pick the URL</p>
-</body></html>
-<?php 
-return;
+$urlid = array_key_exists('urlid', $_GET) ? filter_var($_GET['urlid'], FILTER_VALIDATE_INT) : null;
+$url = array_key_exists('url', $_GET) ? filter_var($_GET['url'], FILTER_VALIDATE_URL) : null;
+
+function not_found() {
+	header("HTTP/1.0 404 Not Found");
+	?><html>
+	<head>
+	<title>Error - no URL specified</title>
+	</head>
+	<body>
+	<h1>Error - no URL specified</h1>
+	<p><a href="../">Go back</a> and pick the URL</p>
+	</body></html>
+	<?php
+	exit;
+}
+
+if (!$urlid && !$url) {
+	not_found();
+}
+
+if (!$urlid && $url) {
+	# building a query to select all beacon data in one swoop
+	$query = "SELECT id FROM urls WHERE urls.url = '".mysql_real_escape_string($url)."'";
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	$row = mysql_fetch_assoc($result);
+
+	if (is_null($row)) {
+		not_found();
+	} else {
+		$urlid = $row['id'];
+
+		header('Location: ?urlid='.$urlid.'&url='.urlencode($url));
+		exit;
+	}
 }
 
 # building a query to select all beacon data in one swoop
-$query = "SELECT urls.id AS url_id, UNIX_TIMESTAMP(last_update) AS t, last_event_update, yslow2.details AS yslow_details";
+$query = "SELECT urls.id AS url_id, urls.url as url, UNIX_TIMESTAMP(last_update) AS t, last_event_update, yslow2.details AS yslow_details";
 
 foreach ($all_metrics as $provider_name => $provider) {
 	$query .= ",\n\t".$provider['table'].'_last_id, UNIX_TIMESTAMP('.$provider['table'].'.timestamp) AS '.$provider_name.'_timestamp';
@@ -34,7 +63,7 @@ foreach ($all_metrics as $provider_name => $provider) {
 	$query .= "\n\tLEFT JOIN ".$provider['table'].' ON urls.'.$provider['table'].'_last_id = '.$provider['table'].'.id';
 }
 
-$query .= "\nWHERE urls.url = '".mysql_real_escape_string($url)."'";
+$query .= "\nWHERE urls.id = ".mysql_real_escape_string($urlid);
 
 #echo $query; exit;
 
@@ -47,7 +76,7 @@ if (!$result) {
 $row = mysql_fetch_assoc($result);
 $lastupdate = $row['t'];
 $eventupdate = $row['last_event_update'];
-$urlid = $row['url_id'];
+$url = $row['url'];
 $yslow2_last_id = $row['yslow2_last_id'];
 $pagespeed_last_id = $row['pagespeed_last_id'];
 $dynatrace_last_id = $row['dynatrace_last_id'];
@@ -102,7 +131,7 @@ if (!$enableFlot) {
 	));
 } else {
 	$SCRIPTS = array_merge($SCRIPTS, array(
-		array('condition' => 'if IE', 'url' => assetURL('flot/excanvas.js')),
+		array('condition' => 'if lte IE 8', 'url' => assetURL('flot/excanvas.js')),
 		'http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js',
 		assetURL('flot/jquery.flot.js'),
 		assetURL('flot/jquery.flot.crosshair.js'),
@@ -181,6 +210,7 @@ if ($enableFlot) {
 	<script>
 <?php } ?>
 var url = <?php echo json_encode($url); ?>;
+var urlid = <?php echo json_encode($urlid); ?>;
 var metrics = <?php echo json_encode($metrics); ?>;
 </script>
 <h2>Details for <a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h2>
@@ -418,7 +448,7 @@ if ($havemetrics)
 
 		foreach ($metrics as $name => $metric)
 		{
-			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&url=<?php echo urlencode($url);?>">csv</a>);
+			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&urlid=<?php echo urlencode($urlid);?>">csv</a>);
 	<?php
 		}
 		?>
@@ -650,21 +680,21 @@ if ($havemetrics)
 
 if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
-	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
+	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="measurementstable" class="measurementstable"></div>
 	<?php 
 }
 
 if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
-	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
+	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="ps_measurementstable" class="measurementstable"></div>
 <?php 
 }
 
 if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
-	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&url=<?php echo urlencode($url)?>">csv</a>)</h2>
+	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="dt_measurementstable" class="measurementstable"></div>
 <?php 
 }

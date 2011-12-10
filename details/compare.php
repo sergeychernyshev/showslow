@@ -32,6 +32,7 @@ if (count($urls) < 2) {
 }
 
 $data = array();
+$urlids = array();
 
 // flags indicating if there is data for each of the rankers
 $counters = array(
@@ -72,6 +73,7 @@ if (count($urls) > 0) {
 
 	// loading all data
 	while ($row = mysql_fetch_assoc($result)) {
+		$urlids[$row['url']] =  $row['id'];
 		$data[$row['url']] = array(
 			'yslow' => $row['y_version'],
 			'pagespeed' => $row['p_version'],
@@ -201,7 +203,7 @@ if (!is_null($ranker)) { ?>
 <ul style="margin-top: 1em">
 <?php foreach ($urls as $url) { ?>
 	<li>
-	<a href="./?url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
+	<a href="./?url_id=<?php echo urlencode($urlids[$url])?>&url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
 
 	if (is_null($data[$url][$ranker])) {
 		?> (no <?php
@@ -235,6 +237,7 @@ if (!is_null($ranker)) {
 		}
 
 		$data_to_display[$url] = array(
+			'id' => $urlids[$url],
 			'version' => urlencode($versions[$ranker]),
 			'color' => $colors[$colorindex]
 		);

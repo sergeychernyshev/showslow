@@ -39,11 +39,11 @@ YAHOO.util.Event.onDOMReady(function() {
 
 	for (var url in data) {
 		if (ranker == 'pagespeed') {
-			timeplot.loadText('data_pagespeed.php?smooth&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data_pagespeed.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else if (ranker == 'dynatrace') {
-			timeplot.loadText('data_dynatrace.php?smooth&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data_dynatrace.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else {
-			timeplot.loadText('data.php?smooth&subset=graph&profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText('data.php?smooth&subset=graph&profile=ydefault&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		}
 	}
 

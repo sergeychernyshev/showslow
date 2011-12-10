@@ -185,7 +185,7 @@ if (count($rows))
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This URL is ignored by this instance of Show Slow">ignored</i></td>
 			<td colspan="<?php echo $cols*2 ?>"/>
 		<?php } else if (!is_null($row['o']) || !is_null($row['ps_o']) || !is_null($row['dt_o'])) { ?>
-			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
+			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?urlid=<?php echo urlencode($row['id']); ?>&url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 			<?php if (!$yslow) {?>
 			<?php } else if (!is_null($row['o'])) {?>
 				<td class="score" title="Current YSlow grade: <?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)"><?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
@@ -222,7 +222,7 @@ if (count($rows))
 		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 
 		<?php if ($link) {?>
-		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?urlid=<?php echo urlencode($row['id']); ?>&url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><i title="Time of last check for this URL"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></i></td>
 		<?php } ?>

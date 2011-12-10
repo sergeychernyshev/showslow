@@ -28,7 +28,7 @@ foreach ($list_items as $url) {
 	$list .= "'".mysql_real_escape_string($url)."'"; 
 }
 
-$query = sprintf("SELECT url, last_update,
+$query = sprintf("SELECT url, urls.id as url_id, last_update,
 		yslow2.o as o,
 		pagespeed.o as ps_o,
 		dynatrace.rank as dt_o
@@ -115,7 +115,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 		}
 	?><tr>
 		<?php if ($row['last_update']) { ?>
-			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
+			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?urlid=<?php echo urlencode($row['url_id']); ?>&url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 
 			<?php if (!$yslow) {?>
 			<?php }else if (is_null($row['o'])) {?>
@@ -144,7 +144,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 				<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 			<?php }?>
 
-			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?urlid=<?php echo urlencode($row['url_id']); ?>&url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
 			<td colspan="4"/>

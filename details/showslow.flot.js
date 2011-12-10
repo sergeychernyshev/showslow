@@ -178,7 +178,7 @@ var SS = (function ($) {
 			url: 'data2.php',
 			dataType: 'json',
 			cache: true,
-			data: 'url=' + encodeURIComponent(options.url) + '&provider=' + encodeURIComponent(options.provider) + '&metrics=' + encodeURIComponent(options.metrics) + '&format=json&ver=' + encodeURIComponent(flot_versions[options.provider]),
+			data: 'urlid=' + encodeURIComponent(options.urlid) + '&provider=' + encodeURIComponent(options.provider) + '&metrics=' + encodeURIComponent(options.metrics) + '&format=json&ver=' + encodeURIComponent(flot_versions[options.provider]),
 			error: function (jqXHR, textStatus, errorThrown) {
 				alert('There was a problem with the request:\n\n' + errorThrown + ' : ' + textStatus);
 				return;
@@ -269,7 +269,7 @@ var SS = (function ($) {
 					// loading custom metrics one by one
 					if (pid == 'custom') {
 						SS.getMetrics({
-							url: url,
+							urlid: urlid,
 							provider: pid,
 							metrics: default_metrics[pid][i],
 							callback: false
@@ -279,7 +279,7 @@ var SS = (function ($) {
 
 				if (pid != 'custom') {
 					SS.getMetrics({
-						url: url,
+						urlid: urlid,
 						provider: pid,
 						metrics: default_metrics[pid].join(','),
 						callback: false
@@ -290,7 +290,7 @@ var SS = (function ($) {
 /*				load_functions[func_num] = (function(provider_id, next_func) {
 					return function() {
 						SS.getMetrics({
-							url: url,
+							urlid: urlid,
 							provider: provider_id,
 							metrics: default_metrics[provider_id].join(','),
 							callback: false
@@ -458,7 +458,7 @@ var SS = (function ($) {
 
 				if ($this.attr('checked')) {
 					SS.getMetrics({
-						url: url,
+						urlid: urlid,
 						provider: pid,
 						metrics: id,
 						callback: false
