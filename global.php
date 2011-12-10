@@ -823,64 +823,28 @@ function getUrlId($url, $outputerror = true)
 		}
 	}
 
+	$query = sprintf("INSERT IGNORE INTO urls (url, url_md5) VALUES ('%s', UNHEX(MD5('%s'))",
+		mysql_real_escape_string($url),
+		mysql_real_escape_string($url)
+	);
+	$result = mysql_query($query);
+
 	# get URL id
-	$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
+	$query = sprintf("SELECT id FROM urls WHERE url_md5 = UNHEX(MD5('%s'))", mysql_real_escape_string($url));
 	$result = mysql_query($query);
 
 	if (!$result) {
 		beaconError(mysql_error());
 	}
 
-	if (mysql_num_rows($result) == 1) {
-		$row = mysql_fetch_assoc($result);
-		return $row['id'];
+	if (mysql_num_rows($result) > 1) {
+		beaconError('More then one entry found for the URL even though MD5 is the same');
 	} else if (mysql_num_rows($result) == 0) {
-		// Emulating unique index on a blob with unlimited length by locking the table on write
-		// locking only when we're about to insert so we don't block the whole thing on every read
-
-		// locking the table to make sure we pass it only by one concurrent process
-		$result = mysql_query('LOCK TABLES urls WRITE');
-		if (!$result) {
-			beaconError(mysql_error());
-		}
-
-		// selecting the URL again to make sure there was no concurrent insert for this URL
-		$query = sprintf("SELECT id FROM urls WHERE url = '%s'", mysql_real_escape_string($url));
-		$result = mysql_query($query);
-		if (!$result) {
-			$mysql_err = mysql_error();
-			mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
-			beaconError($mysql_err);
-		}
-
-		// repeating the check
-		if (mysql_num_rows($result) == 1) {
-			$row = mysql_fetch_assoc($result);
-			$url_id = $row['id'];
-		} else if (mysql_num_rows($result) == 0) {
-			$query = sprintf("INSERT INTO urls (url) VALUES ('%s')", mysql_real_escape_string($url));
-			$result = mysql_query($query);
-			if (!$result) {
-				$mysql_err = mysql_error();
-				mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
-				beaconError($mysql_err);
-			}
-
-			$url_id = mysql_insert_id();
-		} else if (mysql_num_rows($result) > 1) {
-			mysql_query('UNLOCK TABLES'); // unlocking the table if in trouble
-			beaconError('more then one entry found for the URL (when lock is aquired)');
-		}
-
-		$result = mysql_query('UNLOCK TABLES'); // now concurrent thread can try reading again
-		if (!$result) {
-			beaconError(mysql_error());
-		}
-
-		return $url_id;
-	} else {
-		beaconError('more then one entry found for the URL');
+		beaconError('No entries found for the URL even though we just inserted it');
 	}
+
+	$row = mysql_fetch_assoc($result);
+	return $row['id'];
 }
 
 // httpd_build_url replacement from http://www.mediafire.com/?zjry3tynkg5

@@ -12,6 +12,16 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 32
+ * Switching metric tables to INNODB engine for better performance
+*/
+$versions[32]['up'][] = "ALTER TABLE urls ADD url_md5 BINARY(16) NOT NULL COMMENT 'MD5 hash of URL - used for unique index and faster retrieval' AFTER url";
+$versions[32]['up'][] = 'UPDATE urls SET url_md5 = UNHEX(MD5(url))';
+$versions[32]['up'][] = 'ALTER TABLE urls ADD UNIQUE unique_url_hash (url_md5)';
+
+$versions[32]['down'][] = 'ALTER TABLE  `urls` DROP  `url_md5`';
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 31
  * Switching metric tables to INNODB engine for better performance
 */
