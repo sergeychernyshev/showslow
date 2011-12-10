@@ -9,10 +9,10 @@ function not_found() {
 	header("HTTP/1.0 404 Not Found");
 	?><html>
 	<head>
-	<title>Error - no URL specified</title>
+	<title>Error - no such URL</title>
 	</head>
 	<body>
-	<h1>Error - no URL specified</h1>
+	<h1>Error - no such URL</h1>
 	<p><a href="../">Go back</a> and pick the URL</p>
 	</body></html>
 	<?php
@@ -25,7 +25,7 @@ if (!$urlid && !$url) {
 
 if (!$urlid && $url) {
 	# building a query to select all beacon data in one swoop
-	$query = "SELECT id FROM urls WHERE urls.url = '".mysql_real_escape_string($url)."'";
+	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysql_real_escape_string($url)."'))";
 	$result = mysql_query($query);
 
 	if (!$result) {
@@ -38,6 +38,10 @@ if (!$urlid && $url) {
 		not_found();
 	} else {
 		$urlid = $row['id'];
+
+		if (is_null($urlid)) {
+			not_found();
+		}
 
 		header('Location: ?urlid='.$urlid.'&url='.urlencode($url));
 		exit;
