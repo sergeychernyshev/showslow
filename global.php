@@ -96,7 +96,7 @@ $defaultGraphMetrics = array(
 	'yslow' => array('o', 'w', 'r'),
 	'pagespeed' => array('o', 'l', 'r', 'w'),
 	'dynatrace' => array('rank'),
-	'webpagetest' => array('f_aft')
+	'webpagetest' => array('f_render', 'f_requestsDoc')
 );
 
 # If set to true, drop all query strings. If array, then match prefixes.
