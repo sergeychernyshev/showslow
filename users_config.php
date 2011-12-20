@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__).'/global.php');
 
-UserConfig::$DEBUG = true;
+#UserConfig::$DEBUG = true;
 
 UserConfig::$mysql_host = $host;
 UserConfig::$mysql_db = $db;
