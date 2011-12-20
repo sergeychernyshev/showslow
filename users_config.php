@@ -37,7 +37,7 @@ UserConfig::$activities[SHOWSLOW_ACTIVITY_URL_SEARCH] = array('Searched a URL in
 
 if ($facebookAPIKey) {
 	UserConfig::loadModule('facebook');
-	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret, array('read_requests'));
+	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
 }
 
 if ($googleFriendConnectSiteID) {
