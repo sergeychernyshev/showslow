@@ -1,24 +1,13 @@
 <?php
 require_once(dirname(__FILE__).'/global.php');
 
+UserConfig::$DEBUG = true;
+
 UserConfig::$mysql_host = $host;
 UserConfig::$mysql_db = $db;
 UserConfig::$mysql_user = $user;
 UserConfig::$mysql_password = $pass;
 UserConfig::$mysql_port = $port;
-
-if ($facebookAPIKey) {
-	UserConfig::loadModule('facebook');
-	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
-}
-
-if ($googleFriendConnectSiteID) {
-	UserConfig::loadModule('google');
-	new GoogleAuthenticationModule($googleFriendConnectSiteID);
-}
-
-UserConfig::loadModule('usernamepass');
-new UsernamePasswordAuthenticationModule();
 
 // TODO - implement accounts and then switch it to true.
 UserConfig::$useAccounts = false;
@@ -45,6 +34,19 @@ define('SHOWSLOW_ACTIVITY_URL_SEARCH', 3);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_ADD_URL] = array('Added URL for monitoring', 5);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_PAGETEST_START] = array('Started WebPagetest test', 2);
 UserConfig::$activities[SHOWSLOW_ACTIVITY_URL_SEARCH] = array('Searched a URL in the list', 1);
+
+if ($facebookAPIKey) {
+	UserConfig::loadModule('facebook');
+	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret, array('read_requests'));
+}
+
+if ($googleFriendConnectSiteID) {
+	UserConfig::loadModule('google');
+	new GoogleAuthenticationModule($googleFriendConnectSiteID);
+}
+
+UserConfig::loadModule('usernamepass');
+new UsernamePasswordAuthenticationModule();
 
 // Features
 
