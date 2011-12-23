@@ -11,7 +11,7 @@ if (!array_key_exists('id', $_GET) || !array_key_exists($_GET['id'], $customList
 <h1>404 No list found</h1>
 <p>List with such ID is not defined</p>
 </body></html>
-<?php 
+<?php
 	exit;
 }
 
@@ -25,7 +25,7 @@ foreach ($list_items as $url) {
 		$list .= ', ';
 	}
 
-	$list .= "'".mysql_real_escape_string($url)."'"; 
+	$list .= "'".mysql_real_escape_string($url)."'";
 }
 
 $query = sprintf("SELECT url, urls.id as url_id, last_update,
@@ -115,7 +115,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 		}
 	?><tr>
 		<?php if ($row['last_update']) { ?>
-			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="details/?urlid=<?php echo urlencode($row['url_id']); ?>&url=<?php echo urlencode($row['url']); ?>"><?php echo htmlentities($row['last_update']); ?></a></td>
+			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="<?= detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 
 			<?php if (!$yslow) {?>
 			<?php }else if (is_null($row['o'])) {?>
@@ -144,7 +144,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 				<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 			<?php }?>
 
-			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="details/?urlid=<?php echo urlencode($row['url_id']); ?>&url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="<?= detailsUrl($row['url_id'], $row['url'];?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
 			<td colspan="4"/>
@@ -156,7 +156,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 	mysql_free_result($result);
 	?>
 	</table>
-<?php 
+<?php
 }
 
 require_once(dirname(__FILE__).'/footer.php');

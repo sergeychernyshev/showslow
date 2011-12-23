@@ -35,7 +35,10 @@ if (array_key_exists('group', $_GET)) {
 <link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout_lte_ie7.css')?>" />
 <![endif]-->
 <link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/common.css')?>" />
-
+<script>
+    var SHOWSLOW = SHOWSLOW || {};
+    SHOWSLOW.base_url = '<?= $showslow_base;?>';
+</script>
 <?php
 if (isset($STYLES)) {
 	foreach ($STYLES as $_style) {
@@ -76,12 +79,12 @@ if ($showFeedbackButton) {?>
 var uservoiceOptions = {
   /* required */
   key: 'showslow',
-  host: 'showslow.uservoice.com', 
+  host: 'showslow.uservoice.com',
   forum: '18807',
-  showTab: true,  
+  showTab: true,
   /* optional */
   alignment: 'right',
-  background_color:'#f00', 
+  background_color:'#f00',
   text_color: 'white',
   hover_color: '#06C',
   lang: 'en'
@@ -169,7 +172,7 @@ td, th { white-space: nowrap; }
 	<div id="header">
 		<div class="stackContent">
 			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
-<?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?> 
+<?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?>
 </h1>
 
 <?php if ($enableMyURLs) {?>
@@ -200,7 +203,7 @@ if (is_array($defaultURLsToCompare)) {
 	$first = true;
 	foreach ($defaultURLsToCompare as $_url) {
 		if ($first) {
-			$first = false;	
+			$first = false;
 		}
 		else {
 			$compareParams.= '&';
@@ -210,7 +213,7 @@ if (is_array($defaultURLsToCompare)) {
 }
 ?>
 <li><a <?php if ($SECTION == 'compare') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>details/compare.php<?php echo $compareParams?>">Compare rankings</a></li>
-<?php 
+<?php
 foreach ($customLists as $list_id => $list) {
 	if (array_key_exists('hidden', $list) && $list['hidden']) {
 		continue;

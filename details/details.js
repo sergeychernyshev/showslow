@@ -1,7 +1,7 @@
 /*jslint browser: true*/
 /*global YAHOO*/
 
-YAHOO.util.Event.onDOMReady(function() { 
+YAHOO.util.Event.onDOMReady(function() {
 
 	var loader = new YAHOO.util.YUILoader({
 	    require: ["dom", "container", "datatable", "datasource"],
@@ -20,7 +20,7 @@ YAHOO.util.Event.onDOMReady(function() {
 
 					el.innerHTML='<div class="moreinfo"></div>';
 
-					new YAHOO.widget.Tooltip("tt_"+name,  
+					new YAHOO.widget.Tooltip("tt_"+name,
 					{
 						context:	el,
 						text:		decodeURIComponent(details[name].join('<br/>'))
@@ -52,28 +52,28 @@ YAHOO.util.Event.onDOMReady(function() {
 			{key:"rank", label:"Overall Rank (0-100)", sortable:true},
 			{key:"timetoimp", label:"Time to First Impression (ms)", sortable:true},
 		];
-		var yDataSource = new YAHOO.util.DataSource("data.php?subset=table&");
+		var yDataSource = new YAHOO.util.DataSource(SHOWSLOW.base_url+"details/data.php?subset=table&");
 		yDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		yDataSource.responseSchema = {
-			recordDelim : "\n", 
+			recordDelim : "\n",
 			fieldDelim : "," ,
 			resultsList: "records",
 			fields: ["timestamp", "w", "o", "r", "lt", "profile"]
 		};
 
-		var psDataSource = new YAHOO.util.DataSource("data_pagespeed.php?subset=table&");
+		var psDataSource = new YAHOO.util.DataSource(SHOWSLOW.base_url+"details/data_pagespeed.php?subset=table&");
 		psDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		psDataSource.responseSchema = {
-			recordDelim : "\n", 
+			recordDelim : "\n",
 			fieldDelim : "," ,
 			resultsList: "records",
 			fields: ["timestamp", "w", "o", "l", "r"]
 		};
 
-		var dtDataSource = new YAHOO.util.DataSource("data_dynatrace.php?subset=table&");
+		var dtDataSource = new YAHOO.util.DataSource(SHOWSLOW.base_url+"details/data_dynatrace.php?subset=table&");
 		dtDataSource.responseType = YAHOO.util.DataSource.TYPE_TEXT;
 		dtDataSource.responseSchema = {
-			recordDelim : "\n", 
+			recordDelim : "\n",
 			fieldDelim : "," ,
 			resultsList: "records",
 			fields: ["timestamp", "size", "numreq", "rank", "timetoimp"]

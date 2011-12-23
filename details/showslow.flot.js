@@ -156,7 +156,7 @@ var SS = (function ($) {
 	// populate event lines
 	function _getEvents() {
 		$.ajax({
-			url: 'events2.php',
+			url: SHOWSLOW.base_url+'details/events2.php',
 			data: 'url=' + encodeURIComponent(url) + '&ver=' + encodeURIComponent(eventversion),
 			dataType: 'json',
 			cache: true,
@@ -175,7 +175,7 @@ var SS = (function ($) {
 		if (typeof(callback) !== 'function') { callback = false; }
 
 		$.ajax({
-			url: 'data2.php',
+			url: SHOWSLOW.base_url+'details/data2.php',
 			dataType: 'json',
 			cache: true,
 			data: 'urlid=' + encodeURIComponent(options.urlid) + '&provider=' + encodeURIComponent(options.provider) + '&metrics=' + encodeURIComponent(options.metrics) + '&format=json&ver=' + encodeURIComponent(flot_versions[options.provider]),
