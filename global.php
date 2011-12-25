@@ -221,6 +221,18 @@ $instanceAdmins = array();
 # Enable Flot graphs (default now)
 $enableFlot = true;
 
+# An array of arrays of beacon keys for each of the beacons (used as ?key=...) null means no restriction
+$beaconKeys = array(
+	'yslow' => null,
+	'pagespeed' => null,
+	'dynatrace' => null,
+	'dommonster' => null,
+	'events' => null,
+	'har' => null,
+	'metric' => null,
+	'webpagetest' => null
+);
+
 
 
 
@@ -954,6 +966,53 @@ if (!function_exists('http_build_url'))
 			.((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '')
 			.((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
 		;
+	}
+}
+
+/*
+ * Checks if beacon key is required and is provided, sends 401 error otherwise
+*/
+function checkBeaconKey($beacon) {
+	global $beaconKeys;
+
+	$passed_key = null;
+
+	if (array_key_exists('key', $_GET)) {
+		$passed_key = $_GET['key'];
+	}
+
+	// workaround for extensions that just append ? at the end of base beacon URL
+	// instead of adding query string parameters (most of them, unfortunately)
+	if (array_key_exists('PATH_INFO', $_SERVER)) {
+		if (preg_match('/^\/(.*?)\/?$/', $_SERVER['PATH_INFO'], $matches, PREG_OFFSET_CAPTURE));
+		if (count($matches) == 2) {
+			$passed_key = $matches[1][0];
+		}
+	}
+
+	if (array_key_exists($beacon, $beaconKeys) && !is_null($beaconKeys[$beacon])) {
+		if (is_null($passed_key)) {
+			header('HTTP/1.0 401 Beacon Key Is Not Specified');
+			exit;
+		}
+
+		if (is_array($beaconKeys[$beacon])) {
+			$is_valid_key = false;
+
+			if (in_array($passed_key, $beaconKeys[$beacon])) {
+				$is_valid_key = true;
+			}
+
+			if (!$is_valid_key) {
+				header('HTTP/1.0 401 Wrong Beacon Key');
+				exit;
+			}
+		} else {
+			if ($beaconKeys[$beacon] != $passed_key) {
+				header('HTTP/1.0 401 Wrong Beacon Key');
+				exit;
+			}
+		}
 	}
 }
 

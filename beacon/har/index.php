@@ -22,6 +22,8 @@ function updateUrlAggregates($url_id, $measurement_id)
 if (array_key_exists('link', $_REQUEST) && trim($_REQUEST['link']) != ''
 	&& array_key_exists('url', $_REQUEST))
 {
+	checkBeaconKey('har');
+
 	$link = filter_var(urldecode(trim($_REQUEST['link'])), FILTER_VALIDATE_URL);
 
 	$url_id = getUrlId(urldecode($_REQUEST['url']));
@@ -180,6 +182,8 @@ Can't parse JSON data from HAR
 
 if (array_key_exists('url', $_REQUEST))
 {
+	checkBeaconKey('har');
+
 	$url_id = getUrlId(urldecode($_REQUEST['url']));
 
 	# adding new entry

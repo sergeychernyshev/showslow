@@ -5,6 +5,8 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 	&& array_key_exists('url_prefix', $_GET) && filter_var($_GET['url_prefix'], FILTER_VALIDATE_URL) !== false
 	)
 {
+	checkBeaconKey('events');
+
 	$url = validateURL($_GET['url_prefix'], $outputerror);
 
 	$type = array_key_exists('type', $_GET) && $_GET['type'] != '' ? $_GET['type'] : FALSE;

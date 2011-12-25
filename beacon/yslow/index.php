@@ -43,6 +43,8 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	&& array_key_exists('r', $post) && filter_var($post['r'], FILTER_VALIDATE_INT) !== false
 	)
 {
+	checkBeaconKey('yslow');
+
 	$url_id = getUrlId(urldecode($post['u']));
 
 	$grades = $post['g'];
@@ -136,6 +138,8 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	&& array_key_exists('r', $_GET) && filter_var($_GET['r'], FILTER_VALIDATE_INT) !== false
 	)
 {
+	checkBeaconKey('yslow');
+
 	$url_id = getUrlId($_GET['u']);
 
 	# adding new entry
@@ -202,7 +206,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 
 	require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
 	?>
-<h2>YSlow beacon</h2>
+<h2><a href="../">Beacons</a>: YSlow</h2>
 <p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
 
 <h2>Configure your YSlow</h2>

@@ -20,17 +20,26 @@ $post = json_decode($post_data, true);
 
 if (!is_null($post) && array_key_exists('url', $post) && array_key_exists('id', $post))
 {
+	checkBeaconKey('webpagetest');
+
 	$url_id = getUrlId(urldecode($post['url']));
 
+	$first = array_key_exists('first', $post);
+	$repeat = array_key_exists('repeat', $post);
+
 	// fixing up -1 into nulls
-	foreach (array_keys($post['first']) as $metric) {
-		if ($post['first'][$metric] == -1) {
-			$post['first'][$metric] = null;
+	if ($first) {
+		foreach (array_keys($post['first']) as $metric) {
+			if ($post['first'][$metric] == -1) {
+				$post['first'][$metric] = null;
+			}
 		}
 	}
-	foreach (array_keys($post['repeat']) as $metric) {
-		if ($post['repeat'][$metric] == -1) {
-			$post['repeat'][$metric] = null;
+	if ($repeat) {
+		foreach (array_keys($post['repeat']) as $metric) {
+			if ($post['repeat'][$metric] == -1) {
+				$post['repeat'][$metric] = null;
+			}
 		}
 	}
 
@@ -77,76 +86,76 @@ if (!is_null($post) && array_key_exists('url', $post) && array_key_exists('id', 
 		mysql_real_escape_string($post['location']),
 		mysql_real_escape_string($post['version']),
 
-		mysql_real_escape_string($post['first']['loadTime']),
-		mysql_real_escape_string($post['repeat']['loadTime']),
-		mysql_real_escape_string($post['first']['TTFB']),
-		mysql_real_escape_string($post['repeat']['TTFB']),
+		mysql_real_escape_string($first ? $post['first']['loadTime'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['loadTime'] : null),
+		mysql_real_escape_string($first ? $post['first']['TTFB'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['TTFB'] : null),
 
-		mysql_real_escape_string($post['first']['bytesIn']),
-		mysql_real_escape_string($post['repeat']['bytesIn']),
-		mysql_real_escape_string($post['first']['bytesInDoc']),
-		mysql_real_escape_string($post['repeat']['bytesInDoc']),
+		mysql_real_escape_string($first ? $post['first']['bytesIn'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['bytesIn'] : null),
+		mysql_real_escape_string($first ? $post['first']['bytesInDoc'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['bytesInDoc'] : null),
 
-		mysql_real_escape_string($post['first']['requests']),
-		mysql_real_escape_string($post['repeat']['requests']),
-		mysql_real_escape_string($post['first']['requestsDoc']),
-		mysql_real_escape_string($post['repeat']['requestsDoc']),
+		mysql_real_escape_string($first ? $post['first']['requests'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['requests'] : null),
+		mysql_real_escape_string($first ? $post['first']['requestsDoc'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['requestsDoc'] : null),
 
-		mysql_real_escape_string($post['first']['connections']),
-		mysql_real_escape_string($post['repeat']['connections']),
-		mysql_real_escape_string($post['first']['domElements']),
-		mysql_real_escape_string($post['repeat']['domElements']),
+		mysql_real_escape_string($first ? $post['first']['connections'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['connections'] : null),
+		mysql_real_escape_string($first ? $post['first']['domElements'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['domElements'] : null),
 
-		mysql_real_escape_string($post['first']['score_cache']),
-		mysql_real_escape_string($post['repeat']['score_cache']),
-		mysql_real_escape_string($post['first']['score_cdn']),
-		mysql_real_escape_string($post['repeat']['score_cdn']),
+		mysql_real_escape_string($first ? $post['first']['score_cache'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_cache'] : null),
+		mysql_real_escape_string($first ? $post['first']['score_cdn'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_cdn'] : null),
 
-		mysql_real_escape_string($post['first']['score_gzip']),
-		mysql_real_escape_string($post['repeat']['score_gzip']),
-		mysql_real_escape_string($post['first']['score_cookies']),
-		mysql_real_escape_string($post['repeat']['score_cookies']),
+		mysql_real_escape_string($first ? $post['first']['score_gzip'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_gzip'] : null),
+		mysql_real_escape_string($first ? $post['first']['score_cookies'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_cookies'] : null),
 
-		mysql_real_escape_string($post['first']['score_keep-alive']),
-		mysql_real_escape_string($post['repeat']['score_keep-alive']),
-		mysql_real_escape_string($post['first']['score_minify']),
-		mysql_real_escape_string($post['repeat']['score_minify']),
+		mysql_real_escape_string($first ? $post['first']['score_keep-alive'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_keep-alive'] : null),
+		mysql_real_escape_string($first ? $post['first']['score_minify'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_minify'] : null),
 
-		mysql_real_escape_string($post['first']['score_combine']),
-		mysql_real_escape_string($post['repeat']['score_combine']),
-		mysql_real_escape_string($post['first']['score_compress']),
-		mysql_real_escape_string($post['repeat']['score_compress']),
+		mysql_real_escape_string($first ? $post['first']['score_combine'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_combine'] : null),
+		mysql_real_escape_string($first ? $post['first']['score_compress'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_compress'] : null),
 
-		mysql_real_escape_string($post['first']['score_etags']),
-		mysql_real_escape_string($post['repeat']['score_etags']),
-		mysql_real_escape_string($post['first']['gzip_total']),
-		mysql_real_escape_string($post['repeat']['gzip_total']),
+		mysql_real_escape_string($first ? $post['first']['score_etags'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['score_etags'] : null),
+		mysql_real_escape_string($first ? $post['first']['gzip_total'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['gzip_total'] : null),
 
-		mysql_real_escape_string($post['first']['gzip_savings']),
-		mysql_real_escape_string($post['repeat']['gzip_savings']),
-		mysql_real_escape_string($post['first']['minify_total']),
-		mysql_real_escape_string($post['repeat']['minify_total']),
+		mysql_real_escape_string($first ? $post['first']['gzip_savings'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['gzip_savings'] : null),
+		mysql_real_escape_string($first ? $post['first']['minify_total'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['minify_total'] : null),
 
-		mysql_real_escape_string($post['first']['minify_savings']),
-		mysql_real_escape_string($post['repeat']['minify_savings']),
-		mysql_real_escape_string($post['first']['image_total']),
-		mysql_real_escape_string($post['repeat']['image_total']),
+		mysql_real_escape_string($first ? $post['first']['minify_savings'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['minify_savings'] : null),
+		mysql_real_escape_string($first ? $post['first']['image_total'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['image_total'] : null),
 
-		mysql_real_escape_string($post['first']['image_savings']),
-		mysql_real_escape_string($post['repeat']['image_savings']),
+		mysql_real_escape_string($first ? $post['first']['image_savings'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['image_savings'] : null),
 
-		mysql_real_escape_string($post['first']['render']),
-		mysql_real_escape_string($post['repeat']['render']),
-		mysql_real_escape_string($post['first']['aft']),
-		mysql_real_escape_string($post['repeat']['aft']),
+		mysql_real_escape_string($first ? $post['first']['render'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['render'] : null),
+		mysql_real_escape_string($first ? $post['first']['aft'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['aft'] : null),
 
-		mysql_real_escape_string($post['first']['fullyLoaded']),
-		mysql_real_escape_string($post['repeat']['fullyLoaded']),
-		mysql_real_escape_string($post['first']['docTime']),
-		mysql_real_escape_string($post['repeat']['docTime']),
+		mysql_real_escape_string($first ? $post['first']['fullyLoaded'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['fullyLoaded'] : null),
+		mysql_real_escape_string($first ? $post['first']['docTime'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['docTime'] : null),
 
-		mysql_real_escape_string($post['first']['domTime']),
-		mysql_real_escape_string($post['repeat']['domTime'])
+		mysql_real_escape_string($first ? $post['first']['domTime'] : null),
+		mysql_real_escape_string($repeat ? $post['repeat']['domTime'] : null)
 	);
 
 	if (!mysql_query($query))

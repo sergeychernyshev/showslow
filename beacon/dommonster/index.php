@@ -21,6 +21,8 @@ function updateUrlAggregates($url_id, $measurement_id)
 */
 if (array_key_exists('url', $_POST) && array_key_exists('stats', $_POST))
 {
+	checkBeaconKey('dommonster');
+
 	$url_id = getUrlId(urldecode($_POST['url']));
 
 	$stats = json_decode($_POST['stats'], true);

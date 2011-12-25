@@ -25,6 +25,8 @@ $post = json_decode($post_data, true);
 if (!is_null($post) && array_key_exists('url', $post)
 	&& array_key_exists('rank', $post) && filter_var($post['rank'], FILTER_VALIDATE_INT) !== false)
 {
+	checkBeaconKey('dynatrace');
+
 	$url_id = getUrlId(urldecode($post['url']));
 
 	if (array_key_exists('ranks', $post)) {

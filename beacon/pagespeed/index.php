@@ -16,6 +16,8 @@ function updateUrlAggregates($url_id, $measurement_id)
 }
 
 if (array_key_exists('u', $_GET)) {
+	checkBeaconKey('pagespeed');
+
 	$url_id = getUrlId($_GET['u']);
 
 	$metrics = array(
@@ -336,15 +338,15 @@ if (array_key_exists('u', $_GET)) {
 
 header('HTTP/1.0 400 Bad Request');
 
-?><html>
-<head>
-<title>Bad Request: Page Speed beacon</title>
-</head>
-<body>
-<h1>Page Speed beacon</h1>
+$TITLE = 'Bad Request: Page Speed beacon';
+
+require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
+?>
+<h2><a href="../">Beacons</a>: Page Speed</h2>
+
 <p>This is <a href="http://code.google.com/speed/page-speed/">Page Speed</a> beacon entry point.</p>
 
-<h1>Configure your Page Speed Extension</h1>
+<h2>Configure your Page Speed Extension</h2>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your Page Speed data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 Set these two Firefox parameters on <b>about:config</b> page:</p>
@@ -354,10 +356,10 @@ Set these two Firefox parameters on <b>about:config</b> page:</p>
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
 </ul>
 
-<h1>Configuring Page Speed Online API</h1>
+<h2>Configuring Page Speed Online API</h2>
 Another alternative to using browser extension is to use <a href="https://code.google.com/apis/pagespeedonline/">Google Page Speed Online API</a>
 
-<h2>Getting the key</h2>
+<h3>Getting the key</h3>
 Get your Google Web Services <a href="https://code.google.com/apis/console/b/0/#access">API key</a>
 
 Open your config.php file and set $pageSpeedOnlineAPIKey variable.
@@ -367,16 +369,13 @@ $pageSpeedOnlineAPIKey = '<b style="color: blue">your-code-goes-here</b>';
 </pre>
 
 <?php if (!is_null($pageSpeedOnlineAPIKey)) { ?>
-<h2>Running the tests</h2>
+<h3>Running the tests</h3>
 <p>To send API calls and import metrics into ShowSlow, just use your favorite tool to open beacon URL:</p>
 <p>
 <b><?php echo $showslow_base ?>/beacon/pagespeed/?api&u=<span style="color: red">url-you-are-testing</span></b>
 </p>
 
 <p>You can do that periodically using a cron-job, but keep in mind API call limits on the API.</p>
-<?php } ?>
+<?php }
 
-<hr/>
-<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
-
-</body></html>
+require_once(dirname(dirname(dirname(__FILE__))).'/footer.php');

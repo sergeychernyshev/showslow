@@ -6,6 +6,8 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 	&& array_key_exists('u', $_REQUEST)
 	)
 {
+	checkBeaconKey('metric');
+
 	$url_id = getUrlId($_REQUEST['u']);
 
 	if (array_key_exists('timestamp', $_REQUEST) && $_REQUEST['timestamp']) {
