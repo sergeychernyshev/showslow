@@ -823,7 +823,7 @@ function getUrlId($url, $outputerror = true)
 		}
 	}
 
-	$query = sprintf("INSERT IGNORE INTO urls (url, url_md5) VALUES ('%s', UNHEX(MD5('%s'))",
+	$query = sprintf("INSERT IGNORE INTO urls (url, url_md5) VALUES ('%s', UNHEX(MD5('%s')))",
 		mysql_real_escape_string($url),
 		mysql_real_escape_string($url)
 	);
