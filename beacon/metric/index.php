@@ -1,6 +1,20 @@
 <?php 
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
+function updateUrlAggregates($url_id, $measurement_id)
+{
+	# updating latest values for the URL
+	$query = sprintf("UPDATE urls set metric_last_id = %d, last_update = now() WHERE id = %d",
+		mysql_real_escape_string($measurement_id),
+		mysql_real_escape_string($url_id)
+	);
+	$result = mysql_query($query);
+
+	if (!$result) {
+		beaconError(mysql_error());
+	}
+}
+
 if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'], $metrics)
 	&& array_key_exists('value', $_REQUEST) && is_numeric($_REQUEST['value']) !== false
 	&& array_key_exists('u', $_REQUEST)
@@ -31,20 +45,21 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 	{
 		beaconError(mysql_error());
 	}
-} else {
-	header('HTTP/1.0 400 Bad Request');
 
-	?><html>
-<head>
-<title>Bad Request: Custom Metric beacon</title>
-<style>
-i {
-        color: red;
+	updateUrlAggregates($url_id, mysql_insert_id());
+
+	header('HTTP/1.0 204 Data accepted');
+	exit;
 }
-</style>
-</head>
-<body>
-<h1>Custom Metric beacon</h1>
+
+header('HTTP/1.0 400 Bad Request');
+
+$TITLE = 'Bad Request: Custom Metric beacon';
+
+require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
+?>
+<h2><a href="../">Beacons</a>: Custom Metric</h2>
+
 <p>This is custom metric beacon for ShowSlow.</p>
 <p>You can use automated script to publish events using GET call to one of these URLs (for specific metric):</p>
 <b><pre>
@@ -86,11 +101,5 @@ foreach ($metrics as $name => $metric) {
 </table>
 </form>
 
-<hr/>
-<p><a href="../">&lt;&lt; back to the list of beacons</a></p>
-</body></html>
 <?php
-	exit;
-}
-
-header('HTTP/1.0 204 Data accepted');
+require_once(dirname(dirname(dirname(__FILE__))).'/footer.php');

@@ -13,6 +13,13 @@ $versions = array();
 
 /* -------------------------------------------------------------------------------------------------------
  * VERSION 32
+ * Adding forgottent last measurement ID for custom metrics
+*/
+$versions[33]['up'][] = "ALTER TABLE  `urls` ADD  `metric_last_id` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL COMMENT  'Last measurement ID for Custom Metric beacon' AFTER `pagetest_last_id`";
+$versions[33]['down'][] = 'ALTER TABLE  `urls` DROP  `metric_last_id`';
+
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 32
  * Switching metric tables to INNODB engine for better performance
 */
 $versions[32]['up'][] = "ALTER TABLE urls ADD url_md5 BINARY(16) NOT NULL COMMENT 'MD5 hash of URL - used for unique index and faster retrieval' AFTER url";
