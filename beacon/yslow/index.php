@@ -49,29 +49,37 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 
 	$grades = $post['g'];
 
-	$ynumreq	= $grades['ynumreq']['score'];
-	$ycdn		= $grades['ycdn']['score'];
-	$yexpires	= $grades['yexpires']['score'];
-	$yemptysrc	= $grades['yemptysrc']['score'];
-	$ycompress	= $grades['ycompress']['score'];
-	$ycsstop	= $grades['ycsstop']['score'];
-	$yjsbottom	= $grades['yjsbottom']['score'];
-	$yexpressions	= $grades['yexpressions']['score'];
-	$yexternal	= $grades['yexternal']['score'];
-	$ydns		= $grades['ydns']['score'];
-	$yminify	= $grades['yminify']['score'];
-	$yredirects	= $grades['yredirects']['score'];
-	$ydupes		= $grades['ydupes']['score'];
-	$yetags		= $grades['yetags']['score'];
-	$yxhr		= $grades['yxhr']['score'];
-	$yxhrmethod	= $grades['yxhrmethod']['score'];
-	$ymindom	= $grades['ymindom']['score'];
-	$yno404		= $grades['yno404']['score'];
-	$ymincookie	= $grades['ymincookie']['score'];
-	$ycookiefree	= $grades['ycookiefree']['score'];
-	$ynofilter	= $grades['ynofilter']['score'];
-	$yimgnoscale	= $grades['yimgnoscale']['score'];
-	$yfavicon	= $grades['yfavicon']['score'];
+	$metrics = array(
+		'ynumreq',
+		'ycdn',
+		'yexpires',
+		'yemptysrc',
+		'ycompress',
+		'ycsstop',
+		'yjsbottom',
+		'yexpressions',
+		'yexternal',
+		'ydns',
+		'yminify',
+		'yredirects',
+		'ydupes',
+		'yetags',
+		'yxhr',
+		'yxhrmethod',
+		'ymindom',
+		'yno404',
+		'ymincookie',
+		'ycookiefree',
+		'ynofilter',
+		'yimgnoscale',
+		'yfavicon'
+	);
+
+	foreach ($metrics as $metric) {
+		if (!array_key_exists($metric, $grades) || !array_key_exists('score', $grades[$metric])) {
+			$grades[$metric]['score'] = null;
+		}
+	}
 
 	# adding new entry
 	$query = sprintf("/* grades POST */ INSERT INTO yslow2 (
@@ -98,31 +106,31 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		mysql_real_escape_string($post['o']),
 		mysql_real_escape_string($post['r']),
 		mysql_real_escape_string($post['i']),
-		mysql_real_escape_string($post['lt']),
-		mysql_real_escape_string($ynumreq),
-		mysql_real_escape_string($ycdn),
-		mysql_real_escape_string($yexpires),
-		mysql_real_escape_string($yemptysrc),
-		mysql_real_escape_string($ycompress),
-		mysql_real_escape_string($ycsstop),
-		mysql_real_escape_string($yjsbottom),
-		mysql_real_escape_string($yexpressions),
-		mysql_real_escape_string($yexternal),
-		mysql_real_escape_string($ydns),
-		mysql_real_escape_string($yminify),
-		mysql_real_escape_string($yredirects),
-		mysql_real_escape_string($ydupes),
-		mysql_real_escape_string($yetags),
-		mysql_real_escape_string($yxhr),
-		mysql_real_escape_string($yxhrmethod),
-		mysql_real_escape_string($ymindom),
-		mysql_real_escape_string($yno404),
-		mysql_real_escape_string($ymincookie),	
-		mysql_real_escape_string($ycookiefree),	
-		mysql_real_escape_string($ynofilter),
-		mysql_real_escape_string($yimgnoscale),	
-		mysql_real_escape_string($yfavicon),
-		mysql_real_escape_string($post_data)
+		mysql_real_escape_string(array_key_exists('lt', $post) ? $post['lt'] : null),
+		mysql_real_escape_string($grades['ynumreq']['score']),
+		mysql_real_escape_string($grades['ycdn']['score']),
+		mysql_real_escape_string($grades['yexpires']['score']),
+		mysql_real_escape_string($grades['yemptysrc']['score']),
+		mysql_real_escape_string($grades['ycompress']['score']),
+		mysql_real_escape_string($grades['ycsstop']['score']),
+		mysql_real_escape_string($grades['yjsbottom']['score']),
+		mysql_real_escape_string($grades['yexpressions']['score']),
+		mysql_real_escape_string($grades['yexternal']['score']),
+		mysql_real_escape_string($grades['ydns']['score']),
+		mysql_real_escape_string($grades['yminify']['score']),
+		mysql_real_escape_string($grades['yredirects']['score']),
+		mysql_real_escape_string($grades['ydupes']['score']),
+		mysql_real_escape_string($grades['yetags']['score']),
+		mysql_real_escape_string($grades['yxhr']['score']),
+		mysql_real_escape_string($grades['yxhrmethod']['score']),
+		mysql_real_escape_string($grades['ymindom']['score']),
+		mysql_real_escape_string($grades['yno404']['score']),
+		mysql_real_escape_string($grades['ymincookie']['score']),
+		mysql_real_escape_string($grades['ycookiefree']['score']),
+		mysql_real_escape_string($grades['ynofilter']['score']),
+		mysql_real_escape_string($grades['yimgnoscale']['score']),
+		mysql_real_escape_string($grades['yfavicon']['score']),
+		mysql_real_escape_string($grades['post_data']['score'])
 	);
 
 	if (!mysql_query($query))
