@@ -2,7 +2,7 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-YAHOO.util.Event.onDOMReady(function() { 
+YAHOO.util.Event.onDOMReady(function() {
 	var eventSource2 = new Timeplot.DefaultEventSource();	// YSlow2 measurements
 	var pagespeed = new Timeplot.DefaultEventSource();	// Page Speed measurements
 	var dynatrace = new Timeplot.DefaultEventSource();	// dynaTrace  measurements
@@ -102,7 +102,7 @@ YAHOO.util.Event.onDOMReady(function() {
 			valueGeometry: valueGeometryRequests,
 			lineColor: "#75CF74",
 			showValues: true
-		}), 
+		}),
 		Timeplot.createPlotInfo({
 			id: "showslowevents",
 			timeGeometry: timeGeometry,
@@ -136,21 +136,21 @@ YAHOO.util.Event.onDOMReady(function() {
 	}
 
 	timeplot = Timeplot.create(document.getElementById("my-timeplot"), plotInfo);
-	timeplot.loadXML('events.php?url=' + encodeURIComponent(url) + '&ver=' + eventversion, showslowevents);
+	timeplot.loadXML(SHOWSLOW.base_url+'details/events.php?url=' + encodeURIComponent(url) + '&ver=' + eventversion, showslowevents);
 	if (ydataversion) {
-		timeplot.loadText('data.php?smooth=yes&subset=graph&profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + ydataversion, ",", eventSource2);
+		timeplot.loadText(SHOWSLOW.base_url+'details/data.php?smooth=yes&subset=graph&profile=ydefault&url=' + encodeURIComponent(url) + '&ver=' + ydataversion, ",", eventSource2);
 	}
 
 	if (psdataversion) {
-		timeplot.loadText('data_pagespeed.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + psdataversion, ",", pagespeed);
+		timeplot.loadText(SHOWSLOW.base_url+'details/data_pagespeed.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + psdataversion, ",", pagespeed);
 	}
 
 	if (dtdataversion) {
-		timeplot.loadText('data_dynatrace.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + dtdataversion, ",", dynatrace);
+		timeplot.loadText(SHOWSLOW.base_url+'details/data_dynatrace.php?smooth=yes&subset=graph&url=' + encodeURIComponent(url) + '&ver=' + dtdataversion, ",", dynatrace);
 	}
 
 	for (var name in metrics) {
-		timeplot.loadText('data_metric.php?smooth=yes&metric=' + name + '&url=' + encodeURIComponent(url), ",", metrics[name].source);
+		timeplot.loadText(SHOWSLOW.base_url+'details/data_metric.php?smooth=yes&metric=' + name + '&url=' + encodeURIComponent(url), ",", metrics[name].source);
 	}
 })
 

@@ -1,12 +1,13 @@
-<?php 
+<?php
 require_once(dirname(__FILE__).'/global.php');
 require_once(dirname(__FILE__).'/users/users.php');
+require_once(dirname(__FILE__).'/functions.php');
 
 $SECTION = 'home';
 require_once(dirname(__FILE__).'/header.php');
 ?>
 <div style="width: 100%; overflow: hidden">
-<?php 
+<?php
 $query = sprintf("SELECT url, urls.id as url_id, last_update,
 		yslow2.o as o,
 		pagespeed.o as ps_o,
@@ -83,8 +84,8 @@ foreach ($rows as $row) {
 		<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 	<?php }?>
 
-	<td class="url"><a href="details/?urlid=<?php echo urlencode($row['url_id'])?>&url=<?php echo urlencode($row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
-	</tr><?php 
+	<td class="url"><a href="<?=detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+	</tr><?php
 }
 
 mysql_free_result($result);

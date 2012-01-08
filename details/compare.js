@@ -2,7 +2,7 @@
 /*global Timeplot, YAHOO*/
 var timeplot;
 
-YAHOO.util.Event.onDOMReady(function() { 
+YAHOO.util.Event.onDOMReady(function() {
 	var timeGeometry = new Timeplot.DefaultTimeGeometry({
 		gridColor: "#000000",
 		axisLabelsPlacement: "bottom"
@@ -39,11 +39,11 @@ YAHOO.util.Event.onDOMReady(function() {
 
 	for (var url in data) {
 		if (ranker == 'pagespeed') {
-			timeplot.loadText('data_pagespeed.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText(SHOWSLOW.base_url+'details/data_pagespeed.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else if (ranker == 'dynatrace') {
-			timeplot.loadText('data_dynatrace.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText(SHOWSLOW.base_url+'details/data_dynatrace.php?smooth&subset=graph&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		} else {
-			timeplot.loadText('data.php?smooth&subset=graph&profile=ydefault&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
+			timeplot.loadText(SHOWSLOW.base_url+'details/data.php?smooth&subset=graph&profile=ydefault&urlid=' + encodeURIComponent(data[url].id) + '&ver=' + data[url].version, ",", data[url].eventsource);
 		}
 	}
 
