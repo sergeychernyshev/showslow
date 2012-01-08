@@ -37,7 +37,7 @@ if (array_key_exists('group', $_GET)) {
 <link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/common.css')?>" />
 <script>
     var SHOWSLOW = SHOWSLOW || {};
-    SHOWSLOW.base_url = '<?= $showslow_base;?>';
+    SHOWSLOW.base_url = <?php echo json_encode($showslow_base); ?>;
 </script>
 <?php
 if (isset($STYLES)) {

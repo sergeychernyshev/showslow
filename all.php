@@ -259,7 +259,7 @@ foreach ($rows as $row) {
 		<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 	<?php }?>
 
-	<td class="url"><a href="<?= detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+	<td class="url"><a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 	</tr><?php
 }
 

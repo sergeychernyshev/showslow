@@ -185,7 +185,7 @@ if (count($rows))
 			<td style="color: red; text-align: right; padding-right: 1em"><i title="This URL is ignored by this instance of Show Slow">ignored</i></td>
 			<td colspan="<?php echo $cols*2 ?>"/>
 		<?php } else if (!is_null($row['o']) || !is_null($row['ps_o']) || !is_null($row['dt_o'])) { ?>
-			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="<?= detailsUrl($row['id'], $row['url'];?>"><?php echo htmlentities($row['last_update']); ?></a></td>
+			<td style="text-align: right; padding-right: 1em"><a title="Time of last check for this URL" href="<?php echo detailsUrl($row['id'], $row['url'];?>"><?php echo htmlentities($row['last_update']); ?></a></td>
 			<?php if (!$yslow) {?>
 			<?php } else if (!is_null($row['o'])) {?>
 				<td class="score" title="Current YSlow grade: <?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)"><?php echo prettyScore($row['o'])?> (<?php echo $row['o']?>)</td>
