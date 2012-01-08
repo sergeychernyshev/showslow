@@ -1,7 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/users/users.php');
-require_once(dirname(dirname(__FILE__)).'/functions.php');
 
 $urlid = array_key_exists('urlid', $_GET) ? filter_var($_GET['urlid'], FILTER_VALIDATE_INT) : null;
 
