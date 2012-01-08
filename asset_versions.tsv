@@ -3,10 +3,10 @@
 ccad7d71	beacon/dommonster/dom-monster/src/dommonster.js
 bff5aee7	clock.png
 3b1d6b9b	collecting.gif
-cfbea801	details/compare.js
-e253da50	details/details.js
-ed3961b6	details/showslow.flot.js
-1578e056	details/timeplot.js
+3479c411	details/compare.js
+3ac7173b	details/details.js
+03f08951	details/showslow.flot.js
+3644d065	details/timeplot.js
 65baaa63	favicon.ico
 e6e1722c	flot/excanvas.js
 60cd50f8	flot/excanvas.min.js
