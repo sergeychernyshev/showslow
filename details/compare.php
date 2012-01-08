@@ -203,7 +203,7 @@ if (!is_null($ranker)) { ?>
 <ul style="margin-top: 1em">
 <?php foreach ($urls as $url) { ?>
 	<li>
-	<a href="./?url_id=<?php echo urlencode($urlids[$url])?>&url=<?php echo urlencode($url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
+	<a href="<?php echo detailsUrl($urlids[$url], $url)?>"><?php echo htmlentities(substr($url, 0, 60))?><?php if (strlen($url) > 60) { ?>...<?php } ?></a><?php
 
 	if (is_null($data[$url][$ranker])) {
 		?> (no <?php
