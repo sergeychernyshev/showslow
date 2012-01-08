@@ -4,7 +4,14 @@ require_once(dirname(dirname(__FILE__)).'/users/users.php');
 require_once(dirname(dirname(__FILE__)).'/functions.php');
 
 $urlid = array_key_exists('urlid', $_GET) ? filter_var($_GET['urlid'], FILTER_VALIDATE_INT) : null;
-$url = array_key_exists('url', $_GET) ? filter_var($_GET['url'], FILTER_VALIDATE_URL) : null;
+
+$url_passed = $_GET['url'];
+
+# fixing up a URL if it is missing a double slash in domain name
+$url_passed = preg_replace('#^http://?#', 'http://', $url_passed);
+$url_passed = preg_replace('#^https://?#', 'https://', $url_passed);
+
+$url = array_key_exists('url', $_GET) ? filter_var($url_passed, FILTER_VALIDATE_URL) : null;
 
 function not_found() {
 	header("HTTP/1.0 404 Not Found");
@@ -20,20 +27,11 @@ function not_found() {
 	exit;
 }
 
-if(strpos($_SERVER['REQUEST_URI'], $url) === false) {
-    //If we don't see the url in the request string, apache stripped out one of the '/' in http://
-    $matches = array();
-    preg_match("#^/+details/+([0-9]+)/+(.*)$#", $_SERVER["REQUEST_URI"], $matches);
-    $url = $matches[2];
-}
-
-if (!$url) {
+if (!$urlid && !$url) {
 	not_found();
 }
 
-
 if (!$urlid && $url) {
-	# building a query to select all beacon data in one swoop
 	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysql_real_escape_string($url)."'))";
 	$result = mysql_query($query);
 
@@ -52,12 +50,32 @@ if (!$urlid && $url) {
 			not_found();
 		}
 
-        if(getenv("URLVERSIONREWRITE") == "YES") {
-            header("Location: ".detailsUrl($urlid, $url));
-        } else {
-            header("Location: ".detailsUrl($urlid, $url));
-            exit;
-        }
+		header("Location: ".detailsUrl($urlid, $url));
+		exit;
+	}
+}
+
+if ($urlid && !$url) {
+	$query = "SELECT url FROM urls WHERE urls.id = ".mysql_real_escape_string($urlid);
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	$row = mysql_fetch_assoc($result);
+
+	if (is_null($row)) {
+		not_found();
+	} else {
+		$url = $row['url'];
+
+		if (is_null($url)) {
+			not_found();
+		}
+
+		header("Location: ".detailsUrl($urlid, $url));
+		exit;
 	}
 }
 
