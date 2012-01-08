@@ -1118,6 +1118,16 @@ function ellipsis($string, $maxlength, $margin = 2) {
 	return $string;
 }
 
+function detailsUrl($urlId, $url) {
+	global $showslow_base;
+
+	if(getenv('URLVERSIONREWRITE') == 'YES') {
+		return $showslow_base."details/".$urlId."/".$url;
+	} else {
+		return $showslow_base."details/?urlid=".$urlId."&url=".$url;
+	}
+}
+
 mysql_connect("$host:$port", $user, $pass);
 mysql_select_db($db);
 

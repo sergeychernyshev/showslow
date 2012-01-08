@@ -1,7 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'/global.php');
 require_once(dirname(__FILE__).'/users/users.php');
-require_once(dirname(__FILE__).'/functions.php');
 
 $SECTION = 'home';
 require_once(dirname(__FILE__).'/header.php');

@@ -2,7 +2,6 @@
 require_once(dirname(__FILE__).'/global.php');
 require_once(dirname(__FILE__).'/users/users.php');
 require_once(dirname(__FILE__).'/paginator.class.php');
-require_once(dirname(__FILE__).'/functions.php');
 
 $searchstring = null;
 if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
