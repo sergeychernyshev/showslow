@@ -144,7 +144,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 				<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
 			<?php }?>
 
-			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="<?php echo detailsUrl($row['url_id'], $row['url'];?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
+			<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="<?php echo detailsUrl($row['url_id'], $row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
 		<?php } else { ?>
 			<td style="text-align: right; padding-right: 1em"><i title="added to the testing queue">queued</i></td>
 			<td colspan="4"/>
