@@ -1,4 +1,8 @@
 <?php 
+# Set your timezone to avoid problems with PHP configuration
+# List of supported timezones: http://php.net/manual/en/timezones.php
+date_default_timezone_set('America/Denver');
+
 # Database connection information
 $db = 'showslow';
 $user = 'showslow';
