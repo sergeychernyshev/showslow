@@ -200,7 +200,7 @@ sub source_urls {
         }
         else {
             print VERBOSE "SUCCESS.\n";
-            @array = split( '\n', $res->content );
+            push @array, split( '\n', $res->content );
         }
     }
     print VERBOSE "DONE.\n\n";
