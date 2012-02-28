@@ -130,7 +130,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		mysql_real_escape_string($grades['ynofilter']['score']),
 		mysql_real_escape_string($grades['yimgnoscale']['score']),
 		mysql_real_escape_string($grades['yfavicon']['score']),
-		mysql_real_escape_string($grades['post_data']['score'])
+		mysql_real_escape_string($post_data)
 	);
 
 	if (!mysql_query($query))
