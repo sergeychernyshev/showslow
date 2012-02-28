@@ -1,4 +1,10 @@
-<?php 
+<?php
+/**
+ * This is a data receiver for YSlow
+ *
+ * Documentation for the beacon is available here:
+ * http://developer.yahoo.com/yslow/help/beacons.html#yslow_beacon
+ */
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
