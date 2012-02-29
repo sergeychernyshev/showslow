@@ -1,4 +1,10 @@
-<?php 
+<?php
+/**
+ * This is a data receiver for Google Page Speed extension
+ *
+ * Documentation for the beacon is available here:
+ * http://code.google.com/p/page-speed/wiki/BeaconDocs
+ */
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
