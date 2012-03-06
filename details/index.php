@@ -365,6 +365,17 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 <?php
 }
 
+if (!is_null($redBotBase)) { ?>
+	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank">REDbot</a></h2>
+	<form action="<?php echo htmlentities($redBotBase)?>" method="GET" target="_blank">
+	<input type="hidden" name="uri" size="40" value="<?php echo htmlentities($url)?>"/>
+	<input type="checkbox" id="checkallassets" name="descend" value="True"<?php if ($redBotCheckAllByDefault) {?> checked<?php } ?>/> <label for="checkallassets">Check all components:</label>
+	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
+	</form>
+<?php
+}
+
+
 if (is_array($customTools)) {
 	foreach ($customTools as $name => $title) {
 		?><a name="<?php echo $name ?>"><h2><?php echo $title ?></h2>

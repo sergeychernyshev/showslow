@@ -151,6 +151,10 @@ $keepPrivatePageTests = false;
 $webPageTestLocationsAPCKey = 'showslow_wpt_locations';
 $webPageTestLocationsTTL = 300;
 
+# RedBot
+$redBotBase = 'http://redbot.org/';
+$redBotCheckAllByDefault = true;
+
 # array of tools to show above the graph
 $customTools = array();
 
