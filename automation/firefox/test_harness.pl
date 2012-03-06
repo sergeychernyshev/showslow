@@ -79,7 +79,6 @@ my $number_ff_profiles;
 my $quiet;
 my @sessions;
 my @source;
-my @tasks;
 my @testurls;
 my @threads;
 my $timeout = 60;
@@ -168,9 +167,12 @@ sub MAX_CONCURRENT_TASKS () { $number_ff_profiles }
 
 # subroute - delete any running FF threads close up and quit.
 sub end_script {
+    
     print STDOUT "\nCAUGHT SIG{INT}... cleaning up!\n";
 
-    foreach my $pid (@tasks) {
+    my @pids = map { $_->PID } values %{ $_[HEAP]->{task} };
+
+    foreach my $pid (@pids) {
         print STDERR ">> Terminating PID => $pid\n";
         kill -9, getpgrp($pid);
     }
@@ -250,6 +252,10 @@ sub ff_profiles {
 ##
 ## BEGIN POE CODEBLOCK
 
+sub handle_start{
+    $_[KERNEL]->sig( INT => "sig_int" );
+    $_[KERNEL]->yield("next_task");
+}
 
 # Start as many tasks as needed so that the number of tasks is no more
 # than MAX_CONCURRENT_TASKS.  Every wheel event is accompanied by the
@@ -271,7 +277,7 @@ sub start_task {
         ) or die "CRITICAL FAULT>> cannot spawn POE::Wheel::Run object: $!\n";
 	$heap->{task}->{$task->ID} = $task;
         $kernel->sig_child( $task->PID, "sig_child" );
-        push @tasks, $task->PID;
+	
         $heap->{wheel_alarm}->{$task->ID} = $kernel->delay_set( task_timeout => $timeout, $task->ID )
           or die "CRITICAL FAULT>> cannot set alarm: $!\n"; 
         $heap->{wheel_pid}->{$task->ID} = $task->PID;
@@ -315,7 +321,6 @@ sub handle_task_done {
     my $profile = $heap->{wheel_profile}->{$task_id};
     my $pid = $heap->{wheel_pid}->{$task_id};
     delete $heap->{task}->{$task_id};
-    @tasks = grep { $_ ne $pid } @tasks;
     my $clock = time();
     push @mozprofile, $profile;
     push @threads, $thread;
@@ -335,7 +340,6 @@ sub handle_task_timeout {
     $_[HEAP]->{task}->{$task_id}->kill(-9);
     delete $_[HEAP]->{task}->{$task_id};
     my $clock = time();
-    @tasks = grep { $_ ne $pid } @tasks;
     push @mozprofile, $profile;
     push @threads, $thread;
     print VERBOSE "    THREAD ID" . $thread . "=> $clock :: TIMEOUT $profile :: $url\n";
@@ -433,11 +437,6 @@ $number_ff_profiles = ff_profiles(@mozprofile);
 @testurls = source_urls(@source);
 
 
-# Trap ctrl-c (threads run independently).
-print VERBOSE "Trapping SIG{INT}.\n";
-$SIG{INT}  = \&end_script;
-
-
 # Start the test cycle.
 print VERBOSE "Starting concurrent Mozilla Firefox thread(s):\n";
 print VERBOSE "    Max Threads => $number_ff_profiles\n";
@@ -447,7 +446,7 @@ print VERBOSE "    Max Threads => $number_ff_profiles\n";
 # next_task events are handled by the same function.
 POE::Session->create(
     inline_states => {
-        _start          => \&start_task,
+        _start          => \&handle_start,
         next_task       => \&start_task,
         _stop           => \&handle_task_shutdown,
         task_result     => \&handle_task_result,
@@ -455,6 +454,7 @@ POE::Session->create(
         task_debug      => \&handle_task_debug,
         task_timeout    => \&handle_task_timeout,
         sig_child       => \&sig_child,
+	sig_int         => \&end_script,
     }
 ) or die "CRITICAL FAULT>> cannot spawn POE::Session object: $!\n";
 
