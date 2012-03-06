@@ -56,7 +56,12 @@ if (array_key_exists('u', $_GET)) {
 		'pScaleImgs',
 		'pSprite',
 		'pUnusedCSS',
-		'pVaryAE'
+		'pVaryAE',
+		'pDeferParsingJavaScript',
+		'pEnableKeepAlive',
+		'pInlineCSS',
+		'pInlineJS',
+		'pMakeLandingPageRedirectsCacheable'
 	);
 
 	// array to store core metrics:
@@ -111,7 +116,12 @@ if (array_key_exists('u', $_GET)) {
 			'RemoveQueryStringsFromStaticResources'		=> 'pRemoveQuery',
 			'ServeScaledImages'				=> 'pScaleImgs',
 			'SpriteImages'					=> 'pSprite',
-			'SpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE'
+			'SpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE',
+			'DeferParsingJavaScript'			=> 'pDeferParsingJavaScript',
+			'EnableKeepAlive'				=> 'pEnableKeepAlive',
+			'InlineSmallCss'				=> 'pInlineCSS',
+			'InlineSmallJavaScript'				=> 'pInlineJS',
+			'MakeLandingPageRedirectsCacheable'		=> 'pMakeLandingPageRedirectsCacheable'
 		);
 
 		// making an API call

@@ -330,13 +330,16 @@ $all_metrics = array(
 				array( 'Minimize redirects',				'pMinRedirect',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidRedirects'),
 				array( 'Avoid bad requests',				'pBadReqs',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidBadRequests'),
 				array( 'Combine external JavaScript',			'pCombineJS',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#CombineExternalJS'),
+				array( 'Inline Small JavaScript',			'pInlineJS',	PERCENT_GRADE),
 				array( 'Combine external CSS',				'pCombineCSS',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#CombineExternalCSS'),
+				array( 'Inline Small CSS',				'pInlineCSS',	PERCENT_GRADE),
 				array( 'Combine images using CSS sprites',		'pSprite',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#SpriteImages'),
 				array( 'Optimize the order of styles and scripts',	'pCssJsOrder',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts'),
 				array( 'Avoid document.write',				'pDocWrite',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidDocumentWrite'),
 				array( 'Avoid CSS @import',				'pCssImport',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#AvoidCssImport'),
 				array( 'Prefer asynchronous resources',			'pPreferAsync',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#PreferAsyncResources'),
-				array( 'Parallelize downloads across hostnames',	'pParallelDl',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#ParallelizeDownloads')
+				array( 'Parallelize downloads across hostnames',	'pParallelDl',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rtt.html#ParallelizeDownloads'),
+				array( 'Enable Keep-Alive',				'pEnableKeepAlive',	PERCENT_GRADE)
 			),
 			'Minimize request overhead' => array(
 				array( 'Minimize request size',				'pMinReqSize',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/request.html#MinimizeRequestSize'),
@@ -358,6 +361,10 @@ $all_metrics = array(
 				array( 'Put CSS in the document head',	'pCssInHead',		PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rendering.html#PutCSSInHead'),
 				array( 'Specify image dimensions',	'pImgDims',		PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rendering.html#SpecifyImageDimensions'),
 				array( 'Specify a character set early',	'pCharsetEarly',	PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/rendering.html#SpecifyCharsetEarly'),
+			),
+			'Optimize for mobile' => array(
+				array( 'Defer parsing of JavaScript',	'pDeferParsingJavaScript',		PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/mobile.html#DeferParsingJS'),
+				array( 'Make landing page redirects cacheable',	'pMakeLandingPageRedirectsCacheable',		PERCENT_GRADE,	'http://code.google.com/speed/page-speed/docs/mobile.html#CacheLandingPageRedirects')
 			)
 		)
 	),

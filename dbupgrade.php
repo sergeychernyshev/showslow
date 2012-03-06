@@ -12,8 +12,25 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
- * VERSION 32
- * Adding forgottent last measurement ID for custom metrics
+ * VERSION 34
+ * Adding new PageSpeed rules
+*/
+$versions[34]['up'][] = "ALTER TABLE pagespeed
+ADD pDeferParsingJavaScript FLOAT UNSIGNED NULL DEFAULT NULL COMMENT 'Defer parsing of JavaScript',
+ADD pEnableKeepAlive FLOAT UNSIGNED NULL DEFAULT NULL COMMENT 'Enable Keep-Alive',
+ADD pInlineCSS FLOAT UNSIGNED NULL DEFAULT NULL COMMENT 'Inline Small CSS',
+ADD pInlineJS FLOAT UNSIGNED NULL DEFAULT NULL COMMENT 'Inline Small JavaScript',
+ADD pMakeLandingPageRedirectsCacheable FLOAT UNSIGNED NULL DEFAULT NULL COMMENT 'Make landing page redirects cacheable'";
+$versions[34]['down'][] = 'ALTER TABLE `pagespeed`
+DROP pDeferParsingJavaScript,
+DROP pEnableKeepAlive,
+DROP pInlineCSS,
+DROP pInlineJS,
+DROP pMakeLandingPageRedirectsCacheable';
+
+/* -------------------------------------------------------------------------------------------------------
+ * VERSION 33
+ * Adding forgotten last measurement ID for custom metrics
 */
 $versions[33]['up'][] = "ALTER TABLE  `urls` ADD  `metric_last_id` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL COMMENT  'Last measurement ID for Custom Metric beacon' AFTER `pagetest_last_id`";
 $versions[33]['down'][] = 'ALTER TABLE  `urls` DROP  `metric_last_id`';
