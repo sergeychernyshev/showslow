@@ -75,7 +75,7 @@ $sessionSecret = '...................................................';
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
 /*
-$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a> and <a href="http://code.google.com/speed/page-speed/">Page Speed</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
+$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a>, <a href="http://code.google.com/speed/page-speed/">Page Speed</a>, <a href="http://www.webpagetest.org/">WebPageTest</a> and <a href="http://ajax.dynatrace.com/pages/">dynaTrace AJAX Edition</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
 
 <p><a href="http://www.showslow.com/">www.ShowSlow.com</a> is a demonstration site that continuously measures the performance of a few reference web pages. It also allows for public metrics reporting.</p>
 
