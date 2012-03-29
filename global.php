@@ -198,6 +198,21 @@ $disableUnfilteredURLList = false;
 $facebookAPIKey = null;
 $facebookSecret = null;
 
+# Google
+# Register your app here: https://www.google.com/accounts/ManageDomains
+$googleOAuthKey = null;
+$googleOAuthSecret = null;
+
+# LinkedIn
+# Register your app here: https://www.linkedin.com/secure/developer
+$linkedinOAuthKey = null;
+$linkedinOAuthSecret = null;
+
+# Twitter
+# Register your app here: https://dev.twitter.com/apps/new
+$twitterOAuthKey = null;
+$twitterOAuthSecret = null;
+
 # Google Friend connect site ID
 # get it from the URL's "id" parameter on Google Friend Connect admin page for the site:
 # http://www.google.com/friendconnect/admin/

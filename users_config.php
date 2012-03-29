@@ -53,6 +53,11 @@ if ($linkedinOAuthKey && $linkedinOAuthSecret) {
 	new LinkedInAuthenticationModule($linkedinOAuthKey, $linkedinOAuthSecret);
 }
 
+if ($twitterOAuthKey && $twitterOAuthSecret) {
+	UserConfig::loadModule('twitter');
+	new TwitterAuthenticationModule($twitterOAuthKey, $twitterOAuthSecret);
+}
+
 UserConfig::loadModule('usernamepass');
 new UsernamePasswordAuthenticationModule();
 
