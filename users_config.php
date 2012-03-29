@@ -48,6 +48,11 @@ if ($googleOAuthKey && $googleOAuthSecret) {
 	);
 }
 
+if ($linkedinOAuthKey && $linkedinOAuthSecret) {
+	UserConfig::loadModule('linkedin');
+	new LinkedInAuthenticationModule($linkedinOAuthKey, $linkedinOAuthSecret);
+}
+
 UserConfig::loadModule('usernamepass');
 new UsernamePasswordAuthenticationModule();
 
