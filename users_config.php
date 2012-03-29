@@ -40,9 +40,12 @@ if ($facebookAPIKey) {
 	new FacebookAuthenticationModule($facebookAPIKey, $facebookSecret);
 }
 
-if ($googleFriendConnectSiteID) {
-	UserConfig::loadModule('google');
-	new GoogleAuthenticationModule($googleFriendConnectSiteID);
+if ($googleOAuthKey && $googleOAuthSecret) {
+	UserConfig::loadModule('google_oauth');
+	new GoogleOAuthAuthenticationModule(
+		$googleOAuthKey,
+		$googleOAuthSecret
+	);
 }
 
 UserConfig::loadModule('usernamepass');
