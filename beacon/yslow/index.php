@@ -23,7 +23,7 @@ function updateUrlAggregates($url_id, $measurement_id)
 	}
 
 	// Clean old details for this URL to conserve space
-	if ($cleanOldYSlowBeaconDetails) {
+	if ($keepBeaconDetails && $cleanOldYSlowBeaconDetails) {
 		# adding new entry
 		$query = sprintf("/* clean old beacon details */
 			UPDATE yslow2
@@ -95,7 +95,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		`yjsbottom`,	`yexpressions`,	`yexternal`,	`ydns`,		`yminify`,
 		`yredirects`,	`ydupes`,	`yetags`,	`yxhr`,		`yxhrmethod`,
 		`ymindom`,	`yno404`,	`ymincookie`,	`ycookiefree`,	`ynofilter`,
-		`yimgnoscale`,	`yfavicon`, details
+		`yimgnoscale`,	`yfavicon`".($keepBeaconDetails ? ', details' : '')."
 	)
 	VALUES (inet_aton('%s'), '%s', '%d',
 		'%d', '%d', '%d', '%s', '%d',
@@ -103,7 +103,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d', '%d', '%d', '%d',
-		'%d', '%d', '%s'
+		'%d', '%d'".($keepBeaconDetails ? ", '%s'" : '')."
 	)",
 		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
 		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
@@ -136,7 +136,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		mysql_real_escape_string($grades['ynofilter']['score']),
 		mysql_real_escape_string($grades['yimgnoscale']['score']),
 		mysql_real_escape_string($grades['yfavicon']['score']),
-		mysql_real_escape_string($post_data)
+		$keepBeaconDetails ? mysql_real_escape_string($post_data) : null
 	);
 
 	if (!mysql_query($query))
