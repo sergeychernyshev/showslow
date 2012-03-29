@@ -9,7 +9,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
-	global $cleanOldYSlowBeaconDetails;
+	global $cleanOldYSlowBeaconDetails, $keepBeaconDetails;
 
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET yslow2_last_id = %d, last_update = now(), y_refresh_request = 0 WHERE id = %d",
