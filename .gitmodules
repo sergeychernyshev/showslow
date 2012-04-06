@@ -22,3 +22,6 @@
 [submodule "users"]
 	path = users
 	url = git://github.com/StartupAPI/users.git
+[submodule "php-bootstrap"]
+	path = php-bootstrap
+	url = git://github.com/sergeychernyshev/php-bootstrap.git

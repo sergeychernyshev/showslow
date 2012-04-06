@@ -1,43 +1,10 @@
 <?php
+require_once(dirname(__FILE__).'/php-bootstrap/bootstrap.php');
+
 # auto-detecting showslow_root (path) and showslow_base (URL)
-$showslow_root = dirname(__FILE__).'/';
+$showslow_root = $_PROJECT['ROOT_FILESYSTEM_PATH'].'/';
+$showslow_base = $_PROJECT['ROOT_FULL_URL'].'/';
 
-# function to generate URL from current showslow_root
-function getShowSlowBase() {
-	global $showslow_root;
-	$showslow_root = str_replace(DIRECTORY_SEPARATOR, '/', $showslow_root);
-
-	// Chopping of trailing slash which is not supposed to be there in Apache config
-	// See: http://httpd.apache.org/docs/2.0/mod/core.html#documentroot
-	$docroot = str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['DOCUMENT_ROOT']);
-	if (substr($docroot, -1) == '/') {
-		$docroot = substr($docroot, 0, -1);
-	}
-
-	$docrootlength = strlen($docroot);
-
-	if (array_key_exists('HTTP_HOST', $_SERVER))
-	{
-		$host = $_SERVER['HTTP_HOST'];
-	}
-	else
-	{
-		$host = php_uname('n');
-		// if not running from command line, send warning to the log file
-		if (php_sapi_name() !== 'cli') {
-			error_log("[ShowSlow config] Warning: Can't determine site's host name, using $host");
-		}
-	}
-
-	$protocol = 'http';
-	if (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] == 'HTTPS') {
-		$protocol = 'https';
-	}
-
-	return $protocol.'://'.$host.substr($showslow_root, $docrootlength);
-}
-
-$showslow_base = getShowSlowBase();
 $baseAssetURL = $showslow_base; # default base URL for static assets (can be overriden in config)
 
 # change it if you want to allow other profiles including your custom profiles
