@@ -1061,7 +1061,7 @@ function failWithMessage($message)
 <body>
 <h1>500 ShowSlow Error</h1>
 <p>Something went wrong. If it persists, please report it to <a href="https://github.com/sergeychernyshev/showslow/issues">issue tracker</a>.</a>
-<p><?php echo $message?></p>
+<p><?php echo htmlentities($message)?></p>
 <p><a href="<?php echo $showslow_base ?>">&lt;&lt; go back to Show Slow</a></p>
 </body></html>
 <?php
