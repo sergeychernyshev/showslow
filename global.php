@@ -760,7 +760,7 @@ function getPageTestLocations() {
 	if (empty($output)) {
 		$err = curl_error($ch);
 		curl_close($ch);
-		failWithMessage("API call ($locationsURL) failed: ".$err);
+		failWithMessage('API call ('.$webPageTestBase.'getLocations.php?f=xml&k=<your_wpt_key>) failed: '.$err);
 	}
 
 	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
