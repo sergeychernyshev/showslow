@@ -138,6 +138,9 @@ foreach ($metrics as $id => $metric) {
 	}
 }
 
+// fetching locations only when needed
+getPageTestLocations();
+
 header('Last-modified: '.date(DATE_RFC2822, $lastupdate));
 
 if (array_key_exists('HTTP_IF_MODIFIED_SINCE', $_SERVER) &&
@@ -341,9 +344,6 @@ if ($havemetrics)
 	</tr></table>
 <?php
 }
-
-// fetching locations only when needed
-getPageTestLocations();
 
 if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
