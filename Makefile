@@ -16,6 +16,10 @@ ifneq "$(wildcard .git )" ""
 	git submodule update
 endif
 
+.PHONY : test
+test:
+	phpunit --verbose test
+
 updateusers:
 	cd users && $(MAKE)
 
