@@ -12,6 +12,43 @@ $versions = array();
 // Add new migrations on top, right below this line.
 
 /* -------------------------------------------------------------------------------------------------------
+ * VERSION 35
+ * Track asset_urls and errors.
+*/
+
+$versions[35]['up'][] = "CREATE TABLE `asset_urls` (
+    `id`      bigint(20) unsigned NOT NULL auto_increment COMMENT 'Asset URL ID',
+    `url`     blob                NOT NULL COMMENT 'url',
+    `url_md5` BINARY(16)          NOT NULL COMMENT 'MD5 hash of URL',
+    `created` timestamp           NOT NULL default CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX unique_asset_url_hash (url_md5)
+  ) ENGINE=INNODB";
+
+$versions[35]['up'][] = "CREATE TABLE `pagespeed_asset_urls` (
+    `id`            bigint(20) unsigned NOT NULL auto_increment COMMENT 'Pagespeed Asset URL ID',
+    `pagespeed_id`  bigint(20) unsigned NOT NULL COMMENT 'FK to pagespeed',
+    `asset_id`      bigint(20) unsigned NOT NULL COMMENT 'FK to asset_urls',
+    `rule`          varchar(64)                  COMMENT 'PageSpeed rule name',
+    `notes`         text                         COMMENT 'Notes',
+    PRIMARY KEY (`id`)
+  ) ENGINE=INNODB";
+  
+$versions[35]['up'][] = "CREATE TABLE `yslow2_asset_urls` (
+    `id`        bigint(20) unsigned NOT NULL auto_increment COMMENT 'ID',
+    `yslow_id`  bigint(20) unsigned NOT NULL COMMENT 'FK to yslow2',
+    `asset_id`  bigint(20) unsigned NOT NULL COMMENT 'FK to asset_urls',
+    `rule`      varchar(64)                  COMMENT 'YSlow rule name',
+    `notes`     text                         COMMENT 'Notes',
+    PRIMARY KEY (`id`)
+  ) ENGINE=INNODB";
+
+$versions[35]['down'][] = "DROP INDEX `unique_asset_url_hash` ON `asset_urls`";
+$versions[35]['down'][] = "DROP TABLE `asset_urls`";
+$versions[35]['down'][] = "DROP TABLE `pagespeed_asset_urls`";
+$versions[35]['down'][] = "DROP TABLE `yslow2_asset_urls`";
+
+/* -------------------------------------------------------------------------------------------------------
  * VERSION 34
  * Adding new PageSpeed rules
 */
