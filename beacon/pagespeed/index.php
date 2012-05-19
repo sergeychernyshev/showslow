@@ -6,6 +6,7 @@
  * http://code.google.com/p/page-speed/wiki/BeaconDocs
  */
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/lib/PageSpeed.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
@@ -22,6 +23,7 @@ function updateUrlAggregates($url_id, $measurement_id)
 }
 
 if (array_key_exists('u', $_GET)) {
+	# GET. Minimal beacon.
 	checkBeaconKey('pagespeed');
 
 	$url_id = getUrlId($_GET['u']);
@@ -89,40 +91,8 @@ if (array_key_exists('u', $_GET)) {
 
 	if (!is_null($pageSpeedOnlineAPIKey) && array_key_exists('api', $_GET) ) {
 		// map of rule => metric relationships
-		$rule_metric_map = array(
-			'AvoidBadRequests'				=> 'pBadReqs',
-			'LeverageBrowserCaching'			=> 'pBrowserCache',
-			'SpecifyACacheValidator'			=> 'pCacheValid',
-			'SpecifyCharsetEarly'				=> 'pCharsetEarly',
-			'CombineExternalCSS'				=> 'pCombineCSS',
-			'CombineExternalJavaScript'			=> 'pCombineJS',
-			'AvoidCssImport'				=> 'pCssImport',
-			'PutCssInTheDocumentHead'			=> 'pCssInHead',
-			'OptimizeTheOrderOfStylesAndScripts'		=> 'pCssJsOrder',
-			'AvoidDocumentWrite'				=> 'pDocWrite',
-			'ServeResourcesFromAConsistentUrl'		=> 'pDupeRsrc',
-			'EnableGzipCompression'				=> 'pGzip',
-			'SpecifyImageDimensions'			=> 'pImgDims',
-			'MinimizeDnsLookups'				=> 'pMinDns',
-			'MinifyCss'					=> 'pMinifyCSS',
-			'MinifyHTML'					=> 'pMinifyHTML',
-			'MinifyJavaScript'				=> 'pMinifyJS',
-			'MinimizeRedirects'				=> 'pMinRedirect',
-			'MinimizeRequestSize'				=> 'pMinReqSize',
-			'ServeStaticContentFromACookielessDomain'	=> 'pNoCookie',
-			'OptimizeImages'				=> 'pOptImgs',
-			'ParallelizeDownloadsAcrossHostnames'		=> 'pParallelDl',
-			'PreferAsyncResources'				=> 'pPreferAsync',
-			'RemoveQueryStringsFromStaticResources'		=> 'pRemoveQuery',
-			'ServeScaledImages'				=> 'pScaleImgs',
-			'SpriteImages'					=> 'pSprite',
-			'SpecifyAVaryAcceptEncodingHeader'		=> 'pVaryAE',
-			'DeferParsingJavaScript'			=> 'pDeferParsingJavaScript',
-			'EnableKeepAlive'				=> 'pEnableKeepAlive',
-			'InlineSmallCss'				=> 'pInlineCSS',
-			'InlineSmallJavaScript'				=> 'pInlineJS',
-			'MakeLandingPageRedirectsCacheable'		=> 'pMakeLandingPageRedirectsCacheable'
-		);
+		
+		$rule_metric_map = PageSpeed::getRuleMetricMap;
 
 		// making an API call
 		$apicall = 'https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url='.urlencode(validateURL($_GET['u'])).'&key='.$pageSpeedOnlineAPIKey;
@@ -349,6 +319,30 @@ if (array_key_exists('u', $_GET)) {
 
 		header('HTTP/1.0 204 Data accepted');
 		exit;
+	}
+}
+elseif ($post = file_get_contents('php://input'))  {
+	# POST. Full beacon.
+	
+	$post = urldecode($post);
+	$post = preg_replace ( '/content=/','',$post);
+	
+	$fh = fopen('/tmp/post.json', 'w');
+	fwrite($fh, $post);
+	fclose($fh);
+	
+	$ps   = new PageSpeed($post, $_SERVER['REMOTE_ADDR']);
+	
+	if (! $ps) { beaconError('No PageSpeed');}
+	
+	if ($retval = $ps->save()) {
+		error_log("Success: $retval");
+		#header('HTTP/1.0 204 Data accepted');
+		header('HTTP/1.0 200 OK');
+		exit;
+	}
+	else {
+		beaconError($ps->mysql_error);
 	}
 }
 

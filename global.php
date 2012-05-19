@@ -808,28 +808,7 @@ function getUrlId($url, $outputerror = true)
 		return null;
 	}
 
-	if ($dropQueryStrings) {
-		$drop = false;
-
-		if (is_array($dropQueryStrings)) {
-			foreach ($dropQueryStrings as $prefix) {
-				if (substr($url, 0, strlen($prefix)) == $prefix) {
-					$drop = true;
-					break;
-				}
-			}
-		} else {
-			$drop = true;
-		}
-
-		if ($drop) {
-			$querypos = strpos($url, '?');
-
-			if ($querypos !== false) {
-				$url = substr($url, 0, $querypos);
-			}
-		}
-	}
+        $url = dropQueryStrings($url);
 
 	$query = sprintf("INSERT IGNORE INTO urls (url, url_md5) VALUES ('%s', UNHEX(MD5('%s')))",
 		mysql_real_escape_string($url),
@@ -853,6 +832,33 @@ function getUrlId($url, $outputerror = true)
 
 	$row = mysql_fetch_assoc($result);
 	return $row['id'];
+}
+
+function dropQueryStrings ($url) {
+    
+    if ($dropQueryStrings) {
+            $drop = false;
+
+            if (is_array($dropQueryStrings)) {
+                    foreach ($dropQueryStrings as $prefix) {
+                            if (substr($url, 0, strlen($prefix)) == $prefix) {
+                                    $drop = true;
+                                    break;
+                            }
+                    }
+            } else {
+                    $drop = true;
+            }
+
+            if ($drop) {
+                    $querypos = strpos($url, '?');
+
+                    if ($querypos !== false) {
+                            $url = substr($url, 0, $querypos);
+                    }
+            }
+    }
+    return $url;
 }
 
 // httpd_build_url replacement from http://www.mediafire.com/?zjry3tynkg5

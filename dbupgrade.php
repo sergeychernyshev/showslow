@@ -16,6 +16,15 @@ $versions = array();
  * Track asset_urls and errors.
 */
 
+$versions[35]['up'][]  = "ALTER TABLE `urls` ADD COLUMN `destination_url` blob NOT NULL COMMENT 'Destination URL'";
+$versions[35]['up'][]  = "CREATE TABLE `url_properties`  (
+    `id`        bigint(20) unsigned NOT NULL auto_increment COMMENT 'Asset URL ID',
+    `url_id`    bigint(20) unsigned NOT NULL COMMENT 'FK to urls',
+    `property`  varchar(64)                  COMMENT 'Name of URL property',
+    `value`     text                         COMMENT 'Value of URL property',
+    PRIMARY KEY (`id`)
+) ENGINE=INNODB";
+
 $versions[35]['up'][] = "CREATE TABLE `asset_urls` (
     `id`      bigint(20) unsigned NOT NULL auto_increment COMMENT 'Asset URL ID',
     `url`     blob                NOT NULL COMMENT 'url',
@@ -43,6 +52,9 @@ $versions[35]['up'][] = "CREATE TABLE `yslow2_asset_urls` (
     PRIMARY KEY (`id`)
   ) ENGINE=INNODB";
 
+  
+$versions[35]['down'][] = "ALTER TABLE `urls` DROP COLUMN `destination_url`";
+$versions[35]['down'][] = "DROP TABLE `url_properties`";
 $versions[35]['down'][] = "DROP INDEX `unique_asset_url_hash` ON `asset_urls`";
 $versions[35]['down'][] = "DROP TABLE `asset_urls`";
 $versions[35]['down'][] = "DROP TABLE `pagespeed_asset_urls`";

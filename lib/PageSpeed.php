@@ -45,50 +45,49 @@ class PageSpeed {
     
     public $timestamp;
     
+    public $mysql_error;
     public $asset_url_ids = array();
     
-    private $is_full          = false;
+    private $is_full         = false;
     private $has_asset_table = false;
+    public $rules            = array();
     
-    
-    public $rules = array();
-    
-    private $valid_rule_names = array (
-		'pBadReqs',
-		'pBrowserCache',
-		'pCacheValid',
-		'pCharsetEarly',
-		'pCombineCSS',
-		'pCombineJS',
-		'pCssImport',
-		'pCssInHead',
-		'pCssJsOrder',
-		'pCssSelect',
-		'pDeferJS',
-		'pDocWrite',
-		'pDupeRsrc',
-		'pGzip',
-		'pImgDims',
-		'pMinDns',
-		'pMinifyCSS',
-		'pMinifyHTML',
-		'pMinifyJS',
-		'pMinRedirect',
-		'pMinReqSize',
-		'pNoCookie',
-		'pOptImgs',
-		'pParallelDl',
-		'pPreferAsync',
-		'pRemoveQuery',
-		'pScaleImgs',
-		'pSprite',
-		'pUnusedCSS',
-		'pVaryAE',
-		'pDeferParsingJavaScript',
-		'pEnableKeepAlive',
-		'pInlineCSS',
-		'pInlineJS',
-		'pMakeLandingPageRedirectsCacheable'
+    public static $metric_rule_map = array(
+	'pBadReqs'                => 'AvoidBadRequests',
+	'pBrowserCache'           => 'LeverageBrowserCaching',
+	'pCacheValid'             => 'SpecifyACacheValidator',
+	'pCharsetEarly'           => 'SpecifyCharsetEarly',
+	'pCombineCSS'             => 'CombineExternalCSS',
+	'pCombineJS'              => 'CombineExternalJavaScript',
+	'pCssImport'              => 'AvoidCssImport',
+	'pCssInHead'              => 'PutCssInTheDocumentHead',
+	'pCssJsOrder'             => 'OptimizeTheOrderOfStylesAndScripts',
+	'pDocWrite'               => 'AvoidDocumentWrite',
+	'pDupeRsrc'               => 'ServeResourcesFromAConsistentUrl',
+	'pGzip'                   => 'EnableGzipCompression',
+	'pImgDims'                => 'SpecifyImageDimensions',
+	'pMinDns'                 => 'MinimizeDnsLookups',
+	'pMinifyCSS'              => 'MinifyCss',
+	'pMinifyHTML'             => 'MinifyHTML',
+	'pMinifyJS'               => 'MinifyJavaScript',
+	'pMinRedirect'            => 'MinimizeRedirects',
+	'pMinReqSize'             => 'MinimizeRequestSize',
+	'pNoCookie'               => 'ServeStaticContentFromACookielessDomain',
+	'pOptImgs'                => 'OptimizeImages',
+	'pParallelDl'             => 'ParallelizeDownloadsAcrossHostnames',
+	'pPreferAsync'            => 'PreferAsyncResources',
+	'pRemoveQuery'            => 'RemoveQueryStringsFromStaticResources',
+	'pScaleImgs'              => 'ServeScaledImages',
+	'pSprite'                 => 'SpriteImages',
+	'pVaryAE'                 => 'SpecifyAVaryAcceptEncodingHeader',
+	'pDeferParsingJavaScript' => 'DeferParsingJavaScript',
+	'pEnableKeepAlive'        => 'EnableKeepAlive',
+	'pInlineCSS'              => 'InlineSmallCss',
+	'pInlineJS'               => 'InlineSmallJavaScript',
+	'pMakeLandingPageRedirectsCacheable' => 'MakeLandingPageRedirectsCacheable',
+	'pCssSelect'              => 'UseEfficientCSSSelectors',
+	'pDeferJS'                => 'DeferLoadingOfJavaScript',
+	'pUnusedCSS'              => 'RemoveUnusedCSS'
     );
     
     // Support metric names from previous versions of PageSpeed.
@@ -175,13 +174,13 @@ class PageSpeed {
         $this->url            = filter_var($stats['url'],       FILTER_VALIDATE_URL);
 
         //Use the existing function defined in globals.php
-        $this->urlId= getUrlId($this->url);
+        $this->urlId = getUrlId($this->sourceUrl);
         
-		$this->pageLoadTime = filter_var($stats['pageLoadTime'], FILTER_VALIDATE_INT);
-		$this->numRequests  = filter_var($stats['numRequests'],  FILTER_VALIDATE_INT);
-		$this->pageSize     = filter_var($stats['pageSize'],     FILTER_VALIDATE_INT);
-		$this->transferSize = filter_var($stats['transferSize'], FILTER_VALIDATE_INT);
-		$this->overallScore = filter_var($stats['overallScore'], FILTER_VALIDATE_INT);
+        $this->pageLoadTime = filter_var($stats['pageLoadTime'], FILTER_VALIDATE_INT);
+        $this->numRequests  = filter_var($stats['numRequests'],  FILTER_VALIDATE_INT);
+        $this->pageSize     = filter_var($stats['pageSize'],     FILTER_VALIDATE_INT);
+        $this->transferSize = filter_var($stats['transferSize'], FILTER_VALIDATE_INT);
+        $this->overallScore = filter_var($stats['overallScore'], FILTER_VALIDATE_INT);
         
         foreach ($json['rules'] as $rule) {
             $this->rules['p' . $rule['shortName']] =  new PageSpeedRule($rule);
@@ -215,10 +214,14 @@ class PageSpeed {
                 $name = $this->legacy_rule_names[$name];
             }
             
-            if (array_key_exists($name, $this->valid_rule_names))  {
+            if (array_key_exists($name, self::$metric_rule_map))  {
                 $this->rules[$name] =  new PageSpeedRule($results[$name]);
             }
         }
+    }
+    
+    function getRuleMetricMap (){
+	return array_flip(self::$metric_rule_map);
     }
     
     function getRule($rulename) {
@@ -244,7 +247,7 @@ class PageSpeed {
         
         $rules = array();
         
-        foreach ($this->valid_rule_names as $name) {
+        foreach (self::$metric_rule_map as $name => $rule) {
             if (array_key_exists($name, $this->rules)) {
                 $rule = $this->rules[$name];
                 if ($rule->score) {
@@ -252,6 +255,20 @@ class PageSpeed {
                 }
             }
         }
+	
+	if ($this->destination_url) {
+	    $query = sprintf(
+                "UPDATE urls SET destination_url = '%s' WHERE id = %d",
+                $this->destination_url,
+		$this->id
+            );
+            $result = mysql_query($query);
+            if (! $result ) {
+	        $this->mysql_error = mysql_error();
+                error_log('PageSpeed::save: ' . $this->mysql_error);
+                return 0;
+            }
+	}
 
         $query = sprintf(
         "INSERT INTO pagespeed (
@@ -294,13 +311,15 @@ class PageSpeed {
         $result = mysql_query($query);
         
         if (! $result ) {
-            error_log('PageSpeed::save: ' . mysql_error());
+	    $this->mysql_error = mysql_error();
+            error_log('PageSpeed::save: ' . $this->mysql_error);
             return 0;
         }
         
         $this->id = mysql_insert_id();
-        error_log ($this->id);
-        
+	
+	$this->setLastUpdate();  # same as updateUrlAggregates
+	
         if ($this->has_asset_table) {
             return $this->saveAssetUrls( $this->id );
         }
@@ -336,7 +355,8 @@ class PageSpeed {
                     $result = mysql_query($query);
                     
                     if (! $result ) {
-                        error_log('PageSpeed::saveAssetUrls : ' . mysql_error());
+			$this->mysql_error = mysql_error();
+                        error_log('PageSpeed::saveAssetUrls : ' .  $this->mysql_error);
 			return $result;
                     }
 		    
@@ -352,7 +372,8 @@ class PageSpeed {
                     $result = mysql_query($ps_query);
                     
                     if (! $result ) {
-                        error_log('PageSpeed::saveAssetUrls : ' . mysql_error());
+			$this->mysql_error = mysql_error();
+                        error_log('PageSpeed::saveAssetUrls : ' . $this->mysql_error);
    		        return $result;
                     }
                 }
@@ -374,7 +395,8 @@ class PageSpeed {
             
         $result = mysql_query($query);
         if (! $result ) {
-            error_log('PageSpeed::setLastUpdate: ' . mysql_error());
+	    $this->mysql_error = mysql_error();
+            error_log('PageSpeed::setLastUpdate: ' . $this->mysql_error);
         }
     }
     
@@ -395,7 +417,7 @@ class PageSpeed {
         
         if ($this->has_asset_table) {
             $query =  sprintf(
-                'DELETE  from pagespeed_errors WHERE pagespeed_id = %d',
+                'DELETE  from pagespeed_asset_urls WHERE pagespeed_id = %d',
                 mysql_real_escape_string($this->id)
             );
             mysql_query($query);
