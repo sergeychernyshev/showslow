@@ -800,7 +800,6 @@ function getPageTestLocations() {
 
 function getUrlId($url, $outputerror = true)
 {
-	global $dropQueryStrings;
 
 	$url = validateURL($url, $outputerror);
 
@@ -835,6 +834,8 @@ function getUrlId($url, $outputerror = true)
 }
 
 function dropQueryStrings ($url) {
+    
+    global $dropQueryStrings;
     
     if ($dropQueryStrings) {
             $drop = false;

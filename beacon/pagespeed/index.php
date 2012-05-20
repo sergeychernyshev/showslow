@@ -336,8 +336,6 @@ elseif ($post = file_get_contents('php://input'))  {
 	if (! $ps) { beaconError('No PageSpeed');}
 	
 	if ($retval = $ps->save()) {
-		error_log("Success: $retval");
-		#header('HTTP/1.0 204 Data accepted');
 		header('HTTP/1.0 200 OK');
 		exit;
 	}

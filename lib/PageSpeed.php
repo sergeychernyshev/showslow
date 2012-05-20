@@ -25,11 +25,10 @@ class PageSpeed {
     public $id;
     public $url;
     public $urlId;
+    public $destinationUrl;
     public $ip;
     public $version;
     public $userAgent;
-    public $sourceUrl;
-    public $destinationUrl;
     
     public $resultsFormatVersion;
     public $pagespeedVersion;
@@ -91,7 +90,7 @@ class PageSpeed {
     );
     
     // Support metric names from previous versions of PageSpeed.
-    private $legacy_rule_names = array(
+    public static $legacy_rule_names = array(
         'pSpecifyCharsetEarly'                     => 'pCharsetEarly',
         'pProxyCache'                              => 'pCacheValid',
         'pPutCssInTheDocumentHead'                 => 'pCssInHead',
@@ -169,12 +168,11 @@ class PageSpeed {
         
         $stats = $json['pageStats'];
         
-        $this->sourceUrl      = filter_var($stats['initialUrl'],FILTER_VALIDATE_URL);
+        $this->url            = filter_var($stats['initialUrl'],FILTER_VALIDATE_URL);
         $this->destinationUrl = filter_var($stats['url'],       FILTER_VALIDATE_URL);
-        $this->url            = filter_var($stats['url'],       FILTER_VALIDATE_URL);
 
         //Use the existing function defined in globals.php
-        $this->urlId = getUrlId($this->sourceUrl);
+        $this->urlId = getUrlId($this->url);
         
         $this->pageLoadTime = filter_var($stats['pageLoadTime'], FILTER_VALIDATE_INT);
         $this->numRequests  = filter_var($stats['numRequests'],  FILTER_VALIDATE_INT);
@@ -197,16 +195,14 @@ class PageSpeed {
         //Use the existing function defined in globals.php
         $this->urlId= getUrlId($this->url);
         
-        $this->destinationUrl = $this->url;
-        
         $req_hdr         = http_get_request_headers();
         $this->userAgent = $req_hdr['User-Agent'];
         
-		$this->pageLoadTime = filter_var($results['l'], FILTER_VALIDATE_INT);
-		$this->overallScore = filter_var($results['o'], FILTER_VALIDATE_INT);
-		$this->numRequests  = filter_var($results['r'], FILTER_VALIDATE_INT);
-		$this->transferSize = filter_var($results['t'], FILTER_VALIDATE_INT);
-		$this->pageSize     = filter_var($results['w'], FILTER_VALIDATE_INT);
+	$this->pageLoadTime = filter_var($results['l'], FILTER_VALIDATE_INT);
+	$this->overallScore = filter_var($results['o'], FILTER_VALIDATE_INT);
+	$this->numRequests  = filter_var($results['r'], FILTER_VALIDATE_INT);
+	$this->transferSize = filter_var($results['t'], FILTER_VALIDATE_INT);
+	$this->pageSize     = filter_var($results['w'], FILTER_VALIDATE_INT);
         
         foreach ($results as $name =>  $value) {
             
@@ -256,12 +252,13 @@ class PageSpeed {
             }
         }
 	
-	if ($this->destination_url) {
+	if ($this->destinationUrl) {
 	    $query = sprintf(
                 "UPDATE urls SET destination_url = '%s' WHERE id = %d",
-                $this->destination_url,
-		$this->id
+                $this->destinationUrl,
+		$this->urlId
             );
+	    error_log($query);
             $result = mysql_query($query);
             if (! $result ) {
 	        $this->mysql_error = mysql_error();
@@ -361,8 +358,10 @@ class PageSpeed {
                     }
 		    
 		    # make a linked record in pagespeed_asset_urls
-		    
-		    $asset_url_id = mysql_insert_id();
+		    $query = sprintf("SELECT id FROM asset_urls WHERE url_md5 = UNHEX(MD5('%s'))", $url);
+		    $result = mysql_query($query);
+		    $row = mysql_fetch_row($result);
+		    $asset_url_id = $row[0];
 		    
 		    $ps_query =
 		        $pagespeed_asset_url_insert
@@ -383,6 +382,7 @@ class PageSpeed {
     }
     
     function setLastUpdate() {
+	
         $query = sprintf("
             UPDATE urls
             SET pagespeed_last_id = %d,
@@ -427,7 +427,30 @@ class PageSpeed {
         }
     }
     
-    function getLatest($url) {
+    
+    function getResultsByDateTime ( $datetime){
+	$timestamp = strtotime($datetime);
+	
+	$query =
+            "SELECT * FROM urls u, pagespeed p
+	     WHERE    u.id = p.url_id
+	     AND      u.id = $this->id
+	     AND      UNIX_TIMESTAMP( p.timestamp )  <= $timestamp
+	     ORDER BY p.timestamp ascending
+	     LIMIT 1";
+	error_log($query);
+	     
+	$result = mysql_query($query);
+	if (! $result ) {
+            error_log('PageSpeed::delete : ' . mysql_error());
+        }
+    }
+    
+    function getResultsById() {
+	# by id
+    }
+    
+    function getResultsByUrl($url) {
         
         if ($url) {
             if (filter_var($url, FILTER_VALIDATE_URL)) {
