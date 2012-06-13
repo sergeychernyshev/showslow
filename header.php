@@ -174,7 +174,7 @@ td, th { white-space: nowrap; }
 <div class="stack">
 	<div id="header">
 		<div class="stackContent">
-			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
+			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" width="72" height="70" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
 <?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?>
 </h1>
 
