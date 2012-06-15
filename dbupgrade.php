@@ -16,7 +16,7 @@ $versions = array();
  * Track asset_urls and errors.
 */
 
-$versions[35]['up'][]  = "ALTER TABLE `urls` ADD COLUMN `destination_url` blob NOT NULL COMMENT 'Destination URL'";
+$versions[35]['up'][]  = "ALTER TABLE `urls` ADD COLUMN `initial_url` blob NOT NULL COMMENT 'Initial URL'";
 $versions[35]['up'][]  = "CREATE TABLE `url_properties`  (
     `id`        bigint(20) unsigned NOT NULL auto_increment COMMENT 'Asset URL ID',
     `url_id`    bigint(20) unsigned NOT NULL COMMENT 'FK to urls',

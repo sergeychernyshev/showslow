@@ -1,7 +1,9 @@
 <?php
     require_once 'PHPUnit/Framework/TestCase.php';
+    require_once (dirname(dirname(__FILE__)).'/config.php');
     require_once (dirname(dirname(__FILE__)).'/global.php');
     require_once (dirname(dirname(__FILE__)).'/lib/PageSpeed.php');
+    
     
     class PageSpeedTest extends PHPUnit_Framework_TestCase
     {
@@ -33,7 +35,7 @@
                 
                 ini_set('error_log', $tmperr);
                 
-                $ps = new PageSpeed($string);
+                $ps = new PageSpeed($string );
                 $this->assertInstanceOf('PageSpeed', $ps);
                 
                 $retval = $ps->save();
@@ -88,8 +90,8 @@
             $this->assertAttributeEquals($v['firefox'],     'firefoxVersion',   $ps);
             $this->assertAttributeEquals($v['firebug'],     'firebugVersion',   $ps);
             $this->assertAttributeEquals($v['userAgent'],   'userAgent',        $ps);
-            $this->assertAttributeEquals($s['initialUrl'],  'sourceUrl',       $ps);
-            $this->assertAttributeEquals($s['url'],         'destinationUrl',  $ps);
+            $this->assertAttributeEquals($s['initialUrl'],  'sourceUrl',        $ps);
+            $this->assertAttributeEquals($s['url'],         'url',              $ps);
             $this->assertAttributeEquals($s['pageSize'],    'pageSize',         $ps);
             $this->assertAttributeEquals($s['overallScore'],'overallScore',     $ps);
             $this->assertAttributeEquals($s['pageLoadTime'],'pageLoadTime',     $ps);
@@ -106,6 +108,10 @@
                 $this->assertInstanceOf('PageSpeedRule', $ps_rule);
                 $this->assertEquals($ps_rule->shortName, $name);
             }
+        }
+        
+        protected function tearDown() {
+            $retval = mysql_query("DROP DATABASE test_showslow");
         }
     }
 ?>

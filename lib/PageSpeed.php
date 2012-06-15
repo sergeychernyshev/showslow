@@ -14,10 +14,8 @@ require_once (dirname(__FILE__).'/PageSpeedRule.php');
 /**
   * PageSpeed encapsulates the results of a single PageSpeed analysis.
   *
-  * It processes both full and minimal beacons, and provides methods for
+  * It processes both full and minimal beacons and provides methods for
   * database CRUD actions.
-  *
-
   *
   */
 class PageSpeed {
@@ -25,7 +23,7 @@ class PageSpeed {
     public $id;
     public $url;
     public $urlId;
-    public $destinationUrl;
+    public $sourceUrl;
     public $ip;
     public $version;
     public $userAgent;
@@ -106,19 +104,20 @@ class PageSpeed {
         'pSpecifyAVaryAcceptEncodingHeader'        => 'pVaryAE',
         'pSpecifyImageDimensions'                  => 'pImgDims'
     );
-
+    
     function __construct() {
         
         $args = func_get_args();
         $num  = func_num_args();
         
-        $ip = null;
-        if ($num == 2 ) {
-            $ip = $args[1];
-        }
+        if ($num == 0 || $args == null) { return; }
         
-        if ($num == 0 || $args == null) {
-            return; 
+        //Parse those args:IP address and database connection.
+        for ($i = 0; $i < sizeof($args); $i++) {
+            if (filter_var($args[$i], FILTER_VALIDATE_IP)) {
+                $ary   = array_splice($args, $i, 1);
+                $this->ip = $ary[0]; 
+            }
         }
         
         $type = gettype($args[0]);
@@ -129,11 +128,6 @@ class PageSpeed {
         elseif ($type == 'array' && $array_key_exists('u', $args[0])) {
            $this->__construct_from_minimal($args[0]);
         }
-        
-        if ($ip != null ) {
-            $ip = filter_var($ip, FILTER_VALIDATE_IP);
-            if ($ip != null) { $this->ip = $ip; }
-        }  
         
         $query  = "SHOW TABLES FROM " . $GLOBALS['db'] . " LIKE 'pagespeed_asset_urls'";
         $result = mysql_query($query);
@@ -168,8 +162,8 @@ class PageSpeed {
         
         $stats = $json['pageStats'];
         
-        $this->url            = filter_var($stats['initialUrl'],FILTER_VALIDATE_URL);
-        $this->destinationUrl = filter_var($stats['url'],       FILTER_VALIDATE_URL);
+        $this->url            = filter_var($stats['url'],   FILTER_VALIDATE_URL); //post-redirect URL
+        $this->sourceUrl = filter_var($stats['initialUrl'], FILTER_VALIDATE_URL); //pre-redirect URL
 
         //Use the existing function defined in globals.php
         $this->urlId = getUrlId($this->url);
@@ -252,13 +246,12 @@ class PageSpeed {
             }
         }
 	
-	if ($this->destinationUrl) {
+	if ($this->sourceUrl) {
 	    $query = sprintf(
-                "UPDATE urls SET destination_url = '%s' WHERE id = %d",
-                $this->destinationUrl,
+                "UPDATE urls SET initial_url = '%s' WHERE id = %d",
+                $this->sourceUrl,
 		$this->urlId
             );
-	    error_log($query);
             $result = mysql_query($query);
             if (! $result ) {
 	        $this->mysql_error = mysql_error();
@@ -424,87 +417,6 @@ class PageSpeed {
             if (! $result ) {
                 error_log('PageSpeed::delete : ' . mysql_error());
             }
-        }
-    }
-    
-    
-    function getResultsByDateTime ( $datetime){
-	$timestamp = strtotime($datetime);
-	
-	$query =
-            "SELECT * FROM urls u, pagespeed p
-	     WHERE    u.id = p.url_id
-	     AND      u.id = $this->id
-	     AND      UNIX_TIMESTAMP( p.timestamp )  <= $timestamp
-	     ORDER BY p.timestamp ascending
-	     LIMIT 1";
-	error_log($query);
-	     
-	$result = mysql_query($query);
-	if (! $result ) {
-            error_log('PageSpeed::delete : ' . mysql_error());
-        }
-    }
-    
-    function getResultsById() {
-	# by id
-    }
-    
-    function getResultsByUrl($url) {
-        
-        if ($url) {
-            if (filter_var($url, FILTER_VALIDATE_URL)) {
-                
-                $this->urlId = getUrlId($url);
-            }
-            elseif (filter_var($url, FILTER_VALIDATE_INT)) {
-                $this->urlId = $url;
-            }
-        }
-        if (! $this->urlId) {
-            return;
-        }
-        
-        $query = sprintf(
-            "SELECT * from pagespeed where url_id = %d ORDER by pagespeed_id DESC LIMIT 1" ,
-            mysql_real_escape_string($this->id)
-        );
-        $result = mysql_query($query);
-        if (!$result) {
-            error_log('PageSpeed::getLatest: ' . mysql_error());
-        }
-        $row = mysql_fetch_row($result);
-        
-        $pagespeed_id = $row[0];
-        
-        if ($this->has_asset_table) {
-                
-            $query = sprintf(
-                "SELECT
-		    asset_id,
-		    url,
-		    rule
-		FROM
-		    asset_urls a,
-		    pagespeed_asset_urls p
-		WHERE
-		    a.id = p.asset_id
-		AND
-		    pagespeed_id = %d
-		",
-                mysql_real_escape_string($this->id)
-            );
-            
-            $result = mysql_query($query);
-            if (!$result) {
-                error_log('PageSpeed::getLatest: ' . mysql_error());
-            }
-            
-            $assets = array();
-            while ( $row = mysql_fetch_row($result)) {
-		$assets[array_shift($row[0])] = $row;
-            }
-            return $assets;
         }
     }
 }
