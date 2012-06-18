@@ -23,7 +23,6 @@ class PageSpeed {
     public $id;
     public $url;
     public $urlId;
-    public $sourceUrl;
     public $ip;
     public $version;
     public $userAgent;
@@ -162,8 +161,7 @@ class PageSpeed {
         
         $stats = $json['pageStats'];
         
-        $this->url            = filter_var($stats['url'],   FILTER_VALIDATE_URL); //post-redirect URL
-        $this->sourceUrl = filter_var($stats['initialUrl'], FILTER_VALIDATE_URL); //pre-redirect URL
+        $this->url = filter_var($stats['initialUrl'], FILTER_VALIDATE_URL); 
 
         //Use the existing function defined in globals.php
         $this->urlId = getUrlId($this->url);
@@ -246,20 +244,6 @@ class PageSpeed {
             }
         }
 	
-	if ($this->sourceUrl) {
-	    $query = sprintf(
-                "UPDATE urls SET initial_url = '%s' WHERE id = %d",
-                $this->sourceUrl,
-		$this->urlId
-            );
-            $result = mysql_query($query);
-            if (! $result ) {
-	        $this->mysql_error = mysql_error();
-                error_log('PageSpeed::save: ' . $this->mysql_error);
-                return 0;
-            }
-	}
-
         $query = sprintf(
         "INSERT INTO pagespeed (
             `ip`,
