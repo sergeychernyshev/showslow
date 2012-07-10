@@ -42,11 +42,7 @@ $versions[35]['up'][] = "CREATE TABLE `yslow2_asset_urls` (
     `notes`     text                         COMMENT 'Notes',
     PRIMARY KEY (`id`)
   ) ENGINE=INNODB";
-
   
-$versions[35]['down'][] = "ALTER TABLE `urls` DROP COLUMN `destination_url`";
-$versions[35]['down'][] = "DROP TABLE `url_properties`";
-$versions[35]['down'][] = "DROP INDEX `unique_asset_url_hash` ON `asset_urls`";
 $versions[35]['down'][] = "DROP TABLE `asset_urls`";
 $versions[35]['down'][] = "DROP TABLE `pagespeed_asset_urls`";
 $versions[35]['down'][] = "DROP TABLE `yslow2_asset_urls`";
