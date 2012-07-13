@@ -138,6 +138,9 @@ $defaultRankerToCompare = 'yslow';
 # Enabling HAR beacon will allow storing HAR data for URLs and display graphically using HAR viewer
 $enableHARBeacon = false;
 
+# An array of custom HAR processors that will be triggered when HAR is submitted
+$HAR_processors = array();
+
 # HAR Viewer base URL
 $HARViewerBase = 'http://www.softwareishard.com/har/viewer/';
 

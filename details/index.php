@@ -117,8 +117,10 @@ $dynatrace_last_id = $row['dynatrace_last_id'];
 mysql_free_result($result);
 
 $custom_metrics = array();
+$custom_metrics_version = 0;
+
 foreach ($metrics as $id => $metric) {
-	$query = sprintf("SELECT value
+	$query = sprintf("SELECT value, UNIX_TIMESTAMP(timestamp) as t
 		FROM metric WHERE url_id = %d AND metric_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
 		ORDER BY timestamp DESC LIMIT 1",
 		mysql_real_escape_string($urlid),
@@ -135,6 +137,9 @@ foreach ($metrics as $id => $metric) {
 		$custom_metrics[$metric['id']]['metric_slug'] = $id;
 		$custom_metrics[$metric['id']]['metric'] = $metric;
 		$custom_metrics[$metric['id']]['value'] = $row_metrics['value'];
+		if ($row_metrics['t'] > $custom_metrics_version) {
+			$custom_metrics_version = $row_metrics['t'];
+		}
 	}
 }
 
@@ -187,6 +192,10 @@ if ($enableFlot) {
 	$flot_versions = array();
 	$color = 49;
 
+	if (count($custom_metrics) > 0) {
+		$flot_versions['custom'] = $custom_metrics_version;
+	}
+
 	$custom_metric_colors = array();
 	foreach ($metrics as $slug => $custom_metric) {
 		// assume the default value is NUBER
@@ -220,6 +229,8 @@ if ($enableFlot) {
 			}
 		}
 	}
+
+	$default_metrics = array();
 
 	foreach (array_keys($defaultGraphMetrics) as $provider_name) {
 		if ($provider_name == 'custom') {
@@ -308,7 +319,12 @@ mysql_free_result($result);
 $data = array();
 
 $havemetrics = false;
-if ($row) {
+
+if (count($custom_metrics) > 0) {
+	$havemetrics = true;
+}
+
+if (!$havemetrics && $row) {
 	foreach (array_keys($all_metrics) as $provider_name) {
 		if ($enabledMetrics[$provider_name]
 			&& !is_null($row[$provider_name.'_timestamp']))

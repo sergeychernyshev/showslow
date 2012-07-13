@@ -215,6 +215,17 @@ if (array_key_exists('url', $_REQUEST))
 	}
 
 	updateUrlAggregates($url_id, mysql_insert_id());
+
+	if (count($HAR_processors)) {
+		$har_data_parsed = json_decode($har_data, true);
+
+		foreach ($HAR_processors as $processor) {
+			if (is_callable($processor)) {
+				call_user_func($processor, $url_id, &$har_data_parsed);
+			}
+		}
+	}
+
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
