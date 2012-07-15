@@ -1092,7 +1092,9 @@ function excludeGoogleAnalytics() {
 	global $googleAnalyticsExcludeUserAgents, $googleAnalyticsExcludeIPs;
 
 	foreach ($googleAnalyticsExcludeUserAgents as $regex) {
-		if (preg_match($regex, $_SERVER['HTTP_USER_AGENT']) > 0) {
+		if (array_key_exists('HTTP_USER_AGENT', $_SERVER) &&
+			preg_match($regex, $_SERVER['HTTP_USER_AGENT']) > 0
+		) {
 			return true;
 		}
 	}
