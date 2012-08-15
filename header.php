@@ -267,7 +267,7 @@ if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) {
 		<div class="stackContent">
 			<form action="<?php echo $showslow_base ?>my.php" method="GET">
 			<h3>
-			<label>Add your URL to be monitored: <input type="text" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/></label>
+			<label>Add your URL to be monitored: <input type="url" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/></label>
 			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
 			</h3>
 			</form>
@@ -281,7 +281,7 @@ if ($SECTION == 'all') { ?>
 		<div class="stackContent">
 			<form name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
 			<h3>
-			<label>Search URLs: <input type="text" id="urlsearch" size="60" name="search" value="<?php echo array_key_exists('search', $_GET) ? htmlentities(trim($_GET['search'])) : ''?>"/></label>
+			<label>Search URLs: <input type="search" id="urlsearch" size="60" name="search" value="<?php echo array_key_exists('search', $_GET) ? htmlentities(trim($_GET['search'])) : ''?>"/></label>
 			<input type="submit" value="search"/>
 			<?php if ($DefaultURLGroup != $current_group) { ?>
 			<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
