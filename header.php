@@ -38,6 +38,7 @@ if (array_key_exists('group', $_GET)) {
 <link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout_lte_ie7.css')?>" />
 <![endif]-->
 <link rel="stylesheet" type="text/css" media="screen, projection" href="<?php echo assetURL('css/common.css')?>" />
+<?php StartupAPI::head() ?>
 <script>
     var SHOWSLOW = SHOWSLOW || {};
     SHOWSLOW.base_url = <?php echo json_encode($showslow_base); ?>;
