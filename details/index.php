@@ -261,7 +261,7 @@ var url = <?php echo json_encode($url); ?>;
 var urlid = <?php echo json_encode($urlid); ?>;
 var metrics = <?php echo json_encode($metrics); ?>;
 </script>
-<h2>Details for <a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php echo htmlentities(ellipsis($url, 31)) ?></a></h2>
+<h2>Details for <?php if ($linkToURLs) {?><a target="_blank" href="<?php echo htmlentities($url)?>" rel="nofollow"><?php } else { ?><span class="sitelink"><?php } ?><span title="<?php echo htmlentities($url) ?>"><?php echo htmlentities(ellipsis($url, 61)) ?></span><?php if ($linkToURLs) {?></a><?php } else { ?></span><?php } ?></h2>
 <?php if (!is_null($addThisProfile)) {?>
 <!-- AddThis Button BEGIN -->
 <div class="addthis_toolbox addthis_default_style" style="margin-right: 10px;">

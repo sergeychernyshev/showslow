@@ -252,6 +252,9 @@ $metric_types = array(
 $host = 'localhost';
 $port = 3306;
 
+# Should we link to entered URLs on the site (public instances might not want to link outside)
+$linkToURLs = true;
+
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');
 

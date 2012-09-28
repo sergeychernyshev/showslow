@@ -18,6 +18,8 @@ function updateUrlAggregates($url_id, $measurement_id)
 $post_data = file_get_contents("php://input");
 $post = json_decode($post_data, true);
 
+#error_log(implode('|', array_keys($post['first'])));
+
 if (!is_null($post) && array_key_exists('url', $post) && array_key_exists('id', $post))
 {
 	checkBeaconKey('webpagetest');
