@@ -12,6 +12,8 @@ UserConfig::$mysql_port = $port;
 // TODO - implement accounts and then switch it to true.
 UserConfig::$useAccounts = false;
 
+#UserConfig::$requireVerifiedEmail = true;
+
 #UserConfig::$enableInvitations = true;
 
 UserConfig::$supportEmailFrom = $supportEmailFrom;
