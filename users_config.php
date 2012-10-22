@@ -67,4 +67,4 @@ new UsernamePasswordAuthenticationModule();
 
 // Flot support is now enabled using $enableFlot and this feature flag is not used
 define('SHOWSLOW_FLOT_SUPPORT', 		1);
-new Feature(SHOWSLOW_FLOT_SUPPORT, 'Flot charting library support');
+new Feature(SHOWSLOW_FLOT_SUPPORT, 'Flot charting library support', true, true);
