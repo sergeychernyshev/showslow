@@ -1,6 +1,8 @@
 <?php
 require_once(dirname(__FILE__).'/global.php');
 
+UserConfig::$appName = 'Show Slow';
+
 #UserConfig::$DEBUG = true;
 
 UserConfig::$mysql_host = $host;
