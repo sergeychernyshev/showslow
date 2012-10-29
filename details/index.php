@@ -360,6 +360,12 @@ if ($havemetrics)
 	</tr></table>
 <?php
 }
+
+if ((!is_null($webPageTestBase) && !is_null($webPageTestKey))
+	|| !is_null($redBotBase)
+	|| $enablePageSpeedInsightsTool
+	|| is_array($customTools)
+) {
 ?>
 <a name="tools"></a><fieldset id="tools"><legend>Tools</legend>
 <?php
@@ -398,16 +404,18 @@ if (!is_null($redBotBase)) { ?>
 <?php
 }
 
-?>
-<div style="margin-bottom: 0.5em">
-<a name="pagespeedinsights"/><h3>Run PageSpeed Insights</h3>
-<form method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
-<img src="https://developers.google.com/speed/images/pagespeed-75.png" height="18" style="float: left; margin-right: 0.5em"/>
-Start <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights test:
-<input type="submit" value="start &gt;&gt;">
-</form>
-</div>
-<?php
+if ($enablePageSpeedInsightsTool) {
+	?>
+	<div style="margin-bottom: 0.5em">
+	<a name="pagespeedinsights"/><h3>Run <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights</h3>
+	<form method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
+	<img src="https://developers.google.com/speed/images/pagespeed-75.png" height="18" style="float: left; margin-right: 0.5em"/>
+	Start Google PageSpeed Insights test:
+	<input type="submit" value="start &gt;&gt;">
+	</form>
+	</div>
+	<?php
+}
 
 if (is_array($customTools)) {
 	foreach ($customTools as $name => $title) {
@@ -424,6 +432,7 @@ if (is_array($customTools)) {
 ?>
 </fieldset>
 <?php
+}
 
 if (!$havemetrics)
 {

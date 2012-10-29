@@ -125,6 +125,9 @@ $webPageTestLocationsTTL = 300;
 $redBotBase = 'http://redbot.org/';
 $redBotCheckAllByDefault = true;
 
+# Google PageSpeed insights
+$enablePageSpeedInsightsTool = true;
+
 # array of tools to show above the graph
 $customTools = array();
 
