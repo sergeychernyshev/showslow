@@ -88,6 +88,31 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 
 	$current_user->recordActivity(SHOWSLOW_ACTIVITY_ADD_URL);
 
+	if (is_callable($onNewMonitoredURL)) {
+		// only call when URL was never monitored
+		$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id
+			WHERE urls.id = %d AND DATE_ADD(added, INTERVAL %d HOUR) > NOW()";
+
+		foreach ($all_metrics as $provider_name => $provider) {
+			$query .= " AND ".$provider['table'].'_last_id IS NULL';
+		}
+
+		$query .= ' LIMIT 0, 1';
+
+		$query = sprintf($query, $url_id, $monitoringPeriod);
+
+		$result = mysql_query($query);
+
+		if (!$result) {
+			error_log(mysql_error());
+		}
+
+		if ($row = mysql_fetch_assoc($result)) {
+			$url = $row['url'];
+			call_user_func($onNewMonitoredURL, $url, $current_user);
+		}
+	}
+
 	header('Location: '.$showslow_base.'my.php#added');
 	exit;
 }

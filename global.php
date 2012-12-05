@@ -125,6 +125,9 @@ $webPageTestLocationsTTL = 300;
 $redBotBase = 'http://redbot.org/';
 $redBotCheckAllByDefault = true;
 
+# Google PageSpeed insights
+$enablePageSpeedInsightsTool = true;
+
 # array of tools to show above the graph
 $customTools = array();
 
@@ -257,6 +260,9 @@ $socket = null;
 
 # Should we link to entered URLs on the site (public instances might not want to link outside)
 $linkToURLs = true;
+
+# PHP callable to be called when new URL is added for monitoring
+$onNewMonitoredURL = null;
 
 # config will override defaults above
 require_once(dirname(__FILE__).'/config.php');

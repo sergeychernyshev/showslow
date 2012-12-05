@@ -361,11 +361,21 @@ if ($havemetrics)
 <?php
 }
 
+if ((!is_null($webPageTestBase) && !is_null($webPageTestKey))
+	|| !is_null($redBotBase)
+	|| $enablePageSpeedInsightsTool
+	|| is_array($customTools)
+) {
+?>
+<a name="tools"></a><fieldset id="tools"><legend>Tools</legend>
+<?php
 if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
-	<a name="pagetest"/><h2>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h2>
+	<div style="margin-bottom: 0.5em">
+	<a name="pagetest"/><h3>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h3>
+	<img src="http://www.webpagetest.org/images/favicon.png" style="float: left; margin-right: 0.5em" height="20"/>
 	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="POST" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
-	Location: <select name="location">
+	Location: <select name="location" width="150">
 	<?php foreach ($webPageTestLocations as $location) {
 		if ($location['tests'] > 50) {
 			continue;
@@ -378,26 +388,50 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
+	</div>
 <?php
 }
 
 if (!is_null($redBotBase)) { ?>
-	<a name="redbot"/><h2>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank">REDbot</a></h2>
+	<div style="margin-bottom: 0.5em">
+	<a name="redbot"/><h3>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank"><span style="color: #D33">RED</span>bot</a></h3>
 	<form action="<?php echo htmlentities($redBotBase)?>" method="GET" target="_blank">
 	<input type="hidden" name="uri" size="40" value="<?php echo htmlentities($url)?>"/>
 	<input type="checkbox" id="checkallassets" name="descend" value="True"<?php if ($redBotCheckAllByDefault) {?> checked<?php } ?>/> <label for="checkallassets">Check all components:</label>
 	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
 	</form>
+	</div>
 <?php
 }
 
+if ($enablePageSpeedInsightsTool) {
+	?>
+	<div style="margin-bottom: 0.5em">
+	<a name="pagespeedinsights"/><h3>Run <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights</h3>
+	<form method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
+	<img src="https://developers.google.com/speed/images/pagespeed-75.png" height="18" style="float: left; margin-right: 0.5em"/>
+	Start Google PageSpeed Insights test:
+	<input type="submit" value="start &gt;&gt;">
+	</form>
+	</div>
+	<?php
+}
 
 if (is_array($customTools)) {
 	foreach ($customTools as $name => $title) {
-		?><a name="<?php echo $name ?>"><h2><?php echo $title ?></h2>
+		?>
+		<div style="margin-bottom: 0.5em">
+		<a name="<?php echo $name ?>"><h3><?php echo $title ?></h3>
 <?php
 		call_user_func('customTool_'.$name, $url);
+		?>
+		</div>
+		<?php
 	}
+}
+?>
+</fieldset>
+<?php
 }
 
 if (!$havemetrics)
