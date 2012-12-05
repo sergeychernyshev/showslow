@@ -252,6 +252,9 @@ $metric_types = array(
 $host = 'localhost';
 $port = 3306;
 
+# Set to socket file to use unix sockets instead of TCP connectivity
+$socket = null;
+
 # Should we link to entered URLs on the site (public instances might not want to link outside)
 $linkToURLs = true;
 
@@ -1132,7 +1135,11 @@ function detailsUrl($urlId, $url) {
 	}
 }
 
-mysql_connect("$host:$port", $user, $pass);
+if (!is_null($socket)) {
+	mysql_connect('localhost:'.$socket, $user, $pass);
+} else {
+	mysql_connect("$host:$port", $user, $pass);
+}
 mysql_select_db($db);
 
 # setting up connection settings to make MySQL communication more strict
