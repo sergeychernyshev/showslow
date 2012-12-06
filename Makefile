@@ -19,6 +19,7 @@ endif
 updateusers:
 	cd users && $(MAKE)
 
+db:	updatedb
 updatedb:
 	php dbupgrade.php
 
