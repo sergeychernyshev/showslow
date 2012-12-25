@@ -213,7 +213,7 @@ MODIFY `pRemoveQuery` FLOAT UNSIGNED NULL,
 MODIFY `pVaryAE` FLOAT UNSIGNED NULL,
 MODIFY `pSprite` FLOAT UNSIGNED NULL";
 
-$versions[27]['down'][] = "ALTER TABLE `pagespeed` 
+$versions[27]['down'][] = "ALTER TABLE `pagespeed`
 MODIFY `pSprite` FLOAT UNSIGNED NOT NULL DEFAULT '0',
 MODIFY `pVaryAE` FLOAT UNSIGNED NOT NULL DEFAULT '0',
 MODIFY `pRemoveQuery` FLOAT UNSIGNED NOT NULL DEFAULT '0',
@@ -321,7 +321,7 @@ $versions[21]['down'][] = "ALTER TABLE urls DROP dommonster_last_id";
 $versions[21]['down'][] = "DROP TABLE `dommonster`;";
 
 /* -------------------------------------------------------------------------------------------------------
- * VERSION 20 
+ * VERSION 20
  * Allow test requests
 */
 $versions[20]['up'][]	= "ALTER TABLE  `urls` ADD  `y_refresh_request` TINYINT( 1 ) UNSIGNED NOT NULL COMMENT  'Set it to one when YSlow score needs refreshing'";
@@ -774,6 +774,13 @@ $versions[1]['down'][] = "DROP TABLE yslow2";
 require_once(dirname(__FILE__).'/global.php');
 
 // creating DBUpgrade object with your database credentials and $versions defined above
-$dbupgrade = new DBUpgrade(new mysqli($host, $user, $pass, $db, $port), $versions);
+if (is_null($socket)) {
+	$dbupgrade_conn = new mysqli($host, $user, $pass, $db, $port);
+} else {
+	$dbupgrade_conn = new mysqli('localhost', $user, $pass, $db, $port, $socket);
+}
+#var_export($dbupgrade_conn);
+
+$dbupgrade = new DBUpgrade($dbupgrade_conn, $versions);
 
 require_once(dirname(__FILE__).'/dbupgrade/client.php');

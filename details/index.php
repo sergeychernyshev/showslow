@@ -370,11 +370,11 @@ if ((!is_null($webPageTestBase) && !is_null($webPageTestKey))
 <a name="tools"></a><fieldset id="tools"><legend>Tools</legend>
 <?php
 if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
-	<div style="margin-bottom: 0.5em">
-	<a name="pagetest"/><h3>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h3>
-	<img src="http://www.webpagetest.org/images/favicon.png" style="float: left; margin-right: 0.5em" height="20"/>
-	<form action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="POST" target="_blank">
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
+	<a name="pagetest"></a><h4>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h4	>
+	<form class="form form-inline" style="margin-bottom: 0" action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="POST" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
+	<img src="<?php echo assetURL('img/webpagetest-20h.png')?>" height="20" width="28" style="float: left; margin-right: 0.5em"/>
 	Location: <select name="location" width="150">
 	<?php foreach ($webPageTestLocations as $location) {
 		if ($location['tests'] > 50) {
@@ -383,9 +383,9 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	?>
 		<option <?php echo htmlentities($location['default']) ? 'selected ' : ''?>value="<?php echo htmlentities($location['id'])?>"><?php echo htmlentities($location['title'])?></option>
 	<?php } ?></select>
-	<label><input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/> Private</label>
-	<label><input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/> First View Only</label>
-	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
+	<label class="checkbox"><input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/> Private</label>
+	<label class="checkbox"><input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/> First View Only</label>
+	<input class="btn btn-mini" type="submit" value="start test &rarr;"/>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
 	</div>
@@ -393,12 +393,12 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 }
 
 if (!is_null($redBotBase)) { ?>
-	<div style="margin-bottom: 0.5em">
-	<a name="redbot"/><h3>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank"><span style="color: #D33">RED</span>bot</a></h3>
-	<form action="<?php echo htmlentities($redBotBase)?>" method="GET" target="_blank">
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
+	<a name="redbot"></a><h4>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank"><span style="color: #D33">RED</span>bot</a></h4>
+	<form class="form form-inline" style="margin-bottom: 0" action="<?php echo htmlentities($redBotBase)?>" method="GET" target="_blank">
 	<input type="hidden" name="uri" size="40" value="<?php echo htmlentities($url)?>"/>
-	<input type="checkbox" id="checkallassets" name="descend" value="True"<?php if ($redBotCheckAllByDefault) {?> checked<?php } ?>/> <label for="checkallassets">Check all components:</label>
-	<input type="submit" style="font-weight: bold" value="start test &gt;&gt;"/>
+	<label class="checkbox" for="checkallassets"><input type="checkbox" id="checkallassets" name="descend" value="True"<?php if ($redBotCheckAllByDefault) {?> checked<?php } ?>/> Check all components:</label>
+	<input class="btn btn-mini" type="submit" value="start test &rarr;"/>
 	</form>
 	</div>
 <?php
@@ -406,12 +406,12 @@ if (!is_null($redBotBase)) { ?>
 
 if ($enablePageSpeedInsightsTool) {
 	?>
-	<div style="margin-bottom: 0.5em">
-	<a name="pagespeedinsights"/><h3>Run <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights</h3>
-	<form method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
-	<img src="https://developers.google.com/speed/images/pagespeed-75.png" height="18" style="float: left; margin-right: 0.5em"/>
-	Start Google PageSpeed Insights test:
-	<input type="submit" value="start &gt;&gt;">
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
+	<a name="pagespeedinsights"></a><h4>Run <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights</h4>
+	<form class="form form-inline" style="margin-bottom: 0" method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
+	<img src="<?php echo assetURL('img/pagespeed-20h.png')?>" height="20" width="27" style="float: left; margin-right: 0.5em"/>
+	Start Google PageSpeed Insights test
+	<input class="btn btn-mini" type="submit" value="start test &rarr;">
 	</form>
 	</div>
 	<?php
@@ -420,8 +420,8 @@ if ($enablePageSpeedInsightsTool) {
 if (is_array($customTools)) {
 	foreach ($customTools as $name => $title) {
 		?>
-		<div style="margin-bottom: 0.5em">
-		<a name="<?php echo $name ?>"><h3><?php echo $title ?></h3>
+		<div class="well pull-left" style="margin: 0 1em 1em 0">
+		<a name="<?php echo $name ?>"></a><h3><?php echo $title ?></h3>
 <?php
 		call_user_func('customTool_'.$name, $url);
 		?>
@@ -457,7 +457,7 @@ if (!$havemetrics)
 if ($havemetrics)
 {
 ?>
-	<a name="graph"/>
+	<a name="graph"></a>
 	<h2 style="clear: both">Measurements over time</h2>
 	<script>
 	ydataversion = <?php if ($enabledMetrics['yslow']) {
@@ -503,9 +503,9 @@ if ($havemetrics)
 		<div id="flot"></div>
 		<div id="graphcontrols">
 			<div id="graphbuttons">
-				<button id="default">Default Metrics</button>
-				<button id="clear">Clear Metrics</button>
-				<button id="reset" disabled="disabled">Reset Zoom</button>
+				<button class="btn" id="default">Default Metrics</button>
+				<button class="btn" id="clear">Clear Metrics</button>
+				<button class="btn" id="reset" disabled="disabled">Reset Zoom</button>
 			</div>
 			<div id="overview"></div>
 		</div>
@@ -589,12 +589,13 @@ if ($havemetrics)
 
 			if ($odd) { ?><tr><?php }
 
-			?><td class="titlecol"><?php
+			?><td class="titlecol">
+
+			<label class="checkbox"><?php
 			if ($enableFlot) { ?>
-			<input type="checkbox" class="metric-toggle" id="custom-<?php echo $data['metric_slug']?>"><?php
+			<input type="checkbox" class="metric-toggle" id="custom-<?php echo $data['metric_slug']?>"/><?php
 			}
 
-			?><label for="custom-<?php echo $data['metric_slug'] ?>"><?php
 			echo $metric['title'];
 
 			if ($metric['type'] == NUMBER) {
@@ -695,6 +696,8 @@ if ($havemetrics)
 					if ($odd) { ?><tr><?php }
 
 					?><td class="titlecol"><?php
+
+					?><label class="checkbox" for="<?php echo $provider_name.'-'.$metric[1] ?>"><?php
 					if ($enableFlot) { ?>
 					<input type="checkbox" class="metric-toggle" id="<?php echo $provider_name.'-'.$metric[1] ?>"><?php
 					}
@@ -702,12 +705,9 @@ if ($havemetrics)
 					if (isset($metric[3])) {
 						?><a target="_blank" href="<?php echo $metric[3]?>"><?php echo $metric[0]?></a><?php
 					}else{
-						?><label for="<?php echo $provider_name.'-'.$metric[1] ?>"><?php
 						echo $metric[0];
-						?></label><?php
 					}
-					?>
-					</td><?php
+					?></label><?php
 
 					$value = $row[$provider_name.'_'.$metric[1]];
 
@@ -775,34 +775,34 @@ if ($havemetrics)
 
 if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
-	<a name="yslow-table"/><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="yslow-table"></a><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="measurementstable" class="measurementstable"></div>
 	<?php
 }
 
 if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
-	<a name="pagespeed-table"/><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="pagespeed-table"></a><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="ps_measurementstable" class="measurementstable"></div>
 <?php
 }
 
 if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
-	<a name="dynatrace-table"/><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="dynatrace-table"></a><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="dt_measurementstable" class="measurementstable"></div>
 <?php
 }
 
 if (count($pagetest) > 0) {
 ?>
-	<a name="pagetest-table"/><h2>WebPageTest data collected</h2>
+	<a name="pagetest-table"></a><h2>WebPageTest data collected</h2>
 
 	<p>You can see latest <a href="<?php echo $webPageTestBase.'result/'.htmlentities($pagetest[0]['test_id']).'/' ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table id="wpttable">
 
-	<form action="<?php echo $showslow_base ?>/pagetestcompare.php" method="POST">
+	<form class="form" action="<?php echo $showslow_base ?>/pagetestcompare.php" method="POST">
 
 	<tr class="yui-dt-hd">
 	<th>
@@ -843,7 +843,7 @@ if (count($har) > 0) {
 		$showslow_base.'details/har.php?id='.urlencode($har[0]['id']).'callback=onInputData'
 		: $har[0]['link'];
 ?>
-	<a name="har-table"/><h2>HAR data collected</h2>
+	<a name="har-table"></a><h2>HAR data collected</h2>
 
 	<p>You can see latest HAR data in the viewer here: <a href="<?php echo htmlentities($HARViewerBase)?>?inputUrl=<?php echo urlencode($har_url) ?>" target="_blank">HAR for <?php echo htmlentities($url)?></a>.</p>
 

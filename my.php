@@ -244,7 +244,7 @@ if (count($rows))
 			<td title="Collecting data"><div class="gbox"><div class="bar ccol"/></div></td>
 			<?php } ?>
 		<?php } ?>
-		<td style="text-align: center"><input type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="X" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
+		<td style="text-align: center"><input class="btn btn-mini" type="submit" name="delete[<?php echo htmlentities($row['id'])?>]" value="×" style="font-size: xx-small" title="Stop monitoring this URL" onclick="return confirm('Are you sure you want to remove this URL?')"/></td>
 
 		<?php if ($link) {?>
 		<td style="padding-left: 1em; overflow: hidden; white-space: nowrap;"><a href="<?php echo detailsUrl($row['id'], $row['url'])?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>

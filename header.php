@@ -175,9 +175,9 @@ td, th { white-space: nowrap; }
 <div class="stack">
 	<div id="header">
 		<div class="stackContent">
-			<h1><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" width="72" height="70" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
-<?php if ($enableMyURLs && is_null($current_user)) {?><a href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now</a><?php } ?>
-</h1>
+			<h1 style="color: white"><a href="<?php echo $showslow_base ?>"><img src="<?php echo assetURL('img/logo-shadow.png')?>" width="72" height="70" alt="Show Slow" /></a> Is your website <b>getting faster</b>?
+				<?php if ($enableMyURLs && is_null($current_user)) {?><a class="btn btn-warning" href="<?php echo $showslow_base.'/users/register.php' ?>">Sign up now!</a><?php } ?>
+			</h1>
 
 <?php if ($enableMyURLs) {?>
 			<ul id="headerNav">
@@ -266,11 +266,10 @@ if (is_array($MESSAGES) && count($MESSAGES > 0)) {
 if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) { ?>
 	<div id="feature">
 		<div class="stackContent">
-			<form action="<?php echo $showslow_base ?>my.php" method="GET">
-			<h3>
-			<label>Add your URL to be monitored: <input type="url" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/></label>
-			<input type="submit" name="add" value="Add it now!" title="add URL to be measured"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
-			</h3>
+			<form class="form form-inline" style="margin-bottom: 0" action="<?php echo $showslow_base ?>my.php" method="GET">
+			<span style="margin-right: 0.5em">Add your URL to be monitored</span>
+			<input class="input-xlarge" style="margin-right: 0.5em" type="url" placeholder="http://www.example.com/" size="60" name="url"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
+			<input class="btn" type="submit" name="add" value="Add URL" title="add URL to be measured"<?php if ($noMoreURLs) {?> disabled="disabled"<?php } ?>/>
 			</form>
 		</div><!-- stackContent -->
 	</div><!-- feature -->
@@ -280,14 +279,22 @@ if (!$noMoreURLs && $enableMyURLs && ($SECTION == 'home' || $SECTION == 'my')) {
 if ($SECTION == 'all') { ?>
 	<div id="search">
 		<div class="stackContent">
-			<form name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
-			<h3>
-			<label>Search URLs: <input type="search" id="urlsearch" size="60" name="search" value="<?php echo array_key_exists('search', $_GET) ? htmlentities(trim($_GET['search'])) : ''?>"/></label>
-			<input type="submit" value="search"/>
+		<form class="form-inline" style="margin-bottom: 0" name="searchform" action="<?php echo $showslow_base ?>all.php" method="GET">
+
+		<input class="search-query input-xlarge" placeholder="Search" type="search" id="urlsearch" size="60" name="search" value="<?php echo array_key_exists('search', $_GET) ? htmlentities(trim($_GET['search'])) : ''?>"/>
+			<button class="btn" type="submit"><i class="icon-search"></i> Search URLs</button>
+
 			<?php if ($DefaultURLGroup != $current_group) { ?>
 			<input type="hidden" name="group" value="<?php echo htmlentities($current_group) ?>"/>
-			<?php } ?>
-			<input type="button" value="clear" onclick="document.getElementById('urlsearch').value=''; document.searchform.submit()">
+			<?php }
+
+			$searched = false;
+			if (array_key_exists('search', $_GET) && $_GET['search'] != '') {
+				$searched = true;
+			}
+			?>
+
+			<a class="btn<?php if ($searched) { ?>" onclick="document.getElementById('urlsearch').value=''; document.searchform.submit()"<?php } else { ?> disabled"<?php } ?> href="#"><span class="close<?php if (!$searched) { ?> disabled<?php } ?> pull-left" style="margin-right: 0.5em">×</span> Clear</a>
 			</form>
 		</div><!-- stackContent -->
 	</div><!-- feature -->

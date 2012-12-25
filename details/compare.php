@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once(dirname(dirname(__FILE__)).'/global.php');
 require_once(dirname(dirname(__FILE__)).'/users/users.php');
 
@@ -47,7 +47,7 @@ if (count($urls) > 0) {
 	$urllist = '';
 	foreach ($urls as $url) {
 		if ($first) {
-			$first = false;	
+			$first = false;
 		}
 		else {
 			$urllist .= ', ';
@@ -83,13 +83,13 @@ if (count($urls) > 0) {
 		// if at least one value exists for ranker, enable it
 		if ($enabledMetrics['yslow'] && !is_null($row['y_version'])) {
 			$counters['yslow'] += 1;
-		} 
+		}
 		if ($enabledMetrics['pagespeed'] && !is_null($row['p_version'])) {
 			$counters['pagespeed'] += 1;
-		} 
+		}
 		if ($enabledMetrics['dynatrace'] && !is_null($row['d_version'])) {
 			$counters['dynatrace'] += 1;
-		} 
+		}
 	}
 	mysql_free_result($result);
 }
@@ -116,7 +116,7 @@ $params = '';
 $first = true;
 foreach ($urls as $url) {
 	if ($first) {
-		$first = false;	
+		$first = false;
 	}
 	else {
 		$params.= '&';
@@ -167,7 +167,7 @@ require_once(dirname(dirname(__FILE__)).'/header.php');
 // only display menu if user picked the ranker specifically
 // (otherwise either there is no data or we don't reach this point and get redirected to default)
 if (!is_null($ranker)) { ?>
-	<div>Ranker: <b> 
+	<div>Ranker: <b>
 	<?php
 	// let's see which menus should be displayed and which one is current
 	$menus = array();
@@ -280,7 +280,7 @@ if (!is_null($ranker)) {
 		<?php } ?>
 
 		<div id="my-timeplot" style="height: 250px; margin-top: 0.2em"></div>
-		<div style="fint-size: 0.2em"><?php 
+		<div style="fint-size: 0.2em"><?php
 			if ($ranker == 'yslow') { ?><b>YSlow</b> grades<?php }
 			if ($ranker == 'pagespeed') { ?><b>Page Speed</b> scores<?php }
 			if ($ranker == 'dynatrace') { ?><b>dynaTrace</b> ranks<?php }
@@ -298,17 +298,17 @@ if (!is_null($ranker)) {
 ?>
 
 <form action="" method="GET">
-<h2>Enter URL to compare:</h2>
+<p>Enter URL to compare:</p>
 <?php if ($enough_data) { ?>
 <p>Enter up to 5 URLs in the form below:</p>
 <?php
 } else {
-	?><p style="color: red; font-weight: bold">Not enought data to compare</p><?php 
+	?><p style="color: red; font-weight: bold">Not enought data to compare</p><?php
 }
 $inputs = 5;
 
 for ($i =0 ; $i < $inputs; $i++ ) { ?>
-	<input name="url[]" type="text" size="80" value="<?php
+	<input class="input-xxlarge" placeholder="http://www.example.com" name="url[]" type="url" size="80" value="<?php
 	if ($i < count($urls)) {
 		echo htmlentities($urls[$i]);
 	} ?>"/><br/>
@@ -316,7 +316,7 @@ for ($i =0 ; $i < $inputs; $i++ ) { ?>
 }
 ?>
 <input type="hidden" name="ranker" value="<?php echo $ranker ?>"/>
-<input type="submit" value="compare"/>
+<input class="btn btn-primary" type="submit" value="Compare"/>
 </form>
 <?php
 require_once(dirname(dirname(__FILE__)).'/footer.php');
