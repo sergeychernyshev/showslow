@@ -231,7 +231,7 @@ foreach ($additionalMenuItems as $menu_item) {
 }
 ?>
 <li><a <?php if ($SECTION == 'configure') {?>class="current" <?php } ?>href="<?php echo $showslow_base ?>configure.php">Configuring tools</a></li>
-<li><a href="https://github.com/sergeychernyshev/showslow/downloads">Download ShowSlow</a></li>
+<li><a href="http://www.showslow.org/downloads/">Download ShowSlow</a></li>
 
 			</ul>
 		</div><!-- stackContent -->
