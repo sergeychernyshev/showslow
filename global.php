@@ -88,7 +88,7 @@ $googleAnalyticsExcludeIPs = array();
 $kissMetricsKey = '';
 
 # show Feedback button
-$showFeedbackButton = true;
+$showFeedbackButton = false;
 
 # AddThis profile, set it to enable sharing functions
 $addThisProfile = null;
