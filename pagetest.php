@@ -98,7 +98,7 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_POST))
 		$current_user->recordActivity(SHOWSLOW_ACTIVITY_PAGETEST_START);
 	}
 
-	header('Location: '.$webPageTestBase.'result/'.$testId.'/');
+	header('Location: '.$webPageTestBase.'results.php?test='.$testId);
 	exit;
 }
 

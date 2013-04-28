@@ -798,7 +798,7 @@ if (count($pagetest) > 0) {
 ?>
 	<a name="pagetest-table"></a><h2>WebPageTest data collected</h2>
 
-	<p>You can see latest <a href="<?php echo $webPageTestBase.'result/'.htmlentities($pagetest[0]['test_id']).'/' ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
+	<p>You can see latest <a href="<?php echo $webPageTestBase.'results.php?test='.htmlentities($pagetest[0]['test_id']) ?>" target="_blank">PageTest report for <?php echo htmlentities($url)?></a> or check the archive:</p>
 
 	<table id="wpttable">
 
@@ -828,7 +828,7 @@ if (count($pagetest) > 0) {
 
 		<label for="wpttest<?php echo htmlentities($pagetestentry['test_id']) ?>" type="checkbox" name="compare[]"><?php echo htmlentities($pagetestentry['t'])?></label></td>
 	<td><?php echo htmlentities($location)?></td>
-	<td><a href="<?php echo $webPageTestBase.'result/'.htmlentities($pagetest[0]['test_id']).'/' ?>" target="_blank">view PageTest report</a></td>
+	<td><a href="<?php echo $webPageTestBase.'results.php?test='.htmlentities($pagetestentry['test_id']) ?>" target="_blank">view PageTest report</a></td>
 	</tr>
 <?php
 	}
