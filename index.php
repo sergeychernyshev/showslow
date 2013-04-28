@@ -43,7 +43,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 }
 
-if ($yslow || $pagespeed || $dynatrace) {
+if (count($rows)) {
 
 ?><table>
 <tr><th>Timestamp</th>
