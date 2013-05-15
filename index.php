@@ -94,7 +94,7 @@ foreach ($rows as $row) {
 	<?php } else if (is_null($row['wpt_test_id'])) {?>
 		<td style="color: silver" title="No data collected">no data</td>
 	<?php }else{?>
-		<td title="WebPageTest test results"><img src="/img/webpagetest-12h.png"/> <a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>#webpagetest"><?php echo $row['wpt_test_id'] ?></a></td>
+		<td title="WebPageTest test results"><img src="<?php echo assetURL('/img/webpagetest-12h.png') ?>"/> <a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>#webpagetest"><?php echo $row['wpt_test_id'] ?></a></td>
 	<?php }?>
 
 	<td class="url"><a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
