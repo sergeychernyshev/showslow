@@ -10,7 +10,8 @@ require_once(dirname(__FILE__).'/header.php');
 $query = sprintf("SELECT url, urls.id as url_id, last_update,
 		yslow2.o as o,
 		pagespeed.o as ps_o,
-		dynatrace.rank as dt_o
+		dynatrace.rank as dt_o,
+		pagetest.test_id as wpt_test_id
 	FROM urls
 		LEFT JOIN yslow2 ON urls.yslow2_last_id = yslow2.id
 		LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id
@@ -27,6 +28,7 @@ if (!$result) {
 $yslow = false;
 $pagespeed = false;
 $dynatrace = false;
+$wpt = false;
 
 $rows = array();
 while ($row = mysql_fetch_assoc($result)) {
@@ -41,6 +43,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($enabledMetrics['dynatrace'] && !$dynatrace && !is_null($row['dt_o'])) {
 		$dynatrace = true;
 	}
+	if ($enabledMetrics['webpagetest'] && !$wpt && !is_null($row['wpt_test_id'])) {
+		$wpt = true;
+	}
 }
 
 if (count($rows)) {
@@ -50,6 +55,7 @@ if (count($rows)) {
 <?php if ($yslow) { ?><th colspan="2">YSlow grade</th><?php } ?>
 <?php if ($pagespeed) { ?><th colspan="2">Page Speed score</th><?php } ?>
 <?php if ($dynatrace) { ?><th colspan="2">dynaTrace rank</th><?php } ?>
+<?php if ($wpt) { ?><th>WebPageTest</th><?php } ?>
 <th style="padding-left:10px; text-align: left">URL</th>
 </tr><?php
 
@@ -82,6 +88,13 @@ foreach ($rows as $row) {
 	<?php }else{?>
 		<td class="score" title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)</td>
 		<td title="Current dynaTrace score: <?php echo prettyScore($row['dt_o'])?> (<?php echo $row['dt_o']?>)"><div class="gbox"><div style="width: <?php echo $row['dt_o']+1?>px" class="bar c<?php echo scoreColorStep($row['dt_o'])?>"/></div></td>
+	<?php }?>
+
+	<?php if (!$wpt) {?>
+	<?php } else if (is_null($row['wpt_test_id'])) {?>
+		<td style="color: silver" title="No data collected">no data</td>
+	<?php }else{?>
+		<td title="WebPageTest test results"><img src="<?php echo assetURL('/img/webpagetest-12h.png') ?>"/> <a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>#webpagetest">test results</a></td>
 	<?php }?>
 
 	<td class="url"><a href="<?php echo detailsUrl($row['url_id'], $row['url']);?>"><?php echo htmlentities(substr($row['url'], 0, 100))?><?php if (strlen($row['url']) > 100) { ?>...<?php } ?></a></td>
