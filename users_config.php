@@ -12,13 +12,9 @@ UserConfig::$mysql_password = $pass;
 UserConfig::$mysql_port = $port;
 UserConfig::$mysql_socket = $socket;
 
-// TODO - implement accounts and then switch it to true.
-UserConfig::$useAccounts = false;
-#UserConfig::$useAccounts = true;
-
 #UserConfig::$requireVerifiedEmail = true;
 
-#UserConfig::$enableInvitations = true;
+#UserConfig::$adminInvitationOnly = true;
 
 UserConfig::$supportEmailFrom = $supportEmailFrom;
 UserConfig::$supportEmailReplyTo = $supportEmailReplyTo;
