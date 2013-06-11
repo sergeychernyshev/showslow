@@ -17,7 +17,7 @@ UserConfig::$useAccounts = false;
 #UserConfig::$useAccounts = true;
 
 UserConfig::$refererRegexes = array(
-	'/^http:\/\/staging.webpagetest.org\/.*$/' => 'http://staging.webpagetest.org/*'
+	'/^http:\/\/www.webpagetest.org\/result\/.*$/' => 'WebPageTest.org test results'
 );
 
 #UserConfig::$requireVerifiedEmail = true;
