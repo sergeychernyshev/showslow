@@ -16,7 +16,11 @@ UserConfig::$mysql_socket = $socket;
 UserConfig::$useAccounts = false;
 #UserConfig::$useAccounts = true;
 
-#UserConfig::$requireVerifiedEmail = true;
+UserConfig::$refererRegexes = array(
+	'/^http:\/\/staging.webpagetest.org\/.*$/' => 'http://staging.webpagetest.org/*'
+);
+
+UserConfig::$requireVerifiedEmail = true;
 
 #UserConfig::$enableInvitations = true;
 
