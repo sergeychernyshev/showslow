@@ -20,7 +20,7 @@ UserConfig::$refererRegexes = array(
 	'/^http:\/\/staging.webpagetest.org\/.*$/' => 'http://staging.webpagetest.org/*'
 );
 
-UserConfig::$requireVerifiedEmail = true;
+#UserConfig::$requireVerifiedEmail = true;
 
 #UserConfig::$enableInvitations = true;
 
