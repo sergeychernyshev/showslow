@@ -10,7 +10,7 @@ require_once(dirname(__FILE__).'/header.php');
 
 <p>Set these Firefox preferences on <b>about:config</b> page:</p>
 <h2>YSlow</h2>
-<p><a href="http://www.yslow.org/">Yslow</a> has to be configured to send data to a Show Slow instance</p>
+<p><a target="_blank" href="http://www.yslow.org/">Yslow</a> has to be configured to send data to a Show Slow instance</p>
 <p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.yslow.beaconUrl = <b style="color: blue"><?php echo $showslow_base?>beacon/yslow/</b></li>
@@ -18,7 +18,7 @@ require_once(dirname(__FILE__).'/header.php');
 <li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 </ul>
 <h2>Page Speed</h2>
-<p><a href="http://code.google.com/speed/page-speed/">Page Speed</a> is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
+<p><a target="_blank" href="http://code.google.com/speed/page-speed/">Page Speed</a> is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
 <p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
@@ -26,7 +26,7 @@ require_once(dirname(__FILE__).'/header.php');
 </ul>
 
 <h2>dynaTrace AJAX Edition</h2>
-<p><a href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> is configured to upload metrics to <a href="http://www.showslow.com/">showslow.com</a> when clicking on the <b><i>Upload to showslow.com</i></b> context menu in the dynaTrace AJAX Performance Report.</p>
+<p><a target="_blank" href="http://ajax.dynatrace.com/">dynaTrace AJAX Edition</a> is configured to upload metrics to <a href="http://www.showslow.com/">showslow.com</a> when clicking on the <b><i>Upload to showslow.com</i></b> context menu in the dynaTrace AJAX Performance Report.</p>
 <p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, open <b>dtajax.ini</b> file in the root of dynaTrace AJAX installation folder and add the following two lines to it:</p>
 <ul>
 <li>-Dcom.dynatrace.diagnostics.ajax.beacon.uploadurl=<b style="color: blue"><?php echo $showslow_base?>beacon/dynatrace/</b></li>
