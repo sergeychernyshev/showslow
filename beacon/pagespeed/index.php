@@ -358,12 +358,12 @@ $TITLE = 'Bad Request: Page Speed beacon';
 
 require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
 ?>
-<h2><a href="../">Beacons</a>: Page Speed</h2>
+<h2><a href="../">Beacons</a>: Page Speed Insights</h2>
 
-<p>This is <a href="http://code.google.com/speed/page-speed/">Page Speed</a> beacon entry point.</p>
+<p>This is <a target="_blank" href="https://developers.google.com/speed/pagespeed/">Page Speed Insights</a> beacon entry point.</p>
 
 <h2>Configure your Page Speed Extension</h2>
-<p><b style="color: red">WARNING! Only use this beacon If you're OK with all your Page Speed data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
+<p><b style="color: red">WARNING! Only use this beacon If you're OK with all your Page Speed data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a target="_blank" href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>
 
 Set these two Firefox parameters on <b>about:config</b> page:</p>
 
@@ -372,11 +372,11 @@ Set these two Firefox parameters on <b>about:config</b> page:</p>
 <li>extensions.PageSpeed.beacon.minimal.enabled = <b style="color: blue">true</b></li>
 </ul>
 
-<h2>Configuring Page Speed Online API</h2>
-Another alternative to using browser extension is to use <a href="https://code.google.com/apis/pagespeedonline/">Google Page Speed Online API</a>
+<h2>Configuring Page Speed Insights API</h2>
+Another alternative to using browser extension is to use <a target="_blank" href="https://developers.google.com/speed/docs/insights/v1/getting_started">Google Page Speed Insights API</a>
 
 <h3>Getting the key</h3>
-Get your Google Web Services <a href="https://code.google.com/apis/console/b/0/#access">API key</a>
+Get your Google Web Services <a target="_blank" href="https://code.google.com/apis/console/b/0/#access">API key</a>
 
 Open your config.php file and set $pageSpeedOnlineAPIKey variable.
 

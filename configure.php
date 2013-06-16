@@ -18,7 +18,7 @@ require_once(dirname(__FILE__).'/header.php');
 <li>extensions.yslow.optinBeacon = <b style="color: blue">true</b></li>
 </ul>
 <h2>Page Speed</h2>
-<p><a target="_blank" href="http://code.google.com/speed/page-speed/">Page Speed</a> is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
+<p><a target="_blank" href="https://developers.google.com/speed/pagespeed/insights_extensions">Page Speed</a> is configured to send metrics to <a href="http://www.showslow.com/">showslow.com</a> by default.</p>
 <p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.PageSpeed.beacon.minimal.url = <b style="color: blue"><?php echo $showslow_base?>beacon/pagespeed/</b></li>
