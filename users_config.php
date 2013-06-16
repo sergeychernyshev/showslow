@@ -12,6 +12,14 @@ UserConfig::$mysql_password = $pass;
 UserConfig::$mysql_port = $port;
 UserConfig::$mysql_socket = $socket;
 
+// TODO - implement accounts and then switch it to true.
+UserConfig::$useAccounts = false;
+#UserConfig::$useAccounts = true;
+
+UserConfig::$refererRegexes = array(
+	'/^http:\/\/www.webpagetest.org\/result\/.*$/' => 'WebPageTest.org test results'
+);
+
 #UserConfig::$requireVerifiedEmail = true;
 
 #UserConfig::$adminInvitationOnly = true;
