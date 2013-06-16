@@ -10,7 +10,7 @@ require_once(dirname(__FILE__).'/header.php');
 
 <p>Set these Firefox preferences on <b>about:config</b> page:</p>
 <h2>YSlow</h2>
-<p><a href="http://developer.yahoo.com/yslow/">Yslow</a> has to be configured to send data to a Show Slow instance</p>
+<p><a href="http://www.yslow.org/">Yslow</a> has to be configured to send data to a Show Slow instance</p>
 <p>To send metrics to your instance located at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a>, set these Firefox preferences:</p>
 <ul>
 <li>extensions.yslow.beaconUrl = <b style="color: blue"><?php echo $showslow_base?>beacon/yslow/</b></li>
