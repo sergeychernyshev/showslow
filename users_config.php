@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__).'/global.php');
+require_once(__DIR__ . '/global.php');
 
 UserConfig::$appName = 'Show Slow';
 
