@@ -253,8 +253,6 @@ if (array_key_exists('u', $_GET)) {
 			&& ($core_metrics['w'] = filter_var($_GET['w'], FILTER_VALIDATE_INT)) !== false
 		&& array_key_exists('o', $_GET)
 			&& ($core_metrics['o'] = filter_var($_GET['o'], FILTER_VALIDATE_FLOAT)) !== false
-		&& array_key_exists('l', $_GET)
-			&& ($core_metrics['l'] = filter_var($_GET['l'], FILTER_VALIDATE_INT)) !== false
 		&& array_key_exists('r', $_GET)
 			&& ($core_metrics['r'] = filter_var($_GET['r'], FILTER_VALIDATE_INT)) !== false
 		&& array_key_exists('t', $_GET)
