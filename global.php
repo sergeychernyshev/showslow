@@ -271,7 +271,7 @@ require_once(dirname(__FILE__).'/config.php');
 $all_metrics = array(
 	'yslow' => array(
 		'title' => 'YSlow',
-		'url' => 'http://developer.yahoo.com/yslow/',
+		'url' => 'http://www.yslow.org/',
 		'table' => 'yslow2',
 		'score_name' => 'grade',
 		'score_column' => 'o',

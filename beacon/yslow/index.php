@@ -3,7 +3,7 @@
  * This is a data receiver for YSlow
  *
  * Documentation for the beacon is available here:
- * http://developer.yahoo.com/yslow/help/beacons.html#yslow_beacon
+ * http://yslow.org/user-guide/#yslow_beacon
  */
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
@@ -221,7 +221,7 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 	require_once(dirname(dirname(dirname(__FILE__))).'/header.php');
 	?>
 <h2><a href="../">Beacons</a>: YSlow</h2>
-<p>This is <a href="http://developer.yahoo.com/yslow/">YSlow</a> beacon entry point.</p>
+<p>This is <a href="http://www.yslow.org/">YSlow</a> beacon entry point.</p>
 
 <h2>Configure your YSlow</h2>
 <p><b style="color: red">WARNING! Only use this beacon If you're OK with all your YSlow data to be recorded by this instance of ShowSlow and displayed at <a href="<?php echo $showslow_base?>"><?php echo $showslow_base?></a><br/>You can also <a href="http://www.showslow.org/Installation_and_configuration">install ShowSlow on your own server</a> to limit the risk.</b></p>

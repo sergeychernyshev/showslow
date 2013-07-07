@@ -75,12 +75,12 @@ $sessionSecret = '...................................................';
 
 # Put description for ShowSlow instance into this variable - it'll be displayed on home page under the header.
 /*
-$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://developer.yahoo.com/yslow/">YSlow</a>, <a href="http://code.google.com/speed/page-speed/">Page Speed</a>, <a href="http://www.webpagetest.org/">WebPageTest</a> and <a href="http://ajax.dynatrace.com/pages/">dynaTrace AJAX Edition</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
+$ShowSlowIntro = '<p>Show Slow is an open source tool that helps monitor various website performance metrics over time. It captures the results of <a href="http://www.yslow.org/">YSlow</a>, <a href="https://developers.google.com/speed/pagespeed/">Page Speed Insights</a>, <a href="http://www.webpagetest.org/">WebPageTest</a> and <a href="http://ajax.dynatrace.com/pages/">dynaTrace AJAX Edition</a> rankings and graphs them, to help you understand how various changes to your site affect its performance.</p>
 
 <p><a href="http://www.showslow.com/">www.ShowSlow.com</a> is a demonstration site that continuously measures the performance of a few reference web pages. It also allows for public metrics reporting.</p>
 
-<p>If you want to make your measurements publicly available on this page, see the instructions in <a href="configure.php">Configuring YSlow / Page Speed</a>. If you want to keep your measurements private, <b><a href="http://code.google.com/p/showslow/source/checkout">download Show Slow</a></b> from the SVN repository and install it on your own server.</p>
+<p>If you want to make your measurements publicly available on this page, see the instructions in <a href="configure.php">Configuring YSlow / Page Speed</a>. If you want to keep your measurements private, <b><a href="http://www.showslow.org/Installation_and_configuration">download and install Show Slow</a></b> on your own server.</p>
 
-<p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just leave feedback at <a href="http://showslow.uservoice.com">http://showslow.uservoice.com</a></p>
+<p>You can ask questions and discuss ShowSlow in our group <a href="http://groups.google.com/group/showslow">http://groups.google.com/group/showslow</a> or just open a ticket <a href="https://github.com/sergeychernyshev/showslow/issues">https://github.com/sergeychernyshev/showslow/issues</a></p>
 ';
 */
