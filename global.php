@@ -1,9 +1,11 @@
 <?php
 require_once(dirname(__FILE__).'/php-bootstrap/bootstrap.php');
 
+$project_env = PHPBootstrap\bootstrap(__FILE__);
+
 # auto-detecting showslow_root (path) and showslow_base (URL)
-$showslow_root = $_PROJECT['ROOT_FILESYSTEM_PATH'].'/';
-$showslow_base = $_PROJECT['ROOT_FULL_URL'].'/';
+$showslow_root = $project_env['ROOT_FILESYSTEM_PATH'].'/';
+$showslow_base = $project_env['ROOT_FULL_URL'].'/';
 
 $baseAssetURL = $showslow_base; # default base URL for static assets (can be overriden in config)
 
