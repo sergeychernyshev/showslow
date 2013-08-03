@@ -170,6 +170,7 @@ td, th { white-space: nowrap; }
 <link rel="icon" type="image/vnd.microsoft.icon" href="<?php echo assetURL('favicon.ico')?>">
 <link rel="apple-touch-icon" href="<?php echo assetURL('showslow_iphone_icon.png')?>" />
 
+<?php if ($extraHeadHTML) { echo $extraHeadHTML; } ?>
 </head>
 <body>
 <div class="stack">

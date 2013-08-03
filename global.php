@@ -109,6 +109,7 @@ $keepBeaconDetails = true;
 $cleanOldYSlowBeaconDetails = false;
 
 $homePageMetaTags = '';
+$extraHeadHTML = '';
 
 # PageSpeed Online API key (https://code.google.com/apis/console/#access)
 $pageSpeedOnlineAPIKey = null;
