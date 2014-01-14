@@ -543,7 +543,7 @@ if ($havemetrics)
 
 		foreach ($metrics as $name => $metric)
 		{
-			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&urlid=<?php echo urlencode($urlid);?>">csv</a>);
+			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="<?php echo $showslow_base ?>/details/data_metric.php?metric=<?php echo urlencode($name);?>&urlid=<?php echo urlencode($urlid);?>">csv</a>);
 	<?php
 		}
 		?>
@@ -775,21 +775,21 @@ if ($havemetrics)
 
 if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
-	<a name="yslow-table"></a><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="yslow-table"></a><h2>YSlow measurements history (<a href="<?php echo $showslow_base ?>/details/data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="measurementstable" class="measurementstable"></div>
 	<?php
 }
 
 if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
-	<a name="pagespeed-table"></a><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="pagespeed-table"></a><h2>Page Speed measurements history (<a href="<?php echo $showslow_base ?>/details/data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="ps_measurementstable" class="measurementstable"></div>
 <?php
 }
 
 if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
-	<a name="dynatrace-table"></a><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="dynatrace-table"></a><h2>dynaTrace measurements history (<a href="<?php echo $showslow_base ?>/details/data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="dt_measurementstable" class="measurementstable"></div>
 <?php
 }
