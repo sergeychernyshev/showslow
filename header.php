@@ -29,9 +29,6 @@ if (array_key_exists('group', $_GET)) {
 	xmlns:fb="http://developers.facebook.com/schema/"
 >
 <head>
-<?php if (isset($torbitInsight) && $torbitInsight) {?>
-<script type='text/javascript'>var TBRUM=TBRUM||{};TBRUM.q=TBRUM.q||[];TBRUM.q.push(['mark','firstbyte',(new Date).getTime()]);(function(){var a=document.createElement('script');a.type='text/javascript';a.async=true;a.src=document.location.protocol+'//insight.torbit.com/v1/insight.min.js';var b=document.getElementsByTagName('script')[0];b.parentNode.insertBefore(a,b)})();</script>
-<?php } ?>
 <title><?php if (isset($TITLE)) { echo htmlentities($TITLE).' | '; } ?>Show Slow</title>
 <link rel="stylesheet" media="all" type="text/css" href="<?php echo assetURL('css/stacklayout.css')?>" />
 <!--[if lte IE 7]>
