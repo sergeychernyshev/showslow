@@ -12,6 +12,6 @@ YSLOWJS='... path to yslow.js ...'
 
 for URL in $URLS
 do
-	echo "$URL" | $PHANTOMJS $YSLOWJS -i grade -b $SHOWSLOWBASE/beacon/yslow/ >/dev/null
+	$PHANTOMJS $YSLOWJS -i grade -b $SHOWSLOWBASE/beacon/yslow/ $URL >/dev/null
 done
 
