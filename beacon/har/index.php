@@ -221,7 +221,7 @@ if (array_key_exists('url', $_REQUEST))
 
 		foreach ($HAR_processors as $processor) {
 			if (is_callable($processor)) {
-				call_user_func($processor, $url_id, &$har_data_parsed);
+				call_user_func($processor, $url_id, $har_data_parsed);
 			}
 		}
 	}
