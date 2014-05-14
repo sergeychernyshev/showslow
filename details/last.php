@@ -6,6 +6,14 @@ require_once(dirname(dirname(__FILE__)).'/global.php');
 
 $urlid = array_key_exists('urlid', $_GET) ? filter_var($_GET['urlid'], FILTER_VALIDATE_INT) : null;
 
+$url_passed = $_GET['url'];
+
+# fixing up a URL if it is missing a double slash in domain name
+$url_passed = preg_replace('#^http://?#', 'http://', $url_passed);
+$url_passed = preg_replace('#^https://?#', 'https://', $url_passed);
+
+$url = array_key_exists('url', $_GET) ? filter_var($url_passed, FILTER_VALIDATE_URL) : null;
+
 function not_found() {
 	header("HTTP/1.0 404 Not Found");
 	?><html>
@@ -20,8 +28,29 @@ function not_found() {
 	exit;
 }
 
-if (!$urlid) {
+if (!$urlid && !$url) {
 	not_found();
+}
+
+if (!$urlid && $url) {
+	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysql_real_escape_string($url)."'))";
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	$row = mysql_fetch_assoc($result);
+
+	if (is_null($row)) {
+		not_found();
+	} else {
+		$urlid = $row['id'];
+
+		if (is_null($urlid)) {
+			not_found();
+		}
+	}
 }
 
 $requested_provider = $_GET['provider'];
