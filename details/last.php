@@ -1,0 +1,117 @@
+<?php
+require_once(dirname(dirname(__FILE__)).'/global.php');
+
+$urlid = array_key_exists('urlid', $_GET) ? filter_var($_GET['urlid'], FILTER_VALIDATE_INT) : null;
+
+function not_found() {
+	header("HTTP/1.0 404 Not Found");
+	?><html>
+	<head>
+	<title>Error - no such URL</title>
+	</head>
+	<body>
+	<h1>Error - no such URL</h1>
+	<p><a href="../">Go back</a> and pick the URL</p>
+	</body></html>
+	<?php
+	exit;
+}
+
+if (!$urlid) {
+	not_found();
+}
+
+# building a query to select all beacon data in one swoop
+$query = "SELECT urls.id AS url_id, urls.url as url, UNIX_TIMESTAMP(last_update) AS t, last_event_update, yslow2.details AS yslow_details";
+
+foreach ($all_metrics as $provider_name => $provider) {
+	$query .= ",\n\t".$provider['table'].'_last_id, UNIX_TIMESTAMP('.$provider['table'].'.timestamp) AS '.$provider_name.'_timestamp';
+
+	foreach ($provider['metrics'] as $section_name => $section) {
+		foreach ($section as $metric) {
+			$query .= ",\n\t\t".$provider['table'].'.'.$metric[1].' AS '.$provider_name.'_'.$metric[1];
+		}
+	}
+}
+
+$query .= "\nFROM urls";
+
+foreach ($all_metrics as $provider_name => $provider) {
+	$query .= "\n\tLEFT JOIN ".$provider['table'].' ON urls.'.$provider['table'].'_last_id = '.$provider['table'].'.id';
+}
+
+$query .= "\nWHERE urls.id = ".mysql_real_escape_string($urlid);
+
+#echo $query; exit;
+
+$result = mysql_query($query);
+
+if (!$result) {
+	error_log(mysql_error());
+}
+
+$row = mysql_fetch_assoc($result);
+mysql_free_result($result);
+
+$custom_metrics = array();
+$custom_metrics_version = 0;
+
+foreach ($metrics as $id => $metric) {
+	$query = sprintf("SELECT value, UNIX_TIMESTAMP(timestamp) as t
+		FROM metric WHERE url_id = %d AND metric_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
+		ORDER BY timestamp DESC LIMIT 1",
+		mysql_real_escape_string($urlid),
+		mysql_real_escape_string($metric['id'])
+	);
+
+	$result = mysql_query($query);
+
+	if (!$result) {
+		error_log(mysql_error());
+	}
+
+	if ($row_metrics = mysql_fetch_assoc($result)) {
+		$custom_metrics[$metric['id']]['metric_slug'] = $id;
+		$custom_metrics[$metric['id']]['metric'] = $metric;
+		$custom_metrics[$metric['id']]['value'] = $row_metrics['value'];
+		if ($row_metrics['t'] > $custom_metrics_version) {
+			$custom_metrics_version = $row_metrics['t'];
+		}
+	}
+}
+
+$requested_provider = $_GET['provider'];
+if (array_key_exists($requested_provider, $all_metrics)) {
+	$provider_name = $requested_provider;
+	$provider = $all_metrics[$requested_provider];
+
+	if (!$enabledMetrics[$provider_name] || !array_key_exists('score_column', $provider)) {
+		not_found();
+	}
+
+	$score = $row[$provider_name.'_'.$provider['score_column']];
+	if (!is_null($score)) {
+		$pretty_score = prettyScore($score);
+
+		if (array_key_exists('output', $_GET) && $_GET['output'] == 'color') {
+			$colors = array(			
+				1 => '#EE0000',
+				2 => '#EE2800',
+				3 => '#EE4F00',
+				4 => '#EE7700',
+				5 => '#EE9F00',
+				6 => '#EEC600',
+				7 => '#EEEE00',
+				8 => '#C6EE00',
+				9 => '#9FEE00',
+				10 => '#77EE00',
+				11 => '#4FEE00',
+				12 => '#28EE00',
+				13 => '#00EE00'
+			);
+			echo $colors[scoreColorStep($score)];
+		} else {
+			echo $score;
+		}
+	}
+}
