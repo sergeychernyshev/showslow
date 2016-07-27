@@ -16,6 +16,16 @@ UserConfig::$mysql_socket = $socket;
 UserConfig::$useAccounts = false;
 #UserConfig::$useAccounts = true;
 
+// uncomment to enable old theme
+UserConfig::$theme = 'classic';
+
+/**
+ * Show power strip as Bootstrap nav pills instead of navbar
+ *
+ * @var boolean
+ */
+UserConfig::$powerStripNavPills = true;
+
 UserConfig::$refererRegexes = array(
 	'/^http:\/\/www.webpagetest.org\/result\/.*$/' => 'WebPageTest.org test results'
 );
