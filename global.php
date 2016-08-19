@@ -116,7 +116,7 @@ $pageSpeedOnlineAPIKey = null;
 
 # this enables a form to run a test on WebPageTest.org
 $webPageTestKey = null; # must be set to something to not null to enable
-$webPageTestBase = 'http://www.webpagetest.org/';
+$webPageTestBase = 'https://www.webpagetest.org/';
 $webPageTestPrivateByDefault = false;
 $webPageTestFirstRunOnlyByDefault = false;
 $webPageTestExtraParams = '';
