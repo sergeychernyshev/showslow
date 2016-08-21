@@ -201,6 +201,11 @@ $smoothDistance = 5;
 $supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
 $supportEmailReplyTo = 'showslow@example.com';
 
+# Amazon SES configuration for sending emails
+$amazonSMTPHost = null;
+$amazonSMTPUserName = null;
+$amazonSMTPPassword = null;
+
 require_once(dirname(__FILE__).'/svn-assets/asset_functions.php');
 loadAssetVersionsTSV(dirname(__FILE__).'/asset_versions.tsv');
 

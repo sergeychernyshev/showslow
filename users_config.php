@@ -34,8 +34,17 @@ UserConfig::$refererRegexes = array(
 
 #UserConfig::$adminInvitationOnly = true;
 
-UserConfig::$supportEmailFrom = $supportEmailFrom;
+UserConfig::$supportEmailFromName = $supportEmailFromName;
+UserConfig::$supportEmailFromEmail = $supportEmailFromEmail;
 UserConfig::$supportEmailReplyTo = $supportEmailReplyTo;
+
+if ($amazonSMTPHost && $amazonSMTPUserName && $amazonSMTPPassword) {
+  UserConfig::$mailer = Swift_Mailer::newInstance(
+    Swift_SmtpTransport::newInstance($amazonSMTPHost, 587, 'tls')
+      ->setUsername($amazonSMTPUserName)
+      ->setPassword($amazonSMTPPassword)
+  );
+}
 
 UserConfig::$SESSION_SECRET = $sessionSecret;
 

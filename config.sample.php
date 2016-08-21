@@ -13,7 +13,8 @@ $port = 3306;
 $sessionSecret = '...................................................';
 
 # configuration for email communication
-#$supportEmailFrom = 'ShowSlow Administrator <showslow@example.com>';
+#$supportEmailFromName = 'ShowSlow Administrator';
+#$supportEmailFromEmail = 'showslow@example.com';
 #$supportEmailReplyTo = 'showslow@example.com';
 
 # PageSpeed Online API key (https://code.google.com/apis/console/#access)
