@@ -771,14 +771,14 @@ function getPageTestLocations() {
 
 	// Getting a list of locations from WebPageTest
 	$ch = curl_init(); 
-	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml&k='.urlencode($webPageTestKey));
+	curl_setopt($ch, CURLOPT_URL, $webPageTestBase.'getLocations.php?f=xml');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	$output = curl_exec($ch);
 
 	if (empty($output)) {
 		$err = curl_error($ch);
 		curl_close($ch);
-		failWithMessage('API call ('.$webPageTestBase.'getLocations.php?f=xml&k=<your_wpt_key>) failed: '.$err);
+		failWithMessage('API call ('.$webPageTestBase.'getLocations.php?f=xml) failed: '.$err);
 	}
 
 	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
