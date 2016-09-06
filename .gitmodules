@@ -22,3 +22,6 @@
 [submodule "php-bootstrap"]
 	path = php-bootstrap
 	url = git://github.com/sergeychernyshev/php-bootstrap.git
+[submodule "beacon/dommonster/dom-monster"]
+	path = beacon/dommonster/dom-monster
+	url = https://github.com/madrobby/dom-monster.git
