@@ -13,9 +13,6 @@
 [submodule "dbupgrade"]
 	path = dbupgrade
 	url = git://github.com/sergeychernyshev/DBUpgrade.git
-[submodule "beacon/dommonster/dom-monster"]
-	path = beacon/dommonster/dom-monster
-	url = git://github.com/sergeychernyshev/dom-monster.git
 [submodule "flot"]
 	path = flot
 	url = git://github.com/flot/flot.git
@@ -25,3 +22,6 @@
 [submodule "php-bootstrap"]
 	path = php-bootstrap
 	url = git://github.com/sergeychernyshev/php-bootstrap.git
+[submodule "beacon/dommonster/dom-monster"]
+	path = beacon/dommonster/dom-monster
+	url = https://github.com/madrobby/dom-monster.git
