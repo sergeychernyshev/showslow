@@ -9,5 +9,5 @@ Feedback
 You can ask questions and discuss ShowSlow in our group:
 [http://groups.google.com/group/showslow](http://groups.google.com/group/showslow)
 
-We also run feedback forum here:
-[http://showslow.uservoice.com](http://showslow.uservoice.com)
+You can also post issues in the issue tracker:
+https://github.com/sergeychernyshev/showslow/issues
