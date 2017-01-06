@@ -2,7 +2,7 @@ ShowSlow collects web performance data and shows it in aggregated form trended o
 
 You can see working public version of the software at [showslow.com](http://www.showslow.com/)
 
-Documentation wiki can be found at [showslow.org](http://www.showslow.org/) - feel free to contribute!
+Documentation is on project the [project wiki](https://github.com/sergeychernyshev/showslow/wiki), feel free to contribute!
 
 Feedback
 ========
