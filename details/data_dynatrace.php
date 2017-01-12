@@ -16,17 +16,17 @@ if (!array_key_exists('urlid', $_GET) || filter_var($_GET['urlid'], FILTER_VALID
 	exit;
 }
 
-$query = sprintf("SELECT url, id FROM urls WHERE id = %d", mysql_real_escape_string($_GET['urlid']));
-$result = mysql_query($query);
+$query = sprintf("SELECT url, id FROM urls WHERE id = %d", mysqli_real_escape_string($conn, $_GET['urlid']));
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
-$row = mysql_fetch_assoc($result);
+$row = mysqli_fetch_assoc($result);
 $url = $row['url'];
 $urlid = $row['id'];
-mysql_free_result($result);
+mysqli_free_result($result);
 
 if (array_key_exists('subset', $_REQUEST)) {
 	if ($_REQUEST['subset'] == 'graph')
@@ -34,7 +34,7 @@ if (array_key_exists('subset', $_REQUEST)) {
 		$query = sprintf("SELECT UNIX_TIMESTAMP(d.timestamp) as time, rank
 			FROM dynatrace d WHERE d.url_id = %d AND d.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 			ORDER BY d.timestamp DESC",
-			mysql_real_escape_string($urlid)
+			mysqli_real_escape_string($conn, $urlid)
 		);
 	}
 	else if ($_REQUEST['subset'] == 'table')
@@ -43,7 +43,7 @@ if (array_key_exists('subset', $_REQUEST)) {
 				pagesize, reqnumber, rank, timetoimpression
 			FROM dynatrace d WHERE d.url_id = %d AND d.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 			ORDER BY d.timestamp DESC",
-			mysql_real_escape_string($urlid)
+			mysqli_real_escape_string($conn, $urlid)
 		);
 	}
 } else {
@@ -55,14 +55,14 @@ if (array_key_exists('subset', $_REQUEST)) {
 			timeonnetwork, timeinjs, timeinrendering
 		FROM dynatrace d WHERE d.url_id = %d AND d.timestamp > DATE_SUB(now(),INTERVAL 3 MONTH)
 		ORDER BY d.timestamp DESC",
-		mysql_real_escape_string($urlid)
+		mysqli_real_escape_string($conn, $urlid)
 	);
 }
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $data = array();
@@ -74,11 +74,11 @@ if (array_key_exists('ver', $_GET)) {
 }
 
 $rows = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[] = $row;
 }
 
-mysql_free_result($result);
+mysqli_free_result($result);
 
 if (array_key_exists('smooth', $_REQUEST)) {
 	require_once(dirname(__FILE__).'/smooth.php');

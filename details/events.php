@@ -21,13 +21,13 @@ $all = true;
 $query = sprintf("SELECT type, title, UNIX_TIMESTAMP(start) as s, UNIX_TIMESTAMP(end) as e, resource_url as link FROM event
 	WHERE INSTR('%s', url_prefix) = 1
 	ORDER BY start DESC",
-	mysql_real_escape_string($_GET['url'])
+	mysqli_real_escape_string($conn, $_GET['url'])
 );
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $data = array();
@@ -39,7 +39,7 @@ if (array_key_exists('ver', $_GET)) {
 }
 $xml = new SimpleXMLElement('<data/>');
 
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$event = $xml->addChild('event');
 	$event->addAttribute('start', date('r', $row['s']));
 	$event->addAttribute('latestStart', date('r', $row['s']));
@@ -60,6 +60,6 @@ while ($row = mysql_fetch_assoc($result)) {
 		$event->addAttribute('link', $row['link']);
 	}
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 echo $xml->asXML();

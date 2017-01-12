@@ -54,8 +54,8 @@ foreach ($sites as $site) {
 
 $query = "INSERT IGNORE INTO user_urls (user_id, url_id) VALUES $pairs";
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }

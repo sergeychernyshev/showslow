@@ -262,6 +262,7 @@ $metric_types = array(
 # defaults values for MySQL host and port
 $host = 'localhost';
 $port = 3306;
+$conn = null;
 
 # Set to socket file to use unix sockets instead of TCP connectivity
 $socket = null;
@@ -855,26 +856,26 @@ function getUrlId($url, $outputerror = true)
 	}
 
 	$query = sprintf("INSERT IGNORE INTO urls (url, url_md5) VALUES ('%s', UNHEX(MD5('%s')))",
-		mysql_real_escape_string($url),
-		mysql_real_escape_string($url)
+		mysqli_real_escape_string($conn, $url),
+		mysqli_real_escape_string($conn, $url)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	# get URL id
-	$query = sprintf("SELECT id FROM urls WHERE url_md5 = UNHEX(MD5('%s'))", mysql_real_escape_string($url));
-	$result = mysql_query($query);
+	$query = sprintf("SELECT id FROM urls WHERE url_md5 = UNHEX(MD5('%s'))", mysqli_real_escape_string($conn, $url));
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	if (mysql_num_rows($result) > 1) {
+	if (mysqli_num_rows($result) > 1) {
 		beaconError('More then one entry found for the URL even though MD5 is the same');
-	} else if (mysql_num_rows($result) == 0) {
+	} else if (mysqli_num_rows($result) == 0) {
 		beaconError('No entries found for the URL even though we just inserted it');
 	}
 
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 	return $row['id'];
 }
 
@@ -1150,15 +1151,17 @@ function detailsUrl($urlId, $url) {
 }
 
 if (!is_null($socket)) {
-	mysql_connect('localhost:'.$socket, $user, $pass);
+	$conn = mysqli_connect('localhost:'.$socket, $user, $pass);
+} else if ($port == 3306) {
+	$conn = mysqli_connect("$host", $user, $pass);
 } else {
-	mysql_connect("$host:$port", $user, $pass);
+	$conn = mysqli_connect("$host:$port", $user, $pass);
 }
-mysql_select_db($db);
+mysqli_select_db($conn, $db);
 
 # setting up connection settings to make MySQL communication more strict
-$result = mysql_query('SET SESSION SQL_MODE=STRICT_ALL_TABLES');
+$result = mysqli_query($conn, 'SET SESSION SQL_MODE=STRICT_ALL_TABLES');
 
 if (!$result) {
-	beaconError(mysql_error());
+	beaconError(mysqli_connect_error());
 }

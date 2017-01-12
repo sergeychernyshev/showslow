@@ -33,14 +33,14 @@ if (!$urlid && !$url) {
 }
 
 if (!$urlid && $url) {
-	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysql_real_escape_string($url)."'))";
-	$result = mysql_query($query);
+	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysqli_real_escape_string($conn, $url)."'))";
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 
 	if (is_null($row)) {
 		not_found();
@@ -78,18 +78,18 @@ foreach ($provider['metrics'] as $section_name => $section) {
 $query .= "\nFROM urls";
 $query .= "\n\tLEFT JOIN ".$provider['table'].' ON urls.'.$provider['table'].'_last_id = '.$provider['table'].'.id';
 
-$query .= "\nWHERE urls.id = ".mysql_real_escape_string($urlid);
+$query .= "\nWHERE urls.id = ".mysqli_real_escape_string($conn, $urlid);
 
 #echo $query; exit;
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
-$row = mysql_fetch_assoc($result);
-mysql_free_result($result);
+$row = mysqli_fetch_assoc($result);
+mysqli_free_result($result);
 
 $score = $row[$provider_name.'_'.$provider['score_column']];
 if (!is_null($score)) {

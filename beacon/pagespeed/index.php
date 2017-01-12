@@ -11,13 +11,13 @@ function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls set pagespeed_last_id = %d, last_update = now(), p_refresh_request = 0 WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 }
 
@@ -311,7 +311,7 @@ if (array_key_exists('u', $_GET)) {
 
 		foreach ($rules as $metric => $value) {
 			$names[] = $metric;
-			$values[] = "'".mysql_real_escape_string($value)."'";
+			$values[] = "'".mysqli_real_escape_string($conn, $value)."'";
 		}
 
 		# adding new entry
@@ -326,26 +326,26 @@ if (array_key_exists('u', $_GET)) {
 		)",
 			implode(', ', $names),
 
-			mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-			mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($sdk_version),
+			mysqli_real_escape_string($conn, $_SERVER['REMOTE_ADDR']),
+			mysqli_real_escape_string($conn, $_SERVER['HTTP_USER_AGENT']),
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $sdk_version),
 
-			mysql_real_escape_string($core_metrics['w']),
-			mysql_real_escape_string($core_metrics['o']),
-			mysql_real_escape_string($core_metrics['l']),
-			mysql_real_escape_string($core_metrics['r']),
-			mysql_real_escape_string($core_metrics['t']),
+			mysqli_real_escape_string($conn, $core_metrics['w']),
+			mysqli_real_escape_string($conn, $core_metrics['o']),
+			mysqli_real_escape_string($conn, $core_metrics['l']),
+			mysqli_real_escape_string($conn, $core_metrics['r']),
+			mysqli_real_escape_string($conn, $core_metrics['t']),
 
 			implode(', ', $values)
 		);
 
-		if (!mysql_query($query))
+		if (!mysqli_query($conn, $query))
 		{
-			beaconError(mysql_error());
+			beaconError(mysqli_error($conn));
 		}
 
-		updateUrlAggregates($url_id, mysql_insert_id());
+		updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 		header('HTTP/1.0 204 Data accepted');
 		exit;

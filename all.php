@@ -5,7 +5,7 @@ require_once(dirname(__FILE__).'/paginator.class.php');
 
 $searchstring = null;
 if (array_key_exists('search', $_GET) && trim($_GET['search']) != '') {
-	$searchstring = "urls.url LIKE '%".mysql_real_escape_string(trim($_GET['search']))."%'";
+	$searchstring = "urls.url LIKE '%".mysqli_real_escape_string($conn, trim($_GET['search']))."%'";
 
 	$current_user = User::get();
 	if (!is_null($current_user)) {
@@ -137,7 +137,7 @@ if (is_array($subset)) {
 		} else {
 			$subsetstring .= ' OR ';
 		}
-		$subsetstring .= "urls.url LIKE '".mysql_real_escape_string($url)."%'";
+		$subsetstring .= "urls.url LIKE '".mysqli_real_escape_string($conn, $url)."%'";
 	}
 }
 
@@ -158,8 +158,8 @@ if (!is_null($searchstring)) {
 	$query .= " AND $searchstring";
 }
 
-$result = mysql_query($query);
-$row = mysql_fetch_row($result);
+$result = mysqli_query($conn, $query);
+$row = mysqli_fetch_row($result);
 $total = $row[0];
 
 $pages = new Paginator();
@@ -188,10 +188,10 @@ if (!is_null($searchstring)) {
 
 $query .= sprintf(" ORDER BY url LIMIT %d OFFSET %d", $perPage, $offset);
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
 $yslow = false;
@@ -199,7 +199,7 @@ $pagespeed = false;
 $dynatrace = false;
 
 $rows = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[] = $row;
 
 	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
@@ -264,7 +264,7 @@ foreach ($rows as $row) {
 	</tr><?php
 }
 
-mysql_free_result($result);
+mysqli_free_result($result);
 ?>
 </table>
 <?php

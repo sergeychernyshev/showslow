@@ -19,21 +19,21 @@ if (!array_key_exists('id', $_GET) && (!array_key_exists('url', $_GET) || filter
 
 if (array_key_exists('id', $_GET)) {
 	$query = sprintf("SELECT har, compressed FROM har WHERE id = '%d'",
-		mysql_real_escape_string($_GET['id'])
+		mysqli_real_escape_string($conn, $_GET['id'])
 	);
 }
 else
 {
 	$query = sprintf("SELECT UNIX_TIMESTAMP(timestamp) as t, har, compressed
 		FROM har, urls WHERE urls.url = '%s' AND har.url_id = urls.id ORDER BY timestamp DESC LIMIT 1",
-		mysql_real_escape_string($_GET['url'])
+		mysqli_real_escape_string($conn, $_GET['url'])
 	);
 }
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $harp = false;
@@ -45,7 +45,7 @@ if (array_key_exists('callback', $_GET)) {
 	}
 }
 
-if ($row = mysql_fetch_assoc($result)) {
+if ($row = mysqli_fetch_assoc($result)) {
 	header('Content-type: text/plain');
 	if (array_key_exists('id', $_GET)) {
 		header('Expires: '.date('r', time() + 315569260));

@@ -17,29 +17,29 @@ if (!array_key_exists('urlid', $_GET) || filter_var($_GET['urlid'], FILTER_VALID
 	exit;
 }
 
-$query = sprintf("SELECT url, id FROM urls WHERE id = %d", mysql_real_escape_string($_GET['urlid']));
-$result = mysql_query($query);
+$query = sprintf("SELECT url, id FROM urls WHERE id = %d", mysqli_real_escape_string($conn, $_GET['urlid']));
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
-$row = mysql_fetch_assoc($result);
+$row = mysqli_fetch_assoc($result);
 $url = $row['url'];
 $urlid = $row['id'];
-mysql_free_result($result);
+mysqli_free_result($result);
 
 $query = sprintf("SELECT UNIX_TIMESTAMP(timestamp) AS t, value
 	FROM metric WHERE url_id = %d AND metric_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
 	ORDER BY timestamp DESC",
-	mysql_real_escape_string($urlid),
-	mysql_real_escape_string($metrics[$_GET['metric']]['id'])
+	mysqli_real_escape_string($conn, $urlid),
+	mysqli_real_escape_string($conn, $metrics[$_GET['metric']]['id'])
 );
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $data = array();
@@ -52,10 +52,10 @@ if (array_key_exists('ver', $_GET)) {
 echo '# Timestamp, '.$metrics[$_GET['metric']]['title'].' for '.$url."\n";
 
 $rows = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[] = $row;
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 if (array_key_exists('smooth', $_REQUEST)) {
 	require_once(dirname(__FILE__).'/smooth.php');

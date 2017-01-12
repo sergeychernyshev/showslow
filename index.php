@@ -19,10 +19,10 @@ $query = sprintf("SELECT url, urls.id as url_id, last_update,
 		LEFT JOIN har ON urls.har_last_id = har.id
 		LEFT JOIN pagetest ON urls.pagetest_last_id = pagetest.id
 	WHERE last_update IS NOT NULL ORDER BY urls.last_update DESC LIMIT 100");
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
 $yslow = false;
@@ -31,7 +31,7 @@ $dynatrace = false;
 $wpt = false;
 
 $rows = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[] = $row;
 
 	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
@@ -101,7 +101,7 @@ foreach ($rows as $row) {
 	</tr><?php
 }
 
-mysql_free_result($result);
+mysqli_free_result($result);
 ?>
 </table>
 

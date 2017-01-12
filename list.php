@@ -25,7 +25,7 @@ foreach ($list_items as $url) {
 		$list .= ', ';
 	}
 
-	$list .= "'".mysql_real_escape_string($url)."'";
+	$list .= "'".mysqli_real_escape_string($conn, $url)."'";
 }
 
 $query = sprintf("SELECT url, urls.id as url_id, last_update,
@@ -37,10 +37,10 @@ $query = sprintf("SELECT url, urls.id as url_id, last_update,
 		LEFT JOIN pagespeed ON urls.pagespeed_last_id = pagespeed.id
 		LEFT JOIN dynatrace ON urls.dynatrace_last_id = dynatrace.id
 	WHERE urls.url IN (%s)", $list);
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
 $yslow = false;
@@ -48,7 +48,7 @@ $pagespeed = false;
 $dynatrace = false;
 
 $rows = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[$row['url']] = $row;
 
 	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
@@ -153,7 +153,7 @@ if (count($rows) && ($yslow || $pagespeed || $dynatrace))
 	</tr><?php
 	}
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 	?>
 	</table>
 <?php

@@ -7,13 +7,13 @@ function updateUrlAggregates($url_id, $measurement_id)
 
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET har_last_id = %d, last_update = now() WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 }
 
@@ -32,27 +32,27 @@ if (array_key_exists('link', $_REQUEST) && trim($_REQUEST['link']) != ''
 	{
 		$query = sprintf("/* HAR link */ INSERT INTO har (timestamp, url_id, link)
 		VALUES ('%s', '%d', '%s')",
-			mysql_real_escape_string($_REQUEST['timestamp']),
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($link)
+			mysqli_real_escape_string($conn, $_REQUEST['timestamp']),
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $link)
 		);
 	}
 	else
 	{
 		$query = sprintf("/* HAR link */ INSERT INTO har (url_id, link)
 		VALUES ('%d', '%s')",
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($link)
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $link)
 		);
 	}
 
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 	header('HTTP/1.0 204 Data accepted');
 	exit;
@@ -192,29 +192,29 @@ if (array_key_exists('url', $_REQUEST))
 	{
 		$query = sprintf("/* HAR POST */ INSERT INTO har (timestamp, url_id, har, compressed)
 		VALUES ('%s', '%d', '%s', '%d')",
-			mysql_real_escape_string($_REQUEST['timestamp']),
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string(defined('FORCE_GZIP') ? gzcompress($har_data) : $har_data),
-			mysql_real_escape_string(defined('FORCE_GZIP') ? 1 : 0)
+			mysqli_real_escape_string($conn, $_REQUEST['timestamp']),
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, defined('FORCE_GZIP') ? gzcompress($har_data) : $har_data),
+			mysqli_real_escape_string($conn, defined('FORCE_GZIP') ? 1 : 0)
 		);
 	}
 	else
 	{
 		$query = sprintf("/* HAR POST */ INSERT INTO har (url_id, har, compressed)
 		VALUES ('%d', '%s', '%d')",
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string(defined('FORCE_GZIP') ? gzcompress($har_data) : $har_data),
-			mysql_real_escape_string(defined('FORCE_GZIP') ? 1 : 0)
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, defined('FORCE_GZIP') ? gzcompress($har_data) : $har_data),
+			mysqli_real_escape_string($conn, defined('FORCE_GZIP') ? 1 : 0)
 		);
 	}
 
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 	if (count($HAR_processors)) {
 		$har_data_parsed = json_decode($har_data, true);

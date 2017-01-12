@@ -14,13 +14,13 @@ if ($oldDataInterval > 0) {
 	foreach ($tables as $table) {
 		# deleting old data
 		$query = sprintf("DELETE FROM $table WHERE timestamp < DATE_SUB(now(), INTERVAL '%s' DAY)",
-			mysql_real_escape_string($oldDataInterval)
+			mysqli_real_escape_string($conn, $oldDataInterval)
 		);
 
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 			exit;
 		}
 	}
@@ -48,10 +48,10 @@ if ($oldDataInterval > 0) {
 
 	$query .= 'AND uu.url_id IS NULL';
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
@@ -80,23 +80,23 @@ if ($oldDataInterval > 0) {
 		$query .= "x_$table.url_id IS NULL\n";
 	}
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
 	# deleting old events separately as they match broadly, not per URL
 	$query = sprintf("DELETE FROM event WHERE (end IS NOT NULL AND end < DATE_SUB(now(), INTERVAL '%s' DAY)) OR (start < DATE_SUB(now(), INTERVAL '%s' DAY))",
-		mysql_real_escape_string($oldDataInterval),
-		mysql_real_escape_string($oldDataInterval)
+		mysqli_real_escape_string($conn, $oldDataInterval),
+		mysqli_real_escape_string($conn, $oldDataInterval)
 	);
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 }

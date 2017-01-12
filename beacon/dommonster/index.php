@@ -1,18 +1,18 @@
-<?php 
+<?php
 require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET dommonster_last_id = %d, last_update = now() WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 }
 
@@ -50,24 +50,24 @@ if (array_key_exists('url', $_POST) && array_key_exists('stats', $_POST))
 		'%d',
 		'%d'
 	)",
-		mysql_real_escape_string(array_key_exists('version', $_POST) ? $_POST['version'] : null),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string(array_key_exists('elements', $stats) ? $stats['elements'] : null),
-		mysql_real_escape_string(array_key_exists('nodecount', $stats) ? $stats['nodecount'] : null),
-		mysql_real_escape_string(array_key_exists('textnodes', $stats) ? $stats['textnodes'] : null),
-		mysql_real_escape_string(array_key_exists('textnodessize', $stats) ? $stats['textnodessize'] : null),
-		mysql_real_escape_string(array_key_exists('contentpercent', $stats) ? $stats['contentpercent'] : null),
-		mysql_real_escape_string(array_key_exists('average', $stats) ? $stats['average'] : null),
-		mysql_real_escape_string(array_key_exists('domsize', $stats) ? $stats['domsize'] : null),
-		mysql_real_escape_string(array_key_exists('bodycount', $stats) ? $stats['bodycount']*1000 : null)
+		mysqli_real_escape_string($conn, array_key_exists('version', $_POST) ? $_POST['version'] : null),
+		mysqli_real_escape_string($conn, $url_id),
+		mysqli_real_escape_string($conn, array_key_exists('elements', $stats) ? $stats['elements'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('nodecount', $stats) ? $stats['nodecount'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('textnodes', $stats) ? $stats['textnodes'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('textnodessize', $stats) ? $stats['textnodessize'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('contentpercent', $stats) ? $stats['contentpercent'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('average', $stats) ? $stats['average'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('domsize', $stats) ? $stats['domsize'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('bodycount', $stats) ? $stats['bodycount']*1000 : null)
 	);
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 	$url = validateURL($_POST['url']);
 ?><html><head><script>
