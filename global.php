@@ -824,7 +824,7 @@ function getPageTestLocations() {
 
 function getUrlId($url, $outputerror = true)
 {
-	global $dropQueryStrings;
+	global $dropQueryStrings, $conn;
 
 	$url = validateURL($url, $outputerror);
 

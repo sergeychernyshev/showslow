@@ -3,6 +3,8 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
+	global $conn;
+
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET dynatrace_last_id = %d, last_update = now(), dt_refresh_request = 0 WHERE id = %d",
 		mysqli_real_escape_string($conn, $measurement_id),

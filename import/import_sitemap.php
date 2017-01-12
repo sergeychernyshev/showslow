@@ -26,7 +26,7 @@ function startElement($parser, $name, $attrs)
 
 function endElement($parser, $name) 
 {
-	global $inLocTag, $buffer, $user_id;
+	global $inLocTag, $buffer, $user_id, $conn;
 
 	if (strtolower($name) == 'loc') {
 		$inLocTag = false;
