@@ -9,17 +9,17 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
-	global $cleanOldYSlowBeaconDetails, $keepBeaconDetails;
+	global $cleanOldYSlowBeaconDetails, $keepBeaconDetails, $conn;
 
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET yslow2_last_id = %d, last_update = now(), y_refresh_request = 0 WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
 	// Clean old details for this URL to conserve space
@@ -29,11 +29,11 @@ function updateUrlAggregates($url_id, $measurement_id)
 			UPDATE yslow2
 			SET details = NULL
 			WHERE url_id = '%d' AND id <> '%d'
-		", mysql_real_escape_string($url_id), mysql_real_escape_string($measurement_id));
+		", mysqli_real_escape_string($conn, $url_id), mysqli_real_escape_string($conn, $measurement_id));
 
-		if (!mysql_query($query))
+		if (!mysqli_query($conn, $query))
 		{
-			beaconError(mysql_error());
+			beaconError(mysqli_error($conn));
 		}
 	}
 
@@ -105,46 +105,46 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d'".($keepBeaconDetails ? ", '%s'" : '')."
 	)",
-		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($post['w']),
-		mysql_real_escape_string($post['o']),
-		mysql_real_escape_string($post['r']),
-		mysql_real_escape_string($post['i']),
-		mysql_real_escape_string(array_key_exists('lt', $post) ? $post['lt'] : null),
-		mysql_real_escape_string($grades['ynumreq']['score']),
-		mysql_real_escape_string($grades['ycdn']['score']),
-		mysql_real_escape_string($grades['yexpires']['score']),
-		mysql_real_escape_string($grades['yemptysrc']['score']),
-		mysql_real_escape_string($grades['ycompress']['score']),
-		mysql_real_escape_string($grades['ycsstop']['score']),
-		mysql_real_escape_string($grades['yjsbottom']['score']),
-		mysql_real_escape_string($grades['yexpressions']['score']),
-		mysql_real_escape_string($grades['yexternal']['score']),
-		mysql_real_escape_string($grades['ydns']['score']),
-		mysql_real_escape_string($grades['yminify']['score']),
-		mysql_real_escape_string($grades['yredirects']['score']),
-		mysql_real_escape_string($grades['ydupes']['score']),
-		mysql_real_escape_string($grades['yetags']['score']),
-		mysql_real_escape_string($grades['yxhr']['score']),
-		mysql_real_escape_string($grades['yxhrmethod']['score']),
-		mysql_real_escape_string($grades['ymindom']['score']),
-		mysql_real_escape_string($grades['yno404']['score']),
-		mysql_real_escape_string($grades['ymincookie']['score']),
-		mysql_real_escape_string($grades['ycookiefree']['score']),
-		mysql_real_escape_string($grades['ynofilter']['score']),
-		mysql_real_escape_string($grades['yimgnoscale']['score']),
-		mysql_real_escape_string($grades['yfavicon']['score']),
-		$keepBeaconDetails ? mysql_real_escape_string($post_data) : null
+		mysqli_real_escape_string($conn, $_SERVER['REMOTE_ADDR']),
+		mysqli_real_escape_string($conn, $_SERVER['HTTP_USER_AGENT']),
+		mysqli_real_escape_string($conn, $url_id),
+		mysqli_real_escape_string($conn, $post['w']),
+		mysqli_real_escape_string($conn, $post['o']),
+		mysqli_real_escape_string($conn, $post['r']),
+		mysqli_real_escape_string($conn, $post['i']),
+		mysqli_real_escape_string($conn, array_key_exists('lt', $post) ? $post['lt'] : null),
+		mysqli_real_escape_string($conn, $grades['ynumreq']['score']),
+		mysqli_real_escape_string($conn, $grades['ycdn']['score']),
+		mysqli_real_escape_string($conn, $grades['yexpires']['score']),
+		mysqli_real_escape_string($conn, $grades['yemptysrc']['score']),
+		mysqli_real_escape_string($conn, $grades['ycompress']['score']),
+		mysqli_real_escape_string($conn, $grades['ycsstop']['score']),
+		mysqli_real_escape_string($conn, $grades['yjsbottom']['score']),
+		mysqli_real_escape_string($conn, $grades['yexpressions']['score']),
+		mysqli_real_escape_string($conn, $grades['yexternal']['score']),
+		mysqli_real_escape_string($conn, $grades['ydns']['score']),
+		mysqli_real_escape_string($conn, $grades['yminify']['score']),
+		mysqli_real_escape_string($conn, $grades['yredirects']['score']),
+		mysqli_real_escape_string($conn, $grades['ydupes']['score']),
+		mysqli_real_escape_string($conn, $grades['yetags']['score']),
+		mysqli_real_escape_string($conn, $grades['yxhr']['score']),
+		mysqli_real_escape_string($conn, $grades['yxhrmethod']['score']),
+		mysqli_real_escape_string($conn, $grades['ymindom']['score']),
+		mysqli_real_escape_string($conn, $grades['yno404']['score']),
+		mysqli_real_escape_string($conn, $grades['ymincookie']['score']),
+		mysqli_real_escape_string($conn, $grades['ycookiefree']['score']),
+		mysqli_real_escape_string($conn, $grades['ynofilter']['score']),
+		mysqli_real_escape_string($conn, $grades['yimgnoscale']['score']),
+		mysqli_real_escape_string($conn, $grades['yfavicon']['score']),
+		$keepBeaconDetails ? mysqli_real_escape_string($conn, $post_data) : null
 	);
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 } else if (array_key_exists('u', $_GET) && array_key_exists('i', $_GET) && in_array($_GET['i'], $YSlow2AllowedProfiles)
 	&& array_key_exists('w', $_GET) && filter_var($_GET['w'], FILTER_VALIDATE_INT) !== false
@@ -174,45 +174,45 @@ if (!is_null($post) && array_key_exists('u', $post) && array_key_exists('g', $po
 		'%d', '%d', '%d', '%d', '%d',
 		'%d', '%d'
 	)",
-		mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-		mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($_GET['w']),
-		mysql_real_escape_string($_GET['o']),
-		mysql_real_escape_string($_GET['r']),
-		mysql_real_escape_string($_GET['i']),
-		mysql_real_escape_string($_GET['lt']),
-		mysql_real_escape_string($_GET['ynumreq']),
-		mysql_real_escape_string($_GET['ycdn']),
-		mysql_real_escape_string($_GET['yexpires']),
-		mysql_real_escape_string($_GET['yemptysrc']),
-		mysql_real_escape_string($_GET['ycompress']),
-		mysql_real_escape_string($_GET['ycsstop']),
-		mysql_real_escape_string($_GET['yjsbottom']),
-		mysql_real_escape_string($_GET['yexpressions']),
-		mysql_real_escape_string($_GET['yexternal']),
-		mysql_real_escape_string($_GET['ydns']),
-		mysql_real_escape_string($_GET['yminify']),
-		mysql_real_escape_string($_GET['yredirects']),
-		mysql_real_escape_string($_GET['ydupes']),
-		mysql_real_escape_string($_GET['yetags']),
-		mysql_real_escape_string($_GET['yxhr']),
-		mysql_real_escape_string($_GET['yxhrmethod']),
-		mysql_real_escape_string($_GET['ymindom']),
-		mysql_real_escape_string($_GET['yno404']),
-		mysql_real_escape_string($_GET['ymincookie']),
-		mysql_real_escape_string($_GET['ycookiefree']),
-		mysql_real_escape_string($_GET['ynofilter']),
-		mysql_real_escape_string($_GET['yimgnoscale']),
-		mysql_real_escape_string($_GET['yfavicon'])
+		mysqli_real_escape_string($conn, $_SERVER['REMOTE_ADDR']),
+		mysqli_real_escape_string($conn, $_SERVER['HTTP_USER_AGENT']),
+		mysqli_real_escape_string($conn, $url_id),
+		mysqli_real_escape_string($conn, $_GET['w']),
+		mysqli_real_escape_string($conn, $_GET['o']),
+		mysqli_real_escape_string($conn, $_GET['r']),
+		mysqli_real_escape_string($conn, $_GET['i']),
+		mysqli_real_escape_string($conn, $_GET['lt']),
+		mysqli_real_escape_string($conn, $_GET['ynumreq']),
+		mysqli_real_escape_string($conn, $_GET['ycdn']),
+		mysqli_real_escape_string($conn, $_GET['yexpires']),
+		mysqli_real_escape_string($conn, $_GET['yemptysrc']),
+		mysqli_real_escape_string($conn, $_GET['ycompress']),
+		mysqli_real_escape_string($conn, $_GET['ycsstop']),
+		mysqli_real_escape_string($conn, $_GET['yjsbottom']),
+		mysqli_real_escape_string($conn, $_GET['yexpressions']),
+		mysqli_real_escape_string($conn, $_GET['yexternal']),
+		mysqli_real_escape_string($conn, $_GET['ydns']),
+		mysqli_real_escape_string($conn, $_GET['yminify']),
+		mysqli_real_escape_string($conn, $_GET['yredirects']),
+		mysqli_real_escape_string($conn, $_GET['ydupes']),
+		mysqli_real_escape_string($conn, $_GET['yetags']),
+		mysqli_real_escape_string($conn, $_GET['yxhr']),
+		mysqli_real_escape_string($conn, $_GET['yxhrmethod']),
+		mysqli_real_escape_string($conn, $_GET['ymindom']),
+		mysqli_real_escape_string($conn, $_GET['yno404']),
+		mysqli_real_escape_string($conn, $_GET['ymincookie']),
+		mysqli_real_escape_string($conn, $_GET['ycookiefree']),
+		mysqli_real_escape_string($conn, $_GET['ynofilter']),
+		mysqli_real_escape_string($conn, $_GET['yimgnoscale']),
+		mysqli_real_escape_string($conn, $_GET['yfavicon'])
 	);
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 } else {
 	header('HTTP/1.0 400 Bad Request');
 

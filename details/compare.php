@@ -53,7 +53,7 @@ if (count($urls) > 0) {
 			$urllist .= ', ';
 		}
 
-		$urllist .= sprintf("'%s'", mysql_real_escape_string($url));
+		$urllist .= sprintf("'%s'", mysqli_real_escape_string($conn, $url));
 	}
 
 	$query = "SELECT urls.id, url,
@@ -65,14 +65,14 @@ if (count($urls) > 0) {
 			LEFT JOIN pagespeed p ON urls.pagespeed_last_id = p.id
 			LEFT JOIN dynatrace d ON urls.dynatrace_last_id = d.id
 		WHERE urls.url IN ($urllist)";
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
 	// loading all data
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		$urlids[$row['url']] =  $row['id'];
 		$data[$row['url']] = array(
 			'yslow' => $row['y_version'],
@@ -91,7 +91,7 @@ if (count($urls) > 0) {
 			$counters['dynatrace'] += 1;
 		}
 	}
-	mysql_free_result($result);
+	mysqli_free_result($result);
 }
 
 // let's see data for which rankers is available and redirect accordingly

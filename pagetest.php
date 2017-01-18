@@ -76,21 +76,21 @@ if (!is_null($webPageTestKey) && array_key_exists('url', $_POST))
 		# adding new entry
 		$query = sprintf("INSERT INTO pagetest (url_id, test_id, location)
 			VALUES ('%d', '%s', '%s')",
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($testId),
-			mysql_real_escape_string($location)
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $testId),
+			mysqli_real_escape_string($conn, $location)
 		);
 
-		if (!mysql_query($query))
+		if (!mysqli_query($conn, $query))
 		{
-			failWithMessage(mysql_error());
+			failWithMessage(mysqli_error($conn));
 		}
 
 		# updating modification date for the URL
 		$query = sprintf("UPDATE urls SET last_update = now() WHERE id = %d",
-			mysql_real_escape_string($url_id)
+			mysqli_real_escape_string($conn, $url_id)
 		);
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 	}
 
 	$current_user = User::get();

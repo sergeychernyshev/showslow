@@ -31,10 +31,10 @@ if (array_key_exists('delete', $_POST) && is_array($_POST['delete'])) {
 			$deleteids
 		);
 
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 		}
 	}
 	header('Location: '.$showslow_base.'my.php#deleted');
@@ -50,20 +50,20 @@ if ($maxURLsPerUser)
 {
 	$query = sprintf('SELECT count(*) AS cnt FROM user_urls	WHERE user_urls.user_id = %d', $current_user->getID());
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
-	$cnt = mysql_fetch_row($result);
+	$cnt = mysqli_fetch_row($result);
 
 	if (is_array($cnt) && $cnt[0] >= $maxURLsPerUser)
 	{
 		$noMoreURLs = true;
 		$MESSAGES[] = $maxURLsMessage;
 	}
-	mysql_free_result($result);
+	mysqli_free_result($result);
 }
 
 
@@ -80,10 +80,10 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 		$url_id
 	);
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
 	$current_user->recordActivity(SHOWSLOW_ACTIVITY_ADD_URL);
@@ -101,13 +101,13 @@ if (!$noMoreURLs && array_key_exists('url', $_REQUEST)) {
 
 		$query = sprintf($query, $url_id, $monitoringPeriod);
 
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 		}
 
-		if ($row = mysql_fetch_assoc($result)) {
+		if ($row = mysqli_fetch_assoc($result)) {
 			$url = $row['url'];
 			call_user_func($onNewMonitoredURL, $url, $current_user);
 		}
@@ -127,10 +127,10 @@ $query = sprintf("SELECT urls.id as id, url, last_update,
 		LEFT JOIN dynatrace ON urls.dynatrace_last_id = dynatrace.id
 	WHERE user_urls.user_id = %d ORDER BY url", $current_user->getID());
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
 $yslow = false;
@@ -139,7 +139,7 @@ $dynatrace = false;
 
 $rows = array();
 $cols = 0;
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$rows[] = $row;
 
 	if ($enabledMetrics['yslow'] && !$yslow && !is_null($row['o'])) {
@@ -254,7 +254,7 @@ if (count($rows))
 	</tr><?php
 	}
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 	?>
 	</table>
 	</form>

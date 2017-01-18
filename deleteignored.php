@@ -35,7 +35,7 @@ if ($ignoreURLs !== false && is_array($ignoreURLs)) {
 			} else {
 				$query .= ' OR ';
 			}
-			$query .= sprintf("LOCATE('%s', LOWER(url)) = 1", mysql_real_escape_string($prefix));
+			$query .= sprintf("LOCATE('%s', LOWER(url)) = 1", mysqli_real_escape_string($conn, $prefix));
 		}
 
 		if (!$enableNonHTTPURLs) {
@@ -45,14 +45,14 @@ if ($ignoreURLs !== false && is_array($ignoreURLs)) {
 			$query .= "(LOCATE('http://', LOWER(url)) <> 1 AND LOCATE('https://', LOWER(url)) <> 1)";
 		}
 
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 			exit;
 		}
 
-		while($row = mysql_fetch_assoc($result)) {
+		while($row = mysqli_fetch_assoc($result)) {
 			$ids[] = $row['id'];
 		}
 	}
@@ -60,14 +60,14 @@ if ($ignoreURLs !== false && is_array($ignoreURLs)) {
 	# checking regexes - this takes time as we need to match every URL to every regex
 	if (count($regexes) > 0) {
 		$query = 'SELECT id, url FROM urls';
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 			exit;
 		}
 
-		while($row = mysql_fetch_assoc($result)) {
+		while($row = mysqli_fetch_assoc($result)) {
 			$matched = false;
 			foreach ($regexes as $regex) {
 				if (preg_match($regex, $row['url'])) {
@@ -85,50 +85,50 @@ if ($ignoreURLs !== false && is_array($ignoreURLs)) {
 	# deleting data for custom metrics 
 	$query = sprintf("DELETE FROM metric WHERE url_id IN (%s)", implode(', ', $ids));
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
 	# deleting data for yslow v2
 	$query = sprintf("DELETE FROM yslow2 WHERE url_id IN (%s)", implode(', ', $ids));
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
 	# deleting data for pagespeed
 	$query = sprintf("DELETE FROM pagespeed WHERE url_id IN (%s)", implode(', ', $ids));
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
 	# deleting data for dynatrace  
 	$query = sprintf("DELETE FROM dynatrace WHERE url_id IN (%s)", implode(', ', $ids));
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 
 	# resetting urls aggregates
 	$query = sprintf("UPDATE urls SET last_update = NULL, yslow2_last_id = NULL, pagespeed_last_id = NULL, dynatrace_last_id = NULL WHERE id IN (%s)", implode(', ', $ids));
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 		exit;
 	}
 }

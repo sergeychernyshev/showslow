@@ -26,7 +26,7 @@ function startElement($parser, $name, $attrs)
 
 function endElement($parser, $name) 
 {
-	global $inLocTag, $buffer, $user_id;
+	global $inLocTag, $buffer, $user_id, $conn;
 
 	if (strtolower($name) == 'loc') {
 		$inLocTag = false;
@@ -47,10 +47,10 @@ function endElement($parser, $name)
 			$url_id
 		);
 
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
 		if (!$result) {
-			error_log(mysql_error());
+			error_log(mysqli_error($conn));
 		}
 	}
 }

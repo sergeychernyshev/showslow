@@ -31,14 +31,14 @@ if (!$urlid && !$url) {
 }
 
 if (!$urlid && $url) {
-	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysql_real_escape_string($url)."'))";
-	$result = mysql_query($query);
+	$query = "SELECT id FROM urls WHERE urls.url_md5 = UNHEX(MD5('".mysqli_real_escape_string($conn, $url)."'))";
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 
 	if (is_null($row)) {
 		not_found();
@@ -55,14 +55,14 @@ if (!$urlid && $url) {
 }
 
 if ($urlid && !$url) {
-	$query = "SELECT url FROM urls WHERE urls.id = ".mysql_real_escape_string($urlid);
-	$result = mysql_query($query);
+	$query = "SELECT url FROM urls WHERE urls.id = ".mysqli_real_escape_string($conn, $urlid);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 
 	if (is_null($row)) {
 		not_found();
@@ -97,24 +97,24 @@ foreach ($all_metrics as $provider_name => $provider) {
 	$query .= "\n\tLEFT JOIN ".$provider['table'].' ON urls.'.$provider['table'].'_last_id = '.$provider['table'].'.id';
 }
 
-$query .= "\nWHERE urls.id = ".mysql_real_escape_string($urlid);
+$query .= "\nWHERE urls.id = ".mysqli_real_escape_string($conn, $urlid);
 
 #echo $query; exit;
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
-$row = mysql_fetch_assoc($result);
+$row = mysqli_fetch_assoc($result);
 $lastupdate = $row['t'];
 $eventupdate = $row['last_event_update'];
 $url = $row['url'];
 $yslow2_last_id = $row['yslow2_last_id'];
 $pagespeed_last_id = $row['pagespeed_last_id'];
 $dynatrace_last_id = $row['dynatrace_last_id'];
-mysql_free_result($result);
+mysqli_free_result($result);
 
 $custom_metrics = array();
 $custom_metrics_version = 0;
@@ -123,17 +123,17 @@ foreach ($metrics as $id => $metric) {
 	$query = sprintf("SELECT value, UNIX_TIMESTAMP(timestamp) as t
 		FROM metric WHERE url_id = %d AND metric_id = %d AND timestamp > DATE_SUB(now(), INTERVAL 3 MONTH)
 		ORDER BY timestamp DESC LIMIT 1",
-		mysql_real_escape_string($urlid),
-		mysql_real_escape_string($metric['id'])
+		mysqli_real_escape_string($conn, $urlid),
+		mysqli_real_escape_string($conn, $metric['id'])
 	);
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		error_log(mysql_error());
+		error_log(mysqli_error($conn));
 	}
 
-	if ($row_metrics = mysql_fetch_assoc($result)) {
+	if ($row_metrics = mysqli_fetch_assoc($result)) {
 		$custom_metrics[$metric['id']]['metric_slug'] = $id;
 		$custom_metrics[$metric['id']]['metric'] = $metric;
 		$custom_metrics[$metric['id']]['value'] = $row_metrics['value'];
@@ -285,36 +285,36 @@ var metrics = <?php echo json_encode($metrics); ?>;
 
 // checking if there is har data
 $query = sprintf("SELECT har.timestamp as t, har.id as id, har.link as link FROM har WHERE har.url_id = '%d' ORDER BY timestamp DESC",
-	mysql_real_escape_string($urlid)
+	mysqli_real_escape_string($conn, $urlid)
 );
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $har = array();
-while ($har_row = mysql_fetch_assoc($result)) {
+while ($har_row = mysqli_fetch_assoc($result)) {
 	$har[] = $har_row;
 }
 
 // checking if there were PageTest tests ran
 $query = sprintf("SELECT pagetest.timestamp as t, test_id, location FROM pagetest WHERE pagetest.url_id = '%d' ORDER BY timestamp DESC",
-	mysql_real_escape_string($urlid)
+	mysqli_real_escape_string($conn, $urlid)
 );
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $pagetest = array();
-while ($pagetest_row = mysql_fetch_assoc($result)) {
+while ($pagetest_row = mysqli_fetch_assoc($result)) {
 	$pagetest[] = $pagetest_row;
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 $data = array();
 
@@ -370,8 +370,8 @@ if ((!is_null($webPageTestBase) && !is_null($webPageTestKey))
 <a name="tools"></a><fieldset id="tools"><legend>Tools</legend>
 <?php
 if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
-	<div class="well pull-left" style="margin: 0.5%; width: 27%">
-	<a name="pagetest"></a><h4>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a></h4>
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
+	<a name="pagetest"></a><h4>Run a test using <a href="<?php echo htmlentities($webPageTestBase)?>" target="_blank">WebPageTest</a> and store the results</h4	>
 	<form class="form form-inline" style="margin-bottom: 0" action="<?php echo htmlentities($showslow_base)?>pagetest.php" method="POST" target="_blank">
 	<input type="hidden" name="url" size="40" value="<?php echo htmlentities($url)?>"/>
 	<img src="<?php echo assetURL('img/webpagetest-20h.png')?>" height="20" width="28" style="float: left; margin-right: 0.5em"/>
@@ -383,11 +383,9 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 	?>
 		<option <?php echo htmlentities($location['default']) ? 'selected ' : ''?>value="<?php echo htmlentities($location['id'])?>"><?php echo htmlentities($location['title'])?></option>
 	<?php } ?></select>
-	<div>
 	<label class="checkbox"><input type="checkbox" name="private" id="wpt_private" value="1"<?php if ($webPageTestPrivateByDefault) {?> checked="true"<?php } ?>/> Private</label>
 	<label class="checkbox"><input type="checkbox" name="fvonly" id="wpt_fvonly" value="1"<?php if ($webPageTestFirstRunOnlyByDefault) {?> checked="true"<?php } ?>/> First View Only</label>
-	</div>
-	<input class="btn btn-mini btn-success pull-right" type="submit" value="Start Test"/>
+	<input class="btn btn-mini" type="submit" value="start test &rarr;"/>
 	<?php if (count($pagetest) > 0) {?><a href="#pagetest-table">See test history below</a><?php } ?>
 	</form>
 	</div>
@@ -395,12 +393,12 @@ if (!is_null($webPageTestBase) && !is_null($webPageTestKey)) { ?>
 }
 
 if (!is_null($redBotBase)) { ?>
-	<div class="well pull-left" style="margin: 0.5%; width: 27%">
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
 	<a name="redbot"></a><h4>Run a test using <a href="<?php echo htmlentities($redBotBase)?>" target="_blank"><span style="color: #D33">RED</span>bot</a></h4>
 	<form class="form form-inline" style="margin-bottom: 0" action="<?php echo htmlentities($redBotBase)?>" method="GET" target="_blank">
 	<input type="hidden" name="uri" size="40" value="<?php echo htmlentities($url)?>"/>
 	<label class="checkbox" for="checkallassets"><input type="checkbox" id="checkallassets" name="descend" value="True"<?php if ($redBotCheckAllByDefault) {?> checked<?php } ?>/> Check all components:</label>
-	<input class="btn btn-mini btn-success pull-right" type="submit" value="Start Test"/>
+	<input class="btn btn-mini" type="submit" value="start test &rarr;"/>
 	</form>
 	</div>
 <?php
@@ -408,11 +406,13 @@ if (!is_null($redBotBase)) { ?>
 
 if ($enablePageSpeedInsightsTool) {
 	?>
-	<div class="well pull-left" style="margin: 0.5%; width: 27%">
-	<a name="pagespeedinsights"></a><h4>Run <a href="http://developers.google.com/speed/pagespeed/insights/" target="_blank">Google PageSpeed</a> Insights</h4>
+	<div class="well pull-left" style="margin: 0 1em 1em 0">
+	<a name="pagespeedinsights"></a><h4>Run <a href="https://developers.google.com/speed/pagespeed/" target="_blank">Google PageSpeed</a> Insights</h4>
+	<form class="form form-inline" style="margin-bottom: 0" method="GET" action="https://developers.google.com/speed/pagespeed/insights#url=<?php echo htmlentities($url) ?>" target="_blank">
 	<img src="<?php echo assetURL('img/pagespeed-20h.png')?>" height="20" width="27" style="float: left; margin-right: 0.5em"/>
 	Start Google PageSpeed Insights test
-	<a class="btn btn-mini btn-success pull-right" href="https://developers.google.com/speed/pagespeed/insights/?url=<?php echo urlencode($url) ?>" target="_blank">Start Test</a>
+	<input class="btn btn-mini" type="submit" value="start test &rarr;">
+	</form>
 	</div>
 	<?php
 }
@@ -543,7 +543,7 @@ if ($havemetrics)
 
 		foreach ($metrics as $name => $metric)
 		{
-			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="<?php echo $showslow_base ?>/details/data_metric.php?metric=<?php echo urlencode($name);?>&urlid=<?php echo urlencode($urlid);?>">csv</a>);
+			?><span title="<?php echo htmlentities($metric['description'])?>" style="color: <?php echo array_key_exists('color', $metric) ? $metric['color'] : 'black' ?>"><?php echo htmlentities($metric['title'])?></span> (<a href="data_metric.php?metric=<?php echo urlencode($name);?>&urlid=<?php echo urlencode($urlid);?>">csv</a>);
 	<?php
 		}
 		?>
@@ -775,21 +775,21 @@ if ($havemetrics)
 
 if ($enabledMetrics['yslow'] && !is_null($row['yslow_timestamp'])) {
 ?>
-	<a name="yslow-table"></a><h2>YSlow measurements history (<a href="<?php echo $showslow_base ?>/details/data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="yslow-table"></a><h2>YSlow measurements history (<a href="data.php?ver=<?php echo urlencode($row['yslow_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="measurementstable" class="measurementstable"></div>
 	<?php
 }
 
 if ($enabledMetrics['pagespeed'] && !is_null($row['pagespeed_timestamp'])) {
 ?>
-	<a name="pagespeed-table"></a><h2>Page Speed measurements history (<a href="<?php echo $showslow_base ?>/details/data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="pagespeed-table"></a><h2>Page Speed measurements history (<a href="data_pagespeed.php?ver=<?php echo urlencode($row['pagespeed_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="ps_measurementstable" class="measurementstable"></div>
 <?php
 }
 
 if ($enabledMetrics['dynatrace'] && !is_null($row['dynatrace_timestamp'])) {
 ?>
-	<a name="dynatrace-table"></a><h2>dynaTrace measurements history (<a href="<?php echo $showslow_base ?>/details/data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
+	<a name="dynatrace-table"></a><h2>dynaTrace measurements history (<a href="data_dynatrace.php?ver=<?php echo urlencode($row['dynatrace_timestamp'])?>&urlid=<?php echo urlencode($urlid)?>">csv</a>)</h2>
 	<div id="dt_measurementstable" class="measurementstable"></div>
 <?php
 }

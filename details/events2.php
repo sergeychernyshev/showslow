@@ -21,13 +21,13 @@ $all = true;
 $query = sprintf("SELECT type, title, UNIX_TIMESTAMP(start) as s, UNIX_TIMESTAMP(end) as e, resource_url as link FROM event
 	WHERE INSTR('%s', url_prefix) = 1
 	ORDER BY start DESC",
-	mysql_real_escape_string($_GET['url'])
+	mysqli_real_escape_string($conn, $_GET['url'])
 );
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-        error_log(mysql_error());
+        error_log(mysqli_error($conn));
 }
 
 $data = array();
@@ -40,7 +40,7 @@ if (array_key_exists('ver', $_GET)) {
 header('Content-type: application/json');
 $events = array();
 
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$start = $row['s'];
 	$end = $row['e'];
 
@@ -58,6 +58,6 @@ while ($row = mysql_fetch_assoc($result)) {
 		'link' => $row['link']
 	);
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 echo json_encode($events);

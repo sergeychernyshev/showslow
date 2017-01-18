@@ -29,27 +29,27 @@ if (array_key_exists('title', $_GET) && $_GET['title'] != ''
 			.($end !== FALSE ? ", '%s'" : '')
 			.($resource_url !== FALSE ? ", '%s'" : '')
 		.')',
-		mysql_real_escape_string($url),
-		mysql_real_escape_string($_GET['title']),
-		mysql_real_escape_string($start),
-		mysql_real_escape_string($type),
-		mysql_real_escape_string($end),
-		mysql_real_escape_string($resource_url)
+		mysqli_real_escape_string($conn, $url),
+		mysqli_real_escape_string($conn, $_GET['title']),
+		mysqli_real_escape_string($conn, $start),
+		mysqli_real_escape_string($conn, $type),
+		mysqli_real_escape_string($conn, $end),
+		mysqli_real_escape_string($conn, $resource_url)
 	);
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
 	# updating last_event_update for the matching URLs
 	$query = sprintf("UPDATE urls SET last_event_update = NOW() WHERE INSTR(url, '%s') = 1",
-		mysql_real_escape_string($url)
+		mysqli_real_escape_string($conn, $url)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
 	if (array_key_exists('manual', $_GET))

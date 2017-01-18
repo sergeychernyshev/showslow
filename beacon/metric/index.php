@@ -3,15 +3,17 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
+	global $conn;
+
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls set metric_last_id = %d, last_update = now() WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 }
 
@@ -27,26 +29,26 @@ if (array_key_exists('metric', $_REQUEST) && array_key_exists($_REQUEST['metric'
 	if (array_key_exists('timestamp', $_REQUEST) && $_REQUEST['timestamp']) {
 		# adding new entry
 		$query = sprintf("INSERT INTO metric (timestamp, url_id, metric_id, value) VALUES ('%s', '%d', '%d', '%f')",
-			mysql_real_escape_string($_REQUEST['timestamp']),
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($metrics[$_REQUEST['metric']]['id']),
-			mysql_real_escape_string($_REQUEST['value'])
+			mysqli_real_escape_string($conn, $_REQUEST['timestamp']),
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $metrics[$_REQUEST['metric']]['id']),
+			mysqli_real_escape_string($conn, $_REQUEST['value'])
 		);
 	} else {
 		# adding new entry
 		$query = sprintf("INSERT INTO metric (url_id, metric_id, value) VALUES ('%d', '%d', '%f')",
-			mysql_real_escape_string($url_id),
-			mysql_real_escape_string($metrics[$_REQUEST['metric']]['id']),
-			mysql_real_escape_string($_REQUEST['value'])
+			mysqli_real_escape_string($conn, $url_id),
+			mysqli_real_escape_string($conn, $metrics[$_REQUEST['metric']]['id']),
+			mysqli_real_escape_string($conn, $_REQUEST['value'])
 		);
 	}
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 
 	header('HTTP/1.0 204 Data accepted');
 	exit;

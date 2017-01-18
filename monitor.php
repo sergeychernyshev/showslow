@@ -30,15 +30,15 @@ if (array_key_exists('refresh', $_GET) && array_key_exists('beacon', $_GET)) {
 	$query = "SELECT DISTINCT url FROM urls INNER JOIN user_urls on user_urls.url_id = urls.id";
 }
 
-$result = mysql_query($query);
+$result = mysqli_query($conn, $query);
 
 if (!$result) {
-	error_log(mysql_error());
+	error_log(mysqli_error($conn));
 }
 
 $urls = array();
 
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
 	$url = validateURL($row['url'], false);
 
 	if (is_null($url)) {
@@ -47,7 +47,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$urls[] = $url;
 }
-mysql_free_result($result);
+mysqli_free_result($result);
 
 echo implode("\n", $urls);
 

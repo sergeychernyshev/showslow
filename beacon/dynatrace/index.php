@@ -3,16 +3,18 @@ require_once(dirname(dirname(dirname(__FILE__))).'/global.php');
 
 function updateUrlAggregates($url_id, $measurement_id)
 {
+	global $conn;
+
 	# updating latest values for the URL
 	$query = sprintf("UPDATE urls SET dynatrace_last_id = %d, last_update = now(), dt_refresh_request = 0 WHERE id = %d",
-		mysql_real_escape_string($measurement_id),
-		mysql_real_escape_string($url_id)
+		mysqli_real_escape_string($conn, $measurement_id),
+		mysqli_real_escape_string($conn, $url_id)
 	);
 
-	$result = mysql_query($query);
+	$result = mysqli_query($conn, $query);
 
 	if (!$result) {
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 }
 
@@ -59,33 +61,33 @@ if (!is_null($post) && array_key_exists('url', $post)
 		'%d', '%d', '%d',
 		'%s'
 	)",
-		mysql_real_escape_string(array_key_exists('version', $post) ? $post['version'] : null),
-		mysql_real_escape_string($url_id),
-		mysql_real_escape_string($post['rank']),
-		mysql_real_escape_string($cache),
-		mysql_real_escape_string($net),
-		mysql_real_escape_string($server),
-		mysql_real_escape_string($js),
-		mysql_real_escape_string(array_key_exists('timetoimpression', $post) ? $post['timetoimpression'] : null),
-		mysql_real_escape_string(array_key_exists('timetoonload', $post) ? $post['timetoonload'] : null),
-		mysql_real_escape_string(array_key_exists('timetofullload', $post) ? $post['timetofullload'] : null),
-		mysql_real_escape_string(array_key_exists('reqnumber', $post) ? $post['reqnumber'] : null),
-		mysql_real_escape_string(array_key_exists('xhrnumber', $post) ? $post['xhrnumber'] : null),
-		mysql_real_escape_string(array_key_exists('pagesize', $post) ? $post['pagesize'] : null),
-		mysql_real_escape_string(array_key_exists('cachablesize', $post) ? $post['cachablesize'] : null),
-		mysql_real_escape_string(array_key_exists('noncachablesize', $post) ? $post['noncachablesize'] : null),
-		mysql_real_escape_string(array_key_exists('timeonnetwork', $post) ? $post['timeonnetwork'] : null),
-		mysql_real_escape_string(array_key_exists('timeinjs', $post) ? $post['timeinjs'] : null),
-		mysql_real_escape_string(array_key_exists('timeinrendering', $post) ? $post['timeinrendering'] : null),
-		mysql_real_escape_string($post_data)
+		mysqli_real_escape_string($conn, array_key_exists('version', $post) ? $post['version'] : null),
+		mysqli_real_escape_string($conn, $url_id),
+		mysqli_real_escape_string($conn, $post['rank']),
+		mysqli_real_escape_string($conn, $cache),
+		mysqli_real_escape_string($conn, $net),
+		mysqli_real_escape_string($conn, $server),
+		mysqli_real_escape_string($conn, $js),
+		mysqli_real_escape_string($conn, array_key_exists('timetoimpression', $post) ? $post['timetoimpression'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('timetoonload', $post) ? $post['timetoonload'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('timetofullload', $post) ? $post['timetofullload'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('reqnumber', $post) ? $post['reqnumber'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('xhrnumber', $post) ? $post['xhrnumber'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('pagesize', $post) ? $post['pagesize'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('cachablesize', $post) ? $post['cachablesize'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('noncachablesize', $post) ? $post['noncachablesize'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('timeonnetwork', $post) ? $post['timeonnetwork'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('timeinjs', $post) ? $post['timeinjs'] : null),
+		mysqli_real_escape_string($conn, array_key_exists('timeinrendering', $post) ? $post['timeinrendering'] : null),
+		mysqli_real_escape_string($conn, $post_data)
 	);
 
-	if (!mysql_query($query))
+	if (!mysqli_query($conn, $query))
 	{
-		beaconError(mysql_error());
+		beaconError(mysqli_error($conn));
 	}
 
-	updateUrlAggregates($url_id, mysql_insert_id());
+	updateUrlAggregates($url_id, mysqli_insert_id($conn));
 } else {
 	header('HTTP/1.0 400 Bad Request');
 
