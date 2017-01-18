@@ -224,8 +224,12 @@ if (array_key_exists('u', $_GET)) {
 			$metric = $rule_metric_map[$rule];
 
 			if (!array_key_exists('ruleScore', $data)) {
-				error_log('Rule score is not specified: '.$rule.' (skipping)');
-				continue;
+				if (array_key_exists('ruleImpact', $data)) {
+					$data['ruleScore'] = $data['ruleImpact'] > 0 ? 50 : 100;
+				} else {
+					error_log('Rule score is not specified: '.$rule.' (skipping)');
+					continue;
+				}
 			}
 
 			$value = filter_var($data['ruleScore'], FILTER_VALIDATE_INT);
