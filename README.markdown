@@ -1,8 +1,5 @@
-ShowSlow collects web performance data and shows it in aggregated form trended over time.
+ShowSlow is no longer maintained.
 
-Documentation is on project the [project wiki](https://github.com/sergeychernyshev/showslow/wiki), feel free to contribute!
+For tracking of synthetic metrics we suggest checking out https://github.com/sitespeedio which is actively developed and maintained.
 
-Feedback
-========
-You can ask questions post issues in the issue tracker:
-https://github.com/sergeychernyshev/showslow/issues
+However if your goal is to track metrics, we suggest using Real User Measurement (RUM) tools instead, check out https://github.com/akamai/boomerang library which power most if not all commercial tools like that.
